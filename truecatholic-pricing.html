@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueCatholic AI — Pricing</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+    --green: #5AAF5A; --green-dim: rgba(90,175,90,0.15);
+    --red: #C45050; --red-dim: rgba(196,80,80,0.15);
+    --orange: #D4903A;
+  }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  /* Grain overlay */
+  body::before {
+    content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 9999; opacity: 0.02;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    padding: 14px 28px;
+    display: flex; align-items: center; justify-content: space-between;
+    background: rgba(11,11,16,0.92); backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-mark {
+    width: 26px; height: 26px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .nav-mark::before { content:''; position:absolute; width:9px; height:1.5px; background:var(--bg); }
+  .nav-mark::after { content:''; position:absolute; width:1.5px; height:9px; background:var(--bg); }
+  .nav-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .nav-links { display: flex; gap: 6px; }
+  .nav-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; font-weight: 400;
+    letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none;
+    padding: 6px 12px; border-radius: 4px; transition: all 0.25s;
+  }
+  .nav-link:hover { color: var(--gold); }
+  .nav-link.cta {
+    border: 1px solid var(--gold-dim); color: var(--gold);
+  }
+  .nav-link.cta:hover { background: rgba(196,162,78,0.1); }
+
+  /* HERO */
+  .hero {
+    padding: 140px 28px 60px; text-align: center;
+    position: relative;
+  }
+  .hero::before {
+    content: ''; position: absolute; top: 60px; left: 50%; transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(196,162,78,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-tag {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim);
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s ease-out;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4.5vw, 3.2rem);
+    font-weight: 400; line-height: 1.15; max-width: 700px; margin: 0 auto 16px;
+    animation: fadeUp 0.6s ease-out 0.1s both;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold-light); }
+  .hero-sub {
+    font-size: 1.1rem; color: var(--text-mid); line-height: 1.7;
+    max-width: 540px; margin: 0 auto; font-weight: 300;
+    animation: fadeUp 0.6s ease-out 0.2s both;
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* PRICING GRID */
+  .pricing-section { padding: 40px 28px 80px; max-width: 1100px; margin: 0 auto; }
+
+  .pricing-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 2px; margin-bottom: 32px;
+    animation: fadeUp 0.6s ease-out 0.3s both;
+  }
+
+  .plan {
+    background: var(--bg-card); padding: 36px 32px;
+    display: flex; flex-direction: column;
+    position: relative; overflow: hidden;
+    transition: background 0.3s;
+  }
+  .plan:first-child { border-radius: 16px 0 0 16px; }
+  .plan:last-child { border-radius: 0 16px 16px 0; }
+  .plan:hover { background: var(--bg-input); }
+
+  .plan.featured {
+    background: var(--bg-input);
+    border: 1px solid var(--gold-dim);
+    border-radius: 16px;
+    margin: -12px -1px; padding: 48px 32px;
+    z-index: 2;
+    box-shadow: 0 8px 40px rgba(196,162,78,0.08);
+  }
+  .plan.featured::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  }
+
+  .plan-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--bg); background: var(--gold);
+    padding: 3px 10px; border-radius: 3px;
+    display: inline-block; margin-bottom: 16px; align-self: flex-start;
+  }
+  .plan-name {
+    font-family: 'Playfair Display', serif; font-size: 1.5rem;
+    font-weight: 500; margin-bottom: 6px;
+  }
+  .plan-desc {
+    font-size: 0.9rem; color: var(--text-mid); line-height: 1.5;
+    margin-bottom: 20px; min-height: 44px;
+  }
+
+  .plan-price {
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-amount {
+    font-family: 'Playfair Display', serif; font-size: 2.8rem;
+    font-weight: 400; line-height: 1;
+  }
+  .price-amount .dollar { font-size: 1.6rem; vertical-align: top; margin-right: 2px; }
+  .price-period {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    color: var(--text-dim); letter-spacing: 0.06em; margin-top: 4px;
+  }
+  .price-free {
+    font-family: 'Playfair Display', serif; font-size: 2.8rem;
+    font-weight: 400; color: var(--green);
+  }
+
+  .plan-features { list-style: none; flex: 1; margin-bottom: 28px; }
+  .plan-features li {
+    font-size: 0.9rem; color: var(--text-mid); line-height: 1.5;
+    padding: 8px 0; padding-left: 24px; position: relative;
+    border-bottom: 1px solid rgba(196,162,78,0.04);
+  }
+  .plan-features li::before {
+    content: '✦'; position: absolute; left: 0; top: 8px;
+    color: var(--gold-dim); font-size: 0.6rem;
+  }
+  .plan-features li strong { color: var(--text); font-weight: 500; }
+
+  .plan-cta {
+    display: block; text-align: center; padding: 14px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    text-decoration: none; border-radius: 8px;
+    transition: all 0.3s; cursor: pointer; border: none;
+  }
+  .cta-free {
+    background: transparent; border: 1px solid var(--border-strong); color: var(--text-mid);
+  }
+  .cta-free:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .cta-primary {
+    background: var(--gold); color: var(--bg);
+  }
+  .cta-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
+  .cta-patron {
+    background: transparent; border: 1px solid var(--gold-dim); color: var(--gold);
+  }
+  .cta-patron:hover { background: rgba(196,162,78,0.1); }
+
+  /* MODEL BADGES */
+  .model-badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    background: var(--bg); border: 1px solid var(--border);
+    border-radius: 6px; padding: 8px 12px; margin-bottom: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+  }
+  .model-badge .model-name { color: var(--text-mid); letter-spacing: 0.04em; }
+  .model-badge .score-before {
+    color: var(--red); text-decoration: line-through; opacity: 0.6;
+  }
+  .model-badge .arrow { color: var(--text-dim); }
+  .model-badge .score-after { color: var(--green); font-weight: 500; }
+
+  /* INSTITUTIONAL STRIP */
+  .institutional {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px 36px;
+    display: flex; align-items: center; justify-content: space-between;
+    gap: 32px; margin-top: 32px;
+    animation: fadeUp 0.6s ease-out 0.4s both;
+  }
+  .institutional-text { flex: 1; }
+  .institutional-text h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.2rem;
+    font-weight: 400; margin-bottom: 6px;
+  }
+  .institutional-text p {
+    font-size: 0.9rem; color: var(--text-mid); line-height: 1.5;
+  }
+
+  /* PHILOSOPHY SECTION */
+  .philosophy {
+    padding: 80px 28px; max-width: 680px; margin: 0 auto;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+  .philosophy h2 {
+    font-family: 'Playfair Display', serif; font-size: clamp(1.4rem, 3vw, 2rem);
+    font-weight: 400; margin-bottom: 24px; line-height: 1.25;
+  }
+  .philosophy h2 em { font-style: italic; color: var(--gold-light); }
+  .philosophy p {
+    font-size: 1rem; color: var(--text-mid); line-height: 1.8;
+    margin-bottom: 16px; font-weight: 300;
+  }
+  .philosophy .verse {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    color: var(--gold-dim); font-size: 1.05rem; margin-top: 28px;
+    padding: 20px; border-left: 2px solid var(--gold-faint);
+    text-align: left; line-height: 1.6;
+  }
+  .philosophy .verse cite {
+    display: block; margin-top: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    font-style: normal; letter-spacing: 0.1em; color: var(--text-dim);
+  }
+
+  /* COMPARISON TABLE */
+  .comparison { padding: 0 28px 80px; max-width: 900px; margin: 0 auto; }
+  .comparison h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem;
+    font-weight: 400; text-align: center; margin-bottom: 32px;
+  }
+  .comparison h2 em { font-style: italic; color: var(--gold-light); }
+  .comp-table { width: 100%; border-collapse: collapse; }
+  .comp-table th {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); font-weight: 500;
+    text-align: left; padding: 10px 16px;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .comp-table td {
+    padding: 14px 16px; font-size: 0.9rem; color: var(--text-mid);
+    border-bottom: 1px solid var(--border);
+    vertical-align: top;
+  }
+  .comp-table td:first-child { color: var(--text); font-weight: 400; }
+  .comp-check { color: var(--green); font-size: 1.1rem; }
+  .comp-x { color: var(--red); opacity: 0.5; font-size: 1.1rem; }
+  .comp-partial { color: var(--orange); font-size: 0.8rem; }
+  .comp-table tr:last-child td { border-bottom: none; }
+
+  /* FAQ */
+  .faq { padding: 80px 28px; max-width: 700px; margin: 0 auto; border-top: 1px solid var(--border); }
+  .faq h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem;
+    font-weight: 400; text-align: center; margin-bottom: 32px;
+  }
+  .faq details {
+    border-bottom: 1px solid var(--border); padding: 0;
+  }
+  .faq summary {
+    font-size: 1rem; color: var(--text); cursor: pointer;
+    padding: 18px 0; list-style: none; position: relative;
+    padding-right: 32px; line-height: 1.4;
+    transition: color 0.2s;
+  }
+  .faq summary:hover { color: var(--gold-light); }
+  .faq summary::after {
+    content: '+'; position: absolute; right: 0; top: 18px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 1.1rem;
+    color: var(--gold-dim); transition: transform 0.3s;
+  }
+  .faq details[open] summary::after { content: '−'; }
+  .faq summary::-webkit-details-marker { display: none; }
+  .faq .faq-body {
+    padding: 0 0 20px; font-size: 0.92rem; color: var(--text-mid); line-height: 1.7;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 40px 28px;
+    text-align: center;
+  }
+  .footer-latin {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 1rem; color: var(--gold-dim); margin-bottom: 12px;
+  }
+  .footer-links {
+    display: flex; justify-content: center; gap: 20px; flex-wrap: wrap;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 0.08em;
+  }
+  .footer-links a { color: var(--text-dim); text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* RESPONSIVE */
+  @media (max-width: 820px) {
+    .pricing-grid { grid-template-columns: 1fr; gap: 16px; }
+    .plan { border-radius: 12px !important; }
+    .plan.featured { margin: 0; border-radius: 12px !important; }
+    .institutional { flex-direction: column; text-align: center; }
+    .nav-links { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a class="nav-brand" href="https://truecatholicai.org">
+    <div class="nav-mark"></div>
+    <span class="nav-name">TrueCatholic AI</span>
+  </a>
+  <div class="nav-links">
+    <a class="nav-link" href="https://truecatholicai.org">Home</a>
+    <a class="nav-link" href="https://truecatholicai.org/charter.html">Charter</a>
+    <a class="nav-link" href="https://catholicfaithindex.com">Benchmark</a>
+    <a class="nav-link cta" href="https://truecatholicai.org/app.html">Try Free</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-tag">Pricing</div>
+  <h1>Catholic AI for <em>the whole family.</em></h1>
+  <p class="hero-sub">
+    Every plan runs the full 2,700-line doctrinal charter. Free gives you faithful answers 
+    with no account needed. Paid gives your family the smartest AI on the market — Catholic-safe.
+  </p>
+</section>
+
+<!-- PRICING -->
+<section class="pricing-section">
+  <div class="pricing-grid">
+
+    <!-- FREE -->
+    <div class="plan">
+      <div class="plan-name">Free</div>
+      <div class="plan-desc">Faithful answers to any question about the faith. No account needed.</div>
+      <div class="plan-price">
+        <div class="price-free">$0</div>
+        <div class="price-period">forever · no account required</div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div class="model-badge">
+          <span class="model-name">Claude Haiku</span>
+          <span class="score-before">F</span>
+          <span class="arrow">→</span>
+          <span class="score-after">A</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li><strong>Full doctrinal charter</strong> — same teaching, same truth</li>
+        <li>Unlimited conversations</li>
+        <li>Fast responses (under 3 seconds)</li>
+        <li>No account, no signup, no tracking</li>
+        <li>Core doctrine, moral teaching, apologetics, pastoral care</li>
+      </ul>
+      <a class="plan-cta cta-free" href="https://truecatholicai.org/app.html">Start Asking — Free</a>
+    </div>
+
+    <!-- FAMILY -->
+    <div class="plan featured">
+      <div class="plan-badge">Most Popular</div>
+      <div class="plan-name">Family</div>
+      <div class="plan-desc">The smartest AI available — Catholic-safe for your whole family.</div>
+      <div class="plan-price">
+        <div class="price-amount"><span class="dollar">$</span>25</div>
+        <div class="price-period">per month · up to 6 family members</div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div class="model-badge">
+          <span class="model-name">Claude Sonnet</span>
+          <span class="score-before">C</span>
+          <span class="arrow">→</span>
+          <span class="score-after">A</span>
+        </div>
+        <div class="model-badge">
+          <span class="model-name">GPT-4o</span>
+          <span class="score-before">C</span>
+          <span class="arrow">→</span>
+          <span class="score-after">A</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li><strong>6 family seats</strong> — parents and children</li>
+        <li><strong>Sonnet, GPT-4o, Gemini</strong> — frontier models, charter-powered</li>
+        <li>Deeper reasoning for homework, essays, complex questions</li>
+        <li>Age-appropriate responses for younger users</li>
+        <li>Parent topic digest — see what your kids are asking about</li>
+        <li>Everything in Free, plus premium model access</li>
+      </ul>
+      <button class="plan-cta cta-primary">Join Early Access — Family</button>
+    </div>
+
+    <!-- PATRON -->
+    <div class="plan">
+      <div class="plan-name">Patron</div>
+      <div class="plan-desc">Premium models for individuals who want the best and want to fund the mission.</div>
+      <div class="plan-price">
+        <div class="price-amount"><span class="dollar">$</span>10</div>
+        <div class="price-period">per month · individual</div>
+      </div>
+      <div style="margin-bottom: 16px;">
+        <div class="model-badge">
+          <span class="model-name">Claude Sonnet</span>
+          <span class="score-before">C</span>
+          <span class="arrow">→</span>
+          <span class="score-after">A</span>
+        </div>
+      </div>
+      <ul class="plan-features">
+        <li><strong>Sonnet + GPT-4o</strong> — smarter models for deeper questions</li>
+        <li>Longer conversation memory</li>
+        <li>Priority during high traffic</li>
+        <li>Your subscription subsidizes the free tier</li>
+        <li>Early access to new features</li>
+      </ul>
+      <button class="plan-cta cta-patron">Join Early Access — Patron</button>
+    </div>
+
+  </div>
+
+  <!-- INSTITUTIONAL -->
+  <div class="institutional">
+    <div class="institutional-text">
+      <h3>Parishes, Schools & Dioceses</h3>
+      <p>Volume licensing for RCIA, youth ministry, Catholic schools, and diocesan programs. 
+         Custom seat counts, admin dashboard, and dedicated support.</p>
+    </div>
+    <a class="plan-cta cta-patron" href="mailto:michael@truecatholicai.org" style="white-space: nowrap; flex-shrink: 0;">
+      Contact Us
+    </a>
+  </div>
+</section>
+
+<!-- PHILOSOPHY -->
+<section class="philosophy">
+  <h2>Why the free tier is <em>actually free.</em></h2>
+  <p>
+    People are already asking AI about their faith — and every major AI on the market treats 
+    the Real Presence like an opinion.
+  </p>
+  <p>
+    If a teenager is questioning his faith at midnight, the last thing we want is a paywall 
+    between him and a faithful answer. The free tier isn't a teaser. It runs the same 2,700-line 
+    doctrinal charter as every paid plan. Same teaching. Same truth.
+  </p>
+  <p>
+    Paid plans exist so Catholic families can access the smartest AI models on the market 
+    inside a Catholic-safe environment. Your kids should have an AI that's just as smart as 
+    their secular friends' — it just doesn't lie to them about God.
+  </p>
+  <div class="verse">
+    "Freely you have received; freely give."
+    <cite>Matthew 10:8 (RSVCE)</cite>
+  </div>
+</section>
+
+<!-- COMPARISON -->
+<section class="comparison">
+  <h2>How we compare to <em>the alternatives.</em></h2>
+  <table class="comp-table">
+    <thead>
+      <tr>
+        <th style="width:35%">Feature</th>
+        <th>TrueCatholic AI</th>
+        <th>ChatGPT / Claude / Gemini</th>
+        <th>Magisterium AI</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Presents doctrine as true</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-x">✗</span></td>
+        <td><span class="comp-check">✓</span></td>
+      </tr>
+      <tr>
+        <td>Public doctrinal charter</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-x">✗</span></td>
+        <td><span class="comp-x">✗</span></td>
+      </tr>
+      <tr>
+        <td>Independent benchmark tested</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-check">✓</span> tested, scored C/C+</td>
+        <td><span class="comp-partial">planned</span></td>
+      </tr>
+      <tr>
+        <td>Anti-subversion protections</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-x">✗</span> all failed</td>
+        <td><span class="comp-partial">unknown</span></td>
+      </tr>
+      <tr>
+        <td>Choice of AI models</td>
+        <td><span class="comp-check">✓</span> multi-model</td>
+        <td><span class="comp-partial">single provider</span></td>
+        <td><span class="comp-partial">unknown</span></td>
+      </tr>
+      <tr>
+        <td>Free tier (no account)</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-partial">limited</span></td>
+        <td><span class="comp-partial">limited</span></td>
+      </tr>
+      <tr>
+        <td>Family plan with parental tools</td>
+        <td><span class="comp-check">✓</span></td>
+        <td><span class="comp-x">✗</span></td>
+        <td><span class="comp-x">✗</span></td>
+      </tr>
+      <tr>
+        <td>Conflict of interest disclosed</td>
+        <td><span class="comp-check">✓</span> everywhere</td>
+        <td>N/A</td>
+        <td><span class="comp-partial">unknown</span></td>
+      </tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- FAQ -->
+<section class="faq">
+  <h2>Questions</h2>
+
+  <details>
+    <summary>What's the difference between Free and paid plans?</summary>
+    <div class="faq-body">
+      The doctrine is the same. Every plan runs the full 2,700-line charter. The difference is the AI 
+      model underneath. Free runs Claude Haiku — fast and faithful, but less capable on complex reasoning. 
+      Paid plans unlock frontier models like Sonnet, GPT-4o, and Opus that handle nuanced theology, 
+      homework help, essay writing, and deep apologetics questions significantly better. Think of it 
+      like the same teacher using a whiteboard vs. a full classroom — same knowledge, better tools.
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I really use it without an account?</summary>
+    <div class="faq-body">
+      Yes. The free tier requires nothing — no email, no signup, no tracking. You go to the site and 
+      start asking. We don't store your conversations. We don't build a profile on you. We don't sell 
+      data. If you want the paid features, then you'll create an account — but the faith is never 
+      behind a wall.
+    </div>
+  </details>
+
+  <details>
+    <summary>Is this safe for my kids?</summary>
+    <div class="faq-body">
+      That's why we built it. The charter includes explicit guidance on age-appropriate responses, 
+      pastoral sensitivity, and content boundaries. Unlike secular AI, it won't undermine your teaching, 
+      affirm things that contradict Church doctrine, or fold under pressure when your teenager pushes 
+      back on a hard moral question. The Family plan adds a parent topic digest so you can see what 
+      subjects your kids are exploring — not surveillance, just awareness.
+    </div>
+  </details>
+
+  <details>
+    <summary>What if a competitor builds something better?</summary>
+    <div class="faq-body">
+      We'd celebrate. The goal is faithful Catholic AI, not market dominance. We'll benchmark every 
+      Catholic AI that launches on the Catholic Faithfulness Index and publish the results — even if 
+      they beat us. Our charter is public specifically so others can learn from it. If someone builds 
+      a better Catholic AI, Catholics win.
+    </div>
+  </details>
+
+  <details>
+    <summary>How does the Family plan work?</summary>
+    <div class="faq-body">
+      One account, up to 6 seats. Each family member gets their own login and conversation history. 
+      Parents can set age-appropriate modes for younger children and receive a weekly digest of the 
+      topics their kids asked about (not transcripts — just topics like "asked about Confession" or 
+      "discussed evolution and faith"). Parents get full access to all premium models. Children 
+      default to Sonnet with tighter content boundaries.
+    </div>
+  </details>
+
+  <details>
+    <summary>Where does my money go?</summary>
+    <div class="faq-body">
+      API costs (paying the AI providers for compute), infrastructure (servers, hosting), and 
+      keeping the free tier free. We're a small operation — a Catholic father building this as a 
+      vocation. There's no venture capital, no investor pressure to monetize your data, and no 
+      incentive to compromise doctrine for growth. Patron subscriptions directly subsidize free 
+      access for anyone who needs it.
+    </div>
+  </details>
+
+  <details>
+    <summary>Can I cancel anytime?</summary>
+    <div class="faq-body">
+      Yes, instantly. No retention tricks, no "are you sure?" gauntlet, no hidden fees. 
+      You can also downgrade to the free tier and keep asking questions about the faith — 
+      the charter is always running.
+    </div>
+  </details>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-latin">Ad Maiorem Dei Gloriam</div>
+  <div class="footer-links">
+    <a href="https://truecatholicai.org">Home</a>
+    <a href="https://truecatholicai.org/charter.html">Charter</a>
+    <a href="https://catholicfaithindex.com">Benchmark</a>
+    <a href="https://truecatholicai.org/pricing.html">Pricing</a>
+    <a href="mailto:michael@truecatholicai.org">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
