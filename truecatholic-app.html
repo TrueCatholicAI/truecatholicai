@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>TrueCatholic AI — Ask Anything About the Faith</title>
+<meta name="description" content="Catholic AI that teaches the faith without apology. Ask any question about doctrine, morality, Scripture, or the spiritual life. Free. No account needed.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C4A24E'/%3E%3Crect x='46' y='22' width='8' height='56' rx='2' fill='%230B0B10'/%3E%3Crect x='26' y='38' width='48' height='8' rx='2' fill='%230B0B10'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+    --ai-bg: rgba(17,17,23,0.6); --danger: #C45050; --green: #5AAF5A; --radius: 12px;
+  }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+  .header {
+    display: flex; align-items: center; justify-content: space-between; padding: 14px 20px;
+    border-bottom: 1px solid var(--border); background: rgba(11,11,16,0.95);
+    backdrop-filter: blur(16px); flex-shrink: 0; z-index: 100;
+  }
+  .header-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .header-mark {
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .header-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .header-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
+  .header-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    letter-spacing: 0.08em; margin-top: 1px;
+  }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .header-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 6px 12px; transition: all 0.25s; border-radius: 4px;
+  }
+  .header-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+  .remaining-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.06em; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
+  }
+  .remaining-badge .num { color: var(--gold-light); font-weight: 500; }
+  .chat-area {
+    flex: 1; overflow-y: auto; scroll-behavior: smooth;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .chat-area::-webkit-scrollbar { width: 5px; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .welcome {
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    min-height: 100%; padding: 40px 20px; text-align: center;
+  }
+  .welcome-cross {
+    width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin-bottom: 24px; opacity: 0.9;
+  }
+  .welcome-cross::before { content: ''; position: absolute; width: 18px; height: 2px; background: var(--bg); }
+  .welcome-cross::after { content: ''; position: absolute; width: 2px; height: 18px; background: var(--bg); }
+  .welcome h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px; line-height: 1.3;
+  }
+  .welcome h2 em { font-style: italic; color: var(--gold); }
+  .welcome-sub {
+    font-size: 0.95rem; color: var(--text-mid); max-width: 440px; line-height: 1.6; margin-bottom: 32px;
+  }
+  .starters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 600px; }
+  .starter {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; cursor: pointer; transition: all 0.2s; text-align: left; max-width: 280px;
+  }
+  .starter:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+  .starter-q { font-size: 0.88rem; color: var(--text); line-height: 1.4; display: block; }
+  .starter-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
+  }
+  .messages { display: none; padding: 16px 0; }
+  .message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .message.ai { background: var(--ai-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .msg-avatar {
+    width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500; flex-shrink: 0;
+  }
+  .msg-avatar.ai { background: var(--gold); color: var(--bg); position: relative; }
+  .msg-avatar.ai::before { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--bg); }
+  .msg-avatar.ai::after { content: ''; position: absolute; width: 1.5px; height: 8px; background: var(--bg); }
+  .msg-avatar.user { background: var(--border-strong); color: var(--text-mid); }
+  .msg-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .ai-name { color: var(--gold); }
+  .user-name { color: var(--text-dim); }
+  .msg-body { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+  .msg-body p { margin-bottom: 12px; }
+  .msg-body p:last-child { margin-bottom: 0; }
+  .msg-body strong { color: var(--gold-light); font-weight: 500; }
+  .msg-body em { font-style: italic; color: var(--text-mid); }
+  .msg-body blockquote {
+    border-left: 2px solid var(--gold-dim); padding-left: 16px; margin: 12px 0;
+    color: var(--text-mid); font-style: italic;
+  }
+  .msg-body ul, .msg-body ol { margin: 8px 0 12px 20px; }
+  .msg-body li { margin-bottom: 4px; line-height: 1.6; }
+  .typing { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .typing-inner { display: flex; align-items: center; gap: 10px; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dim);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+  .typing-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .input-area {
+    border-top: 1px solid var(--border); padding: 16px 20px; flex-shrink: 0;
+    background: rgba(11,11,16,0.95); backdrop-filter: blur(16px);
+  }
+  .input-row { display: flex; align-items: flex-end; gap: 10px; max-width: 800px; margin: 0 auto; }
+  .input-field {
+    flex: 1; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.95rem; resize: none; outline: none; line-height: 1.5;
+    min-height: 46px; max-height: 160px; transition: border-color 0.2s;
+  }
+  .input-field::placeholder { color: var(--text-dim); }
+  .input-field:focus { border-color: var(--gold-dim); }
+  .send-btn {
+    width: 46px; height: 46px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: var(--bg); display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .send-btn:hover:not(:disabled) { background: var(--gold-light); }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; }
+  .input-footer {
+    max-width: 800px; margin: 8px auto 0; text-align: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .input-footer a { color: var(--gold-dim); text-decoration: none; }
+  .input-footer a:hover { color: var(--gold); }
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: var(--danger); color: white; padding: 12px 24px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    max-width: 90%; text-align: center;
+  }
+  .toast.show { opacity: 1; }
+  @media (max-width: 600px) {
+    .header { padding: 10px 14px; }
+    .header-title { font-size: 0.62rem; }
+    .header-sub { display: none; }
+    .remaining-badge { font-size: 0.48rem; padding: 3px 8px; }
+    .welcome h2 { font-size: 1.3rem; }
+    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; }
+    .starter { max-width: none; }
+    .message { padding: 12px 14px; }
+    .input-area { padding: 12px 14px; }
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="https://truecatholicai.org" class="header-brand">
+    <div class="header-mark"></div>
+    <div>
+      <div class="header-title">TrueCatholic AI</div>
+      <div class="header-sub">Powered by the Catholic Doctrinal Charter</div>
+    </div>
+  </a>
+  <div class="header-actions">
+    <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">30</span> / 30 today</div>
+    <button class="header-btn" id="newChatBtn">+ New</button>
+  </div>
+</div>
+<div class="chat-area" id="chatArea">
+  <div class="welcome" id="welcome">
+    <div class="welcome-cross"></div>
+    <h2>Ask anything about <em>the faith.</em></h2>
+    <p class="welcome-sub">Doctrine, morality, Scripture, the sacraments, Church history, apologetics, or whatever is on your heart. Free. No account. No hedging on the truth.</p>
+    <div class="starters">
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">"Is the Eucharist really the Body and Blood of Christ?"</span>
+        <span class="starter-cat">Core Doctrine</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">"My husband just died. Where is he now?"</span>
+        <span class="starter-cat">Pastoral</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">"Why can't women be priests?"</span>
+        <span class="starter-cat">Catholic Difference</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">"How do I prepare for a good Confession?"</span>
+        <span class="starter-cat">Sacramental</span>
+      </div>
+    </div>
+  </div>
+  <div class="messages" id="messages"></div>
+</div>
+<div class="input-area">
+  <div class="input-row">
+    <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+  <div class="input-footer">AI can make mistakes. For definitive teaching, consult the <a href="https://www.vatican.va/archive/ENG0015/_INDEX.HTM" target="_blank">Catechism</a> or a priest. · <a href="https://truecatholicai.org">truecatholicai.org</a></div>
+</div>
+<div class="toast" id="toast"></div>
+<script>
+const API_URL = 'https://api.truecatholicai.org/chat';
+let messages = [];
+let isStreaming = false;
+let remaining = 30;
+const inputField = document.getElementById('inputField');
+const sendBtn = document.getElementById('sendBtn');
+const remainingNum = document.getElementById('remainingNum');
+
+document.addEventListener('DOMContentLoaded', () => { inputField.focus(); });
+inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
+
+function sendStarter(el) {
+  const q = el.querySelector('.starter-q').textContent.replace(/^[\u201c\u201d"]/g, '').replace(/[\u201c\u201d"]$/g, '');
+  inputField.value = q;
+  sendMessage();
+}
+
+async function sendMessage() {
+  const text = inputField.value.trim();
+  if (!text || isStreaming) return;
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('messages').style.display = 'block';
+  messages.push({ role: 'user', content: text });
+  renderMessage('user', text);
+  inputField.value = ''; inputField.style.height = 'auto';
+  sendBtn.disabled = true; isStreaming = true;
+  showTyping(); scrollToBottom();
+
+  try {
+    const response = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ messages }),
+    });
+    hideTyping();
+    if (response.status === 429) {
+      const err = await response.json();
+      showToast(err.error || 'Daily limit reached. Come back tomorrow!');
+      messages.pop(); isStreaming = false; sendBtn.disabled = false; return;
+    }
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || 'Server returned ' + response.status);
+    }
+    const data = await response.json();
+    if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
+    messages.push({ role: 'assistant', content: data.reply });
+    renderMessage('ai', data.reply);
+  } catch (err) {
+    hideTyping();
+    renderMessage('ai', "I'm having trouble connecting right now. Please try again in a moment.");
+    messages.pop();
+  }
+  isStreaming = false; sendBtn.disabled = !inputField.value.trim(); scrollToBottom();
+}
+
+function renderMessage(role, text) {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  if (role === 'ai') {
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+  } else {
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">Y</div><span class="msg-name user-name">You</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
+  }
+  container.appendChild(div); scrollToBottom();
+}
+
+function renderMarkdown(text) {
+  let html = escapeHTML(text);
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/<\/blockquote>\n<blockquote>/g, '\n');
+  html = html.replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>');
+  const paragraphs = html.split(/\n\n+/);
+  html = paragraphs.map(p => {
+    p = p.trim(); if (!p) return '';
+    if (p.startsWith('<blockquote>')) return p;
+    if (p.match(/^[\-\*] /m)) { const items = p.split(/\n/).filter(l => l.trim()); return '<ul>' + items.map(l => '<li>' + l.replace(/^[\-\*] /, '') + '</li>').join('') + '</ul>'; }
+    if (p.match(/^\d+\. /m)) { const items = p.split(/\n/).filter(l => l.trim()); return '<ol>' + items.map(l => '<li>' + l.replace(/^\d+\. /, '') + '</li>').join('') + '</ol>'; }
+    return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  return html;
+}
+
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+
+function showTyping() {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = 'typing'; div.id = 'typingIndicator';
+  div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="typing-inner"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><span class="typing-label">thinking...</span></div>';
+  container.appendChild(div);
+}
+function hideTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+function scrollToBottom() { const a = document.getElementById('chatArea'); requestAnimationFrame(() => { a.scrollTop = a.scrollHeight; }); }
+function showToast(msg) { const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 5000); }
+
+document.getElementById('newChatBtn').addEventListener('click', () => {
+  messages = [];
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  inputField.value = ''; inputField.focus();
+});
+</script>
+</body>
+</html>
