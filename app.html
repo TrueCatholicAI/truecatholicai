@@ -173,6 +173,19 @@
     max-width: 90%; text-align: center;
   }
   .toast.show { opacity: 1; }
+  .admin-select {
+    display: none; background: var(--bg-input); border: 1px solid var(--gold-dim);
+    color: var(--gold-light); font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.04em; padding: 5px 8px; border-radius: 4px; cursor: pointer;
+    outline: none; -webkit-appearance: none; appearance: none;
+  }
+  .admin-select option { background: var(--bg-card); color: var(--text); }
+  .admin-select.visible { display: inline-block; }
+  .admin-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold-dim);
+    letter-spacing: 0.08em; text-transform: uppercase; display: none;
+  }
+  .admin-label.visible { display: inline-block; margin-right: 4px; }
   @media (max-width: 600px) {
     .header { padding: 10px 14px; }
     .header-title { font-size: 0.62rem; }
@@ -197,6 +210,14 @@
   </a>
   <div class="header-actions">
     <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">30</span> / 30 today</div>
+    <span class="admin-label" id="adminLabel">Model</span>
+    <select class="admin-select" id="modelSelect">
+      <option value="">Haiku 4.5 (free)</option>
+      <option value="anthropic/claude-sonnet-4.5">Sonnet 4.5</option>
+      <option value="openai/gpt-4o">GPT-4o</option>
+      <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
+      <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
+    </select>
     <button class="header-btn" id="newChatBtn">+ New</button>
   </div>
 </div>
@@ -211,16 +232,16 @@
         <span class="starter-cat">Core Doctrine</span>
       </div>
       <div class="starter" onclick="sendStarter(this)">
-        <span class="starter-q">"My husband just died. Where is he now?"</span>
+        <span class="starter-q">"I've been away from the Church for years. Can I come back?"</span>
         <span class="starter-cat">Pastoral</span>
-      </div>
-      <div class="starter" onclick="sendStarter(this)">
-        <span class="starter-q">"Why can't women be priests?"</span>
-        <span class="starter-cat">Catholic Difference</span>
       </div>
       <div class="starter" onclick="sendStarter(this)">
         <span class="starter-q">"How do I prepare for a good Confession?"</span>
         <span class="starter-cat">Sacramental</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">"Why do Catholics pray to Mary?"</span>
+        <span class="starter-cat">Apologetics</span>
       </div>
     </div>
   </div>
@@ -244,6 +265,14 @@ let remaining = 30;
 const inputField = document.getElementById('inputField');
 const sendBtn = document.getElementById('sendBtn');
 const remainingNum = document.getElementById('remainingNum');
+const modelSelect = document.getElementById('modelSelect');
+
+// Admin mode: show model selector when ?admin=true
+const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
+if (isAdmin) {
+  modelSelect.classList.add('visible');
+  document.getElementById('adminLabel').classList.add('visible');
+}
 
 document.addEventListener('DOMContentLoaded', () => { inputField.focus(); });
 inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
@@ -271,7 +300,7 @@ async function sendMessage() {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages }),
+      body: JSON.stringify({ messages, model: modelSelect.value || undefined }),
     });
     hideTyping();
     if (response.status === 429) {
@@ -300,7 +329,8 @@ function renderMessage(role, text) {
   const div = document.createElement('div');
   div.className = 'message ' + role;
   if (role === 'ai') {
-    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+    const modelName = isAdmin && modelSelect.value ? modelSelect.options[modelSelect.selectedIndex].text : 'TrueCatholic AI';
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">' + modelName + '</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
   } else {
     div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">Y</div><span class="msg-name user-name">You</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
   }
