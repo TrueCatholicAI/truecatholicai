@@ -16,6 +16,44 @@
     --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
     --ai-bg: rgba(17,17,23,0.6); --danger: #C45050; --green: #5AAF5A; --radius: 12px;
   }
+  /* Light mode overrides */
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A83838; --gold-dim: #6B2424; --gold-faint: #5A1E1E;
+    --bg: #F4F1EB; --bg-el: #EDEAE4; --bg-card: #E8E5DF; --bg-input: #ECEAE5;
+    --text: #2A2520; --text-mid: #6B6560; --text-dim: #9B9590;
+    --border: rgba(139,47,47,0.12); --border-strong: rgba(139,47,47,0.2);
+    --ai-bg: rgba(237,234,228,0.6);
+  }
+  body.light::before { opacity: 0.01; }
+  body.light .header { background: rgba(244,241,235,0.95); }
+  body.light .input-area { background: rgba(244,241,235,0.95); }
+  body.light .msg-avatar.ai { color: #F4F1EB; }
+  body.light .msg-avatar.user { background: rgba(139,47,47,0.12); color: var(--text-mid); }
+  body.light .send-btn { color: #F4F1EB; }
+  body.light .welcome-cross { background: var(--gold); }
+  body.light .welcome-cross::before, body.light .welcome-cross::after { background: #F4F1EB; }
+  body.light .header-mark { background: var(--gold); }
+  body.light .header-mark::before, body.light .header-mark::after { background: #F4F1EB; }
+  body.light .journey-overlay { background: rgba(244,241,235,0.88); }
+  body.light .journey-icon { background: var(--gold); }
+  body.light .journey-icon::before, body.light .journey-icon::after { background: #F4F1EB; }
+
+  /* Theme toggle */
+  .theme-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.25s; font-size: 14px; line-height: 1;
+  }
+
+  /* Admin model selector */
+  .admin-select {
+    display: none; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; padding: 4px 8px;
+    border-radius: 4px; letter-spacing: 0.04em; cursor: pointer; outline: none;
+  }
+  .admin-select:focus { border-color: var(--gold-dim); }
+  body.admin .admin-select { display: block; }
+
   html, body { height: 100%; overflow: hidden; }
   body {
     background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
@@ -52,7 +90,6 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
     text-transform: uppercase; padding: 6px 12px; transition: all 0.25s; border-radius: 4px;
   }
-  .header-btn:hover { color: var(--gold); border-color: var(--border-strong); }
   .remaining-badge {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
     letter-spacing: 0.06em; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
@@ -65,8 +102,9 @@
   .chat-area::-webkit-scrollbar { width: 5px; }
   .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   .welcome {
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    display: flex; flex-direction: column; align-items: center;
     min-height: 100%; padding: 40px 20px; text-align: center;
+    justify-content: center; gap: 0; overflow: hidden;
   }
   .welcome-cross {
     width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
@@ -88,12 +126,42 @@
     background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
     padding: 12px 16px; cursor: pointer; transition: all 0.2s; text-align: left; max-width: 280px;
   }
-  .starter:hover { border-color: var(--gold-dim); background: var(--bg-input); }
   .starter-q { font-size: 0.88rem; color: var(--text); line-height: 1.4; display: block; }
   .starter-cat {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
     letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
   }
+
+  /* Scrolling prompt ticker */
+  .prompt-ticker-wrap {
+    width: 100%; align-self: stretch; overflow: hidden; margin-top: 8px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .prompt-ticker-row {
+    display: flex; gap: 10px; width: max-content;
+    animation: tickerScroll var(--ticker-speed, 60s) linear infinite;
+  }
+  @media (hover: hover) {
+    .prompt-ticker-row:hover { animation-play-state: paused; }
+      .starter:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+  }
+  .prompt-ticker-row.reverse { animation-name: tickerScrollReverse; }
+  .prompt-pill {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .prompt-pill:hover { border-color: var(--gold-dim); background: var(--bg-input); transform: translateY(-1px); }
+  .prompt-pill-q {
+    font-size: 0.84rem; color: var(--text); line-height: 1;
+  }
+  .prompt-pill-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;
+  }
+  @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes tickerScrollReverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
   .messages { display: none; padding: 16px 0; }
   .message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
   .message.ai { background: var(--ai-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -173,30 +241,77 @@
     max-width: 90%; text-align: center;
   }
   .toast.show { opacity: 1; }
-  .admin-select {
-    display: none; background: var(--bg-input); border: 1px solid var(--gold-dim);
-    color: var(--gold-light); font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
-    letter-spacing: 0.04em; padding: 5px 8px; border-radius: 4px; cursor: pointer;
-    outline: none; -webkit-appearance: none; appearance: none;
-  }
-  .admin-select option { background: var(--bg-card); color: var(--text); }
-  .admin-select.visible { display: inline-block; }
-  .admin-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold-dim);
-    letter-spacing: 0.08em; text-transform: uppercase; display: none;
-  }
-  .admin-label.visible { display: inline-block; margin-right: 4px; }
   @media (max-width: 600px) {
     .header { padding: 10px 14px; }
     .header-title { font-size: 0.62rem; }
     .header-sub { display: none; }
     .remaining-badge { font-size: 0.48rem; padding: 3px 8px; }
-    .welcome h2 { font-size: 1.3rem; }
-    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; }
-    .starter { max-width: none; }
+    .welcome { padding: 20px 12px; }
+    .welcome-cross { display: none; }
+    .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
+    .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
+    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; gap: 6px; }
+    .starter { max-width: none; padding: 10px 14px; }
+    .prompt-pill { padding: 8px 14px; }
+    .prompt-pill-q { font-size: 0.78rem; }
     .message { padding: 12px 14px; }
     .input-area { padding: 12px 14px; }
+    .journey-modal-box { width: 94%; padding: 28px 20px; }
+    .journey-option { padding: 14px 14px; }
+    .journey-option-label { font-size: 0.88rem; }
   }
+
+  /* Faith Journey Modal */
+  .journey-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .journey-overlay.visible { opacity: 1; }
+  .journey-modal-box {
+    width: 440px; max-width: 94%; max-height: 90vh; overflow-y: auto;
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 36px 32px; position: relative;
+    transform: translateY(20px); transition: transform 0.4s ease;
+  }
+  .journey-overlay.visible .journey-modal-box { transform: translateY(0); }
+  .journey-icon {
+    width: 40px; height: 40px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 0 auto 20px;
+  }
+  .journey-icon::before { content: ''; position: absolute; width: 14px; height: 2px; background: var(--bg); }
+  .journey-icon::after { content: ''; position: absolute; width: 2px; height: 14px; background: var(--bg); }
+  .journey-heading {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400;
+    color: var(--text); text-align: center; margin-bottom: 6px; line-height: 1.3;
+  }
+  .journey-sub {
+    font-size: 0.85rem; color: var(--text-mid); text-align: center;
+    line-height: 1.5; margin-bottom: 24px;
+  }
+  .journey-options { display: flex; flex-direction: column; gap: 10px; }
+  .journey-option {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; cursor: pointer;
+    transition: all 0.2s; text-align: left;
+  }
+  .journey-option:hover { border-color: var(--gold-dim); background: rgba(196,162,78,0.05); }
+  .journey-option-label {
+    font-size: 0.92rem; color: var(--text); line-height: 1.4; display: block;
+  }
+  .journey-option-desc {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
+    letter-spacing: 0.04em; margin-top: 4px; display: block;
+  }
+  .journey-skip {
+    display: block; margin: 16px auto 0; background: none; border: none; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px;
+    transition: color 0.2s;
+  }
+  .journey-skip:hover { color: var(--gold); }
 </style>
 </head>
 <body>
@@ -209,15 +324,15 @@
     </div>
   </a>
   <div class="header-actions">
-    <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">30</span> / 30 today</div>
-    <span class="admin-label" id="adminLabel">Model</span>
     <select class="admin-select" id="modelSelect">
-      <option value="">Haiku 4.5 (free)</option>
-      <option value="anthropic/claude-sonnet-4.5">Sonnet 4.5</option>
+      <option value="">Haiku 4.5 (default)</option>
+      <option value="anthropic/claude-sonnet-4-5-20250929">Sonnet 4.5</option>
       <option value="openai/gpt-4o">GPT-4o</option>
       <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
       <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
     </select>
+    <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">30</span> / 30 today</div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">&#9789;</button>
     <button class="header-btn" id="newChatBtn">+ New</button>
   </div>
 </div>
@@ -236,13 +351,23 @@
         <span class="starter-cat">Pastoral</span>
       </div>
       <div class="starter" onclick="sendStarter(this)">
-        <span class="starter-q">"How do I prepare for a good Confession?"</span>
+        <span class="starter-q">"How do I prepare a good Confession?"</span>
         <span class="starter-cat">Sacramental</span>
       </div>
       <div class="starter" onclick="sendStarter(this)">
         <span class="starter-q">"Why do Catholics pray to Mary?"</span>
         <span class="starter-cat">Apologetics</span>
       </div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
+    <div class="prompt-ticker-wrap">
+      <div class="prompt-ticker-row" id="tickerRow1" style="--ticker-speed:80s"></div>
+    </div>
+    <div class="prompt-ticker-wrap" style="margin-top:10px">
+      <div class="prompt-ticker-row reverse" id="tickerRow2" style="--ticker-speed:90s"></div>
+    </div>
+    <div class="prompt-ticker-wrap" style="margin-top:10px">
+      <div class="prompt-ticker-row" id="tickerRow3" style="--ticker-speed:70s"></div>
     </div>
   </div>
   <div class="messages" id="messages"></div>
@@ -256,25 +381,103 @@
   </div>
   <div class="input-footer">AI can make mistakes. For definitive teaching, consult the <a href="https://www.vatican.va/archive/ENG0015/_INDEX.HTM" target="_blank">Catechism</a> or a priest. · <a href="https://truecatholicai.org">truecatholicai.org</a></div>
 </div>
+<div class="journey-overlay" id="journeyModal">
+  <div class="journey-modal-box">
+    <div class="journey-icon"></div>
+    <div class="journey-heading">Where are you on your faith journey?</div>
+    <div class="journey-sub">This helps me meet you where you are. You can always change this later.</div>
+    <div class="journey-options">
+      <div class="journey-option" onclick="selectJourney('seeking', this)">
+        <span class="journey-option-label">I'm exploring whether God exists</span>
+        <span class="journey-option-desc">Atheist, agnostic, or just curious</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('christian', this)">
+        <span class="journey-option-label">I'm Christian but not Catholic</span>
+        <span class="journey-option-desc">Protestant, Orthodox, or non-denominational</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('returning', this)">
+        <span class="journey-option-label">I'm Catholic but haven't been practicing</span>
+        <span class="journey-option-desc">Fallen away or drifted from the faith</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('practicing', this)">
+        <span class="journey-option-label">I'm a practicing Catholic</span>
+        <span class="journey-option-desc">Looking to go deeper in the faith</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('rcia', this)">
+        <span class="journey-option-label">I'm becoming Catholic</span>
+        <span class="journey-option-desc">RCIA, converting, or seriously considering it</span>
+      </div>
+    </div>
+    <button class="journey-skip" onclick="selectJourney('', null)">Skip for now</button>
+  </div>
+</div>
 <div class="toast" id="toast"></div>
 <script>
 const API_URL = 'https://api.truecatholicai.org/chat';
 let messages = [];
 let isStreaming = false;
 let remaining = 30;
+let chatStarted = false;
 const inputField = document.getElementById('inputField');
 const sendBtn = document.getElementById('sendBtn');
 const remainingNum = document.getElementById('remainingNum');
-const modelSelect = document.getElementById('modelSelect');
 
-// Admin mode: show model selector when ?admin=true
-const isAdmin = new URLSearchParams(window.location.search).get('admin') === 'true';
-if (isAdmin) {
-  modelSelect.classList.add('visible');
-  document.getElementById('adminLabel').classList.add('visible');
+// Admin mode
+if (new URLSearchParams(window.location.search).get('admin') === 'true') {
+  document.body.classList.add('admin');
 }
 
-document.addEventListener('DOMContentLoaded', () => { inputField.focus(); });
+// Theme toggle
+const themeBtn = document.getElementById('themeBtn');
+const savedTheme = localStorage.getItem('tc-theme');
+if (savedTheme === 'light') { document.body.classList.add('light'); themeBtn.innerHTML = '&#9788;'; }
+themeBtn.addEventListener('click', function() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  themeBtn.innerHTML = isLight ? '&#9788;' : '&#9789;';
+  localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
+});
+
+// Faith journey modal
+let userJourney = localStorage.getItem('tc-journey') || '';
+const journeyLabels = {
+  seeking: 'exploring whether God exists (atheist/agnostic/curious)',
+  christian: 'Christian but not Catholic (Protestant/Orthodox/non-denominational)',
+  returning: 'Catholic who has been away from the Church',
+  practicing: 'practicing Catholic looking to go deeper',
+  rcia: 'in the process of becoming Catholic (RCIA/converting)'
+};
+
+function selectJourney(key, el) {
+  userJourney = key;
+  localStorage.setItem('tc-journey', key);
+  localStorage.setItem('tc-journey-set', 'true');
+  if (el) {
+    el.style.borderColor = 'var(--gold)';
+    el.style.background = 'rgba(196,162,78,0.08)';
+    setTimeout(() => closeJourneyModal(), 350);
+  } else {
+    closeJourneyModal();
+  }
+}
+
+function closeJourneyModal() {
+  const modal = document.getElementById('journeyModal');
+  modal.classList.remove('visible');
+  setTimeout(() => { modal.style.display = 'none'; }, 400);
+  inputField.focus();
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const alreadySet = localStorage.getItem('tc-journey-set');
+  if (!alreadySet) {
+    const modal = document.getElementById('journeyModal');
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add('visible'); }); });
+  }
+  inputField.focus();
+});
+
 inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
@@ -296,11 +499,27 @@ async function sendMessage() {
   sendBtn.disabled = true; isStreaming = true;
   showTyping(); scrollToBottom();
 
+  // Build API messages — prepend journey context on first message of each chat
+  let apiMessages = messages.map(m => ({ ...m }));
+  if (!chatStarted && userJourney && journeyLabels[userJourney]) {
+    apiMessages[0] = { ...apiMessages[0], content: '[User self-identified as: ' + journeyLabels[userJourney] + ']\n\n' + apiMessages[0].content };
+    chatStarted = true;
+  } else if (!chatStarted) {
+    chatStarted = true;
+  }
+
+  // Build request body
+  const body = { messages: apiMessages };
+  const modelSelect = document.getElementById('modelSelect');
+  if (document.body.classList.contains('admin') && modelSelect.value) {
+    body.model = modelSelect.value;
+  }
+
   try {
     const response = await fetch(API_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ messages, model: modelSelect.value || undefined }),
+      body: JSON.stringify(body),
     });
     hideTyping();
     if (response.status === 429) {
@@ -329,8 +548,7 @@ function renderMessage(role, text) {
   const div = document.createElement('div');
   div.className = 'message ' + role;
   if (role === 'ai') {
-    const modelName = isAdmin && modelSelect.value ? modelSelect.options[modelSelect.selectedIndex].text : 'TrueCatholic AI';
-    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">' + modelName + '</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
   } else {
     div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">Y</div><span class="msg-name user-name">You</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
   }
@@ -344,10 +562,9 @@ function renderMarkdown(text) {
   html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
   html = html.replace(/<\/blockquote>\n<blockquote>/g, '\n');
   html = html.replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>');
-  // Pre-process: merge consecutive numbered lines separated by blank lines into one block
-  html = html.replace(/(\d+\. .+)\n\n+(?=\d+\. )/g, '$1\n');
-  // Same for bullet lines
-  html = html.replace(/([\-\*] .+)\n\n+(?=[\-\*] )/g, '$1\n');
+  // Merge consecutive list lines before paragraph splitting
+  html = html.replace(/^([\-\*] .+)(\n(?=[\-\*] ))/gm, '$1\n');
+  html = html.replace(/^(\d+\. .+)(\n(?=\d+\. ))/gm, '$1\n');
   const paragraphs = html.split(/\n\n+/);
   html = paragraphs.map(p => {
     p = p.trim(); if (!p) return '';
@@ -373,11 +590,78 @@ function showToast(msg) { const t = document.getElementById('toast'); t.textCont
 
 document.getElementById('newChatBtn').addEventListener('click', () => {
   messages = [];
+  chatStarted = false;
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').style.display = 'none';
   document.getElementById('welcome').style.display = 'flex';
   inputField.value = ''; inputField.focus();
 });
+// Scrolling prompt ticker
+const tickerPrompts = [
+  // Row 1 — Doctrine & Sacraments
+  [
+    ["What is the Holy Trinity?", "Doctrine"],
+    ["How is the Eucharist different from a symbol?", "Doctrine"],
+    ["What happens at Baptism?", "Sacraments"],
+    ["Can mortal sin be forgiven?", "Moral Theology"],
+    ["What is sanctifying grace?", "Doctrine"],
+    ["Why do Catholics have a Pope?", "Apologetics"],
+    ["What are the seven sacraments?", "Sacraments"],
+    ["Is Purgatory in the Bible?", "Apologetics"],
+    ["What is the Immaculate Conception?", "Mariology"],
+    ["How do I pray the Rosary?", "Prayer"],
+    ["What does the Church teach about salvation?", "Doctrine"],
+    ["Can non-Catholics go to heaven?", "Doctrine"],
+  ],
+  // Row 2 — Moral, Pastoral, Spiritual Life
+  [
+    ["What does the Church teach about divorce?", "Moral Theology"],
+    ["I'm struggling with doubt — is that a sin?", "Pastoral"],
+    ["How do I discern my vocation?", "Spiritual Life"],
+    ["Why is contraception wrong?", "Moral Theology"],
+    ["What is the Church's teaching on just war?", "Moral Theology"],
+    ["How do I start a daily prayer life?", "Spiritual Life"],
+    ["My spouse isn't Catholic — what do we do?", "Pastoral"],
+    ["What is an examination of conscience?", "Sacraments"],
+    ["Can I receive Communion if I'm in mortal sin?", "Sacraments"],
+    ["What does the Church say about anxiety?", "Pastoral"],
+    ["How do I offer up suffering?", "Spiritual Life"],
+    ["What is the difference between a saint and a blessed?", "Saints"],
+  ],
+  // Row 3 — Apologetics, History, Scripture
+  [
+    ["Why do Catholics call priests 'Father'?", "Apologetics"],
+    ["Did the Crusades prove the Church is corrupt?", "History"],
+    ["How do Catholics interpret the Bible?", "Scripture"],
+    ["What really happened at the Reformation?", "History"],
+    ["Where does the Bible mention Confession?", "Scripture"],
+    ["Why can't women be ordained?", "Apologetics"],
+    ["What is Apostolic Succession?", "Doctrine"],
+    ["Did the early Christians believe in the Real Presence?", "History"],
+    ["What are the Corporal Works of Mercy?", "Moral Theology"],
+    ["Why do Catholics baptize infants?", "Apologetics"],
+    ["What is the Shroud of Turin?", "Apologetics"],
+    ["How should I read the Book of Revelation?", "Scripture"],
+  ]
+];
+
+function buildTickerRow(rowEl, prompts) {
+  const fragment = document.createDocumentFragment();
+  // Duplicate for seamless loop
+  const doubled = [...prompts, ...prompts];
+  doubled.forEach(([q, cat]) => {
+    const pill = document.createElement('div');
+    pill.className = 'prompt-pill';
+    pill.innerHTML = '<span class="prompt-pill-q">' + q + '</span><span class="prompt-pill-cat">' + cat + '</span>';
+    pill.addEventListener('click', () => { inputField.value = q; sendMessage(); });
+    fragment.appendChild(pill);
+  });
+  rowEl.appendChild(fragment);
+}
+
+buildTickerRow(document.getElementById('tickerRow1'), tickerPrompts[0]);
+buildTickerRow(document.getElementById('tickerRow2'), tickerPrompts[1]);
+buildTickerRow(document.getElementById('tickerRow3'), tickerPrompts[2]);
 </script>
 </body>
 </html>
