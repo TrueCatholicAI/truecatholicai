@@ -106,10 +106,10 @@
     justify-content: center; transition: all 0.25s; padding: 0; opacity: 0.4; flex-shrink: 0;
   }
   .incognito-btn.active { opacity: 1; color: var(--gold); }
-  .incognito-btn svg { width: 18px; height: 18px; }
+  .incognito-btn svg { width: 22px; height: 22px; }
   .incognito-notice {
     text-align: center; padding: 6px; font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.5rem; color: var(--gold); background: rgba(196,162,78,0.06);
+    font-size: 0.5rem; color: var(--bg); background: var(--gold);
     border-bottom: 1px solid var(--border); letter-spacing: 0.06em; display: none;
   }
   .incognito-notice.show { display: block; }
@@ -118,8 +118,9 @@
   .theme-btn {
     background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
     width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
-    justify-content: center; transition: all 0.25s; font-size: 14px; line-height: 1;
+    justify-content: center; transition: all 0.25s;
   }
+  .theme-btn svg { width: 16px; height: 16px; }
 
   /* Admin model selector */
   .admin-select {
@@ -555,9 +556,9 @@
       <option value="google/gemini-2.0-flash-001">Gemini 2.0 Flash</option>
       <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
     </select>
-    <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">&mdash;</span> / <span id="remainingMax">&mdash;</span> today</div>
+    <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">&mdash;</span>&nbsp;/&nbsp;<span id="remainingMax">&mdash;</span>&nbsp;today</div>
     <button class="sidebar-btn" id="sidebarBtn" onclick="toggleSidebar()" title="Chat history" style="display:none;"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></button>
-    <button class="theme-btn" id="themeBtn" title="Toggle theme">&#9789;</button>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     <button class="header-btn" id="newChatBtn">+ New</button>
     <button class="header-btn gold" id="signInBtn" onclick="openAuthModal('login')">Sign In</button>
     <div class="user-menu-wrap" id="userMenu" style="display:none;">
@@ -847,11 +848,13 @@ async function deleteConversation(convId) {
 // =============== THEME TOGGLE ===============
 const themeBtn = document.getElementById('themeBtn');
 const savedTheme = localStorage.getItem('tc-theme');
-if (savedTheme === 'light') { document.body.classList.add('light'); themeBtn.innerHTML = '&#9788;'; }
+const moonSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+const sunSVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" width="16" height="16"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+if (savedTheme === 'light') { document.body.classList.add('light'); themeBtn.innerHTML = sunSVG; }
 themeBtn.addEventListener('click', function() {
   document.body.classList.toggle('light');
   const isLight = document.body.classList.contains('light');
-  themeBtn.innerHTML = isLight ? '&#9788;' : '&#9789;';
+  themeBtn.innerHTML = isLight ? sunSVG : moonSVG;
   localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
 });
 
