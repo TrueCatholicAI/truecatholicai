@@ -606,7 +606,7 @@
 <script>
 // =============== CONFIG ===============
 const SUPABASE_URL = 'https://gowufpcyhaafczfkikwg.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4'; 
+const SUPABASE_ANON_KEY = 'YOUR_PUBLISHABLE_KEY_HERE';  // <-- paste your sb_publishable_ key
 const API_URL = 'https://api.truecatholicai.org/chat';
 const LIMITS = { unauth: 5, free: 30, patron: 100, family: 100 };
 
@@ -749,8 +749,12 @@ async function setLoggedIn(user) {
   document.getElementById('dropdownPlan').textContent = userPlan + ' plan';
   const limit = LIMITS[userPlan] || LIMITS.free;
   remainingMax.textContent = limit;
-  remainingNum.textContent = '\u2014';
-  remaining = limit;
+  // Fetch today's usage from Supabase
+  const today = new Date().toISOString().slice(0, 10);
+  const { data: usageRow } = await sb.from('usage').select('message_count').eq('user_id', user.id).eq('message_date', today).single();
+  const used = usageRow?.message_count || 0;
+  remaining = Math.max(0, limit - used);
+  remainingNum.textContent = remaining;
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free';
