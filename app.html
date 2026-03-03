@@ -102,7 +102,7 @@
   /* Incognito */
   .incognito-btn {
     background: none; border: none; color: var(--text-dim); cursor: pointer;
-    width: 28px; height: 28px; border-radius: 4px; display: none; align-items: center;
+    width: 28px; min-height: 46px; border-radius: 4px; display: none; align-items: center;
     justify-content: center; transition: all 0.25s; padding: 0; opacity: 0.4; flex-shrink: 0;
   }
   .incognito-btn.active { opacity: 1; color: var(--gold); }
@@ -505,8 +505,8 @@
     .sidebar { width: 260px; }
     .sidebar-btn { width: 28px; height: 28px; }
     .sidebar-btn svg { width: 14px; height: 14px; }
-    .incognito-btn { width: 24px; height: 24px; }
-    .incognito-btn svg { width: 15px; height: 15px; }
+    .incognito-btn { width: 24px; min-height: 40px; }
+    .incognito-btn svg { width: 18px; height: 18px; }
     .welcome { padding: 20px 12px; }
     .welcome-cross { display: none; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
@@ -612,7 +612,7 @@
 </div>
 <div class="input-area">
   <div class="input-row">
-    <button class="incognito-btn" id="incognitoBtn" onclick="toggleIncognito()" title="Incognito mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7.58 2 4 5.58 4 10v7l2 3h1.5l1-2h7l1 2H18l2-3v-7c0-4.42-3.58-8-8-8z"/><circle cx="9" cy="11" r="1.5" fill="currentColor" stroke="none"/><circle cx="15" cy="11" r="1.5" fill="currentColor" stroke="none"/></svg></button>
+    <button class="incognito-btn" id="incognitoBtn" onclick="toggleIncognito()" title="Incognito mode"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C7.58 2 4 5.58 4 10v8.5c0 0 .5-1.5 1.5-1.5s1.5 1.5 2.5 1.5 1.5-1.5 2.5-1.5 1.5 1.5 2.5 1.5 1.5-1.5 2.5-1.5 1.5 1.5 1.5 1.5V10c0-4.42-3.58-8-8-8z"/></svg></button>
     <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
