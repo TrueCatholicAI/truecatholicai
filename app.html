@@ -45,6 +45,73 @@
   body.light .modal-cross::before, body.light .modal-cross::after { background: #F4F1EB; }
   body.light .user-avatar-btn { color: #F4F1EB; }
 
+  /* Sidebar */
+  .sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; }
+  .sidebar-overlay.open { display: block; }
+  .sidebar {
+    position: fixed; top: 0; left: -320px; width: 300px; height: 100%; z-index: 201;
+    background: var(--bg-el); border-right: 1px solid var(--border); display: flex;
+    flex-direction: column; transition: left 0.3s ease;
+  }
+  .sidebar.open { left: 0; }
+  .sidebar-header {
+    display: flex; align-items: center; justify-content: space-between; padding: 16px;
+    border-bottom: 1px solid var(--border); flex-shrink: 0;
+  }
+  .sidebar-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim);
+  }
+  .sidebar-close {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 18px; padding: 4px; line-height: 1;
+  }
+  .sidebar-list { flex: 1; overflow-y: auto; padding: 8px; }
+  .sidebar-item {
+    padding: 10px 12px; border-radius: 6px; cursor: pointer; margin-bottom: 2px;
+    transition: background 0.2s; border: none; background: none; width: 100%;
+    text-align: left; display: flex; flex-direction: column; gap: 2px;
+  }
+  .sidebar-item:hover { background: var(--bg-card); }
+  .sidebar-item.active { background: var(--bg-card); border: 1px solid var(--border); }
+  .sidebar-item-title {
+    font-family: 'Source Serif 4', serif; font-size: 0.85rem; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .sidebar-item-date {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .sidebar-item-delete {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 12px; padding: 2px 6px; opacity: 0; transition: opacity 0.2s; float: right;
+  }
+  .sidebar-item:hover .sidebar-item-delete { opacity: 1; }
+  .sidebar-item-delete:hover { color: var(--danger); }
+  .sidebar-empty {
+    text-align: center; padding: 32px 16px; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; letter-spacing: 0.06em;
+  }
+  .sidebar-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.25s; font-size: 16px; line-height: 1;
+  }
+
+  /* Incognito */
+  .incognito-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.25s; font-size: 15px; line-height: 1;
+  }
+  .incognito-btn.active { border-color: var(--gold-dim); color: var(--gold); background: rgba(196,162,78,0.08); }
+  .incognito-notice {
+    text-align: center; padding: 6px; font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.5rem; color: var(--gold); background: rgba(196,162,78,0.06);
+    border-bottom: 1px solid var(--border); letter-spacing: 0.06em; display: none;
+  }
+  .incognito-notice.show { display: block; }
+
   /* Theme toggle */
   .theme-btn {
     background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
@@ -429,6 +496,8 @@
     .header-title { font-size: 0.62rem; }
     .header-sub { display: none; }
     .remaining-badge { font-size: 0.48rem; padding: 3px 8px; }
+    .sidebar { width: 260px; }
+    .sidebar-btn, .incognito-btn { width: 28px; height: 28px; font-size: 13px; }
     .welcome { padding: 20px 12px; }
     .welcome-cross { display: none; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
@@ -447,14 +516,32 @@
 </style>
 </head>
 <body>
+<!-- Sidebar -->
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <span class="sidebar-title">Conversations</span>
+    <button class="sidebar-close" onclick="closeSidebar()">&times;</button>
+  </div>
+  <div class="sidebar-list" id="sidebarList">
+    <div class="sidebar-empty" id="sidebarEmpty">No saved conversations yet</div>
+  </div>
+</div>
+
+<!-- Incognito notice bar -->
+<div class="incognito-notice" id="incognitoNotice">&#128123; Incognito — this conversation won't be saved</div>
+
 <div class="header">
-  <a href="https://truecatholicai.org" class="header-brand">
+  <div style="display:flex;align-items:center;gap:10px;">
+    <button class="sidebar-btn" id="sidebarBtn" onclick="toggleSidebar()" title="Chat history" style="display:none;">&#9776;</button>
+    <a href="https://truecatholicai.org" class="header-brand">
     <div class="header-mark"></div>
     <div>
       <div class="header-title">TrueCatholic AI</div>
       <div class="header-sub">Powered by the Catholic Doctrinal Charter</div>
     </div>
   </a>
+  </div>
   <div class="header-actions">
     <select class="admin-select" id="modelSelect">
       <option value="">Haiku 4.5 (default)</option>
@@ -464,6 +551,7 @@
       <option value="meta-llama/llama-3.3-70b-instruct">Llama 3.3 70B</option>
     </select>
     <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">&mdash;</span> / <span id="remainingMax">&mdash;</span> today</div>
+    <button class="incognito-btn" id="incognitoBtn" onclick="toggleIncognito()" title="Incognito mode" style="display:none;">&#128123;</button>
     <button class="theme-btn" id="themeBtn" title="Toggle theme">&#9789;</button>
     <button class="header-btn" id="newChatBtn">+ New</button>
     <button class="header-btn gold" id="signInBtn" onclick="openAuthModal('login')">Sign In</button>
@@ -606,7 +694,7 @@
 <script>
 // =============== CONFIG ===============
 const SUPABASE_URL = 'https://gowufpcyhaafczfkikwg.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4';  
+const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4';
 const API_URL = 'https://api.truecatholicai.org/chat';
 const LIMITS = { unauth: 5, free: 30, patron: 100, family: 100 };
 
@@ -622,6 +710,9 @@ let currentUser = null;
 let userPlan = 'free';
 let unauthCount = parseInt(localStorage.getItem('tc-unauth-count') || '0');
 let signupPromptShown = false;
+let currentConversationId = null;
+let isIncognito = false;
+let conversationsList = [];
 const inputField = document.getElementById('inputField');
 const sendBtn = document.getElementById('sendBtn');
 const remainingNum = document.getElementById('remainingNum');
@@ -629,6 +720,123 @@ const remainingMax = document.getElementById('remainingMax');
 
 // =============== ADMIN MODE ===============
 if (new URLSearchParams(window.location.search).get('admin') === 'true') document.body.classList.add('admin');
+
+// =============== INCOGNITO ===============
+function toggleIncognito() {
+  isIncognito = !isIncognito;
+  document.getElementById('incognitoBtn').classList.toggle('active', isIncognito);
+  document.getElementById('incognitoNotice').classList.toggle('show', isIncognito);
+  if (isIncognito) {
+    // Start fresh incognito session
+    currentConversationId = null;
+    messages = []; chatStarted = false;
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('messages').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+    inputField.value = '';
+  }
+}
+
+// =============== SIDEBAR ===============
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebarOverlay').classList.remove('open');
+}
+async function loadConversationList() {
+  if (!currentUser) return;
+  const { data, error } = await sb.from('conversations')
+    .select('id, title, updated_at')
+    .eq('user_id', currentUser.id)
+    .order('updated_at', { ascending: false })
+    .limit(50);
+  if (error || !data) return;
+  conversationsList = data;
+  renderSidebar();
+}
+function renderSidebar() {
+  const list = document.getElementById('sidebarList');
+  const empty = document.getElementById('sidebarEmpty');
+  if (conversationsList.length === 0) { empty.style.display = 'block'; list.querySelectorAll('.sidebar-item').forEach(el => el.remove()); return; }
+  empty.style.display = 'none';
+  // Clear old items
+  list.querySelectorAll('.sidebar-item').forEach(el => el.remove());
+  conversationsList.forEach(conv => {
+    const item = document.createElement('button');
+    item.className = 'sidebar-item' + (conv.id === currentConversationId ? ' active' : '');
+    const d = new Date(conv.updated_at);
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    item.innerHTML = '<div style="display:flex;justify-content:space-between;align-items:center;">' +
+      '<span class="sidebar-item-title">' + escapeHTML(conv.title) + '</span>' +
+      '<span class="sidebar-item-delete" onclick="event.stopPropagation();deleteConversation(\'' + conv.id + '\')" title="Delete">&times;</span>' +
+      '</div>' +
+      '<span class="sidebar-item-date">' + dateStr + '</span>';
+    item.addEventListener('click', () => loadConversation(conv.id));
+    list.appendChild(item);
+  });
+}
+function escapeHTML(str) {
+  const div = document.createElement('div'); div.textContent = str; return div.innerHTML;
+}
+async function loadConversation(convId) {
+  if (!currentUser) return;
+  closeSidebar();
+  // Turn off incognito if it was on
+  if (isIncognito) { isIncognito = false; document.getElementById('incognitoBtn').classList.remove('active'); document.getElementById('incognitoNotice').classList.remove('show'); }
+
+  currentConversationId = convId;
+  chatStarted = true;
+  const { data: msgs, error } = await sb.from('messages')
+    .select('role, content')
+    .eq('conversation_id', convId)
+    .order('created_at', { ascending: true });
+  if (error || !msgs) return;
+  messages = msgs.map(m => ({ role: m.role, content: m.content }));
+  // Render
+  document.getElementById('welcome').style.display = 'none';
+  const container = document.getElementById('messages');
+  container.style.display = 'block';
+  container.innerHTML = '';
+  messages.forEach(m => renderMessage(m.role === 'user' ? 'user' : 'ai', m.content));
+  scrollToBottom();
+  renderSidebar(); // Update active highlight
+}
+async function createConversation(firstMessage) {
+  if (!currentUser) return null;
+  const title = firstMessage.slice(0, 60) + (firstMessage.length > 60 ? '...' : '');
+  const { data, error } = await sb.from('conversations')
+    .insert({ user_id: currentUser.id, title: title })
+    .select('id')
+    .single();
+  if (error || !data) return null;
+  currentConversationId = data.id;
+  // Add to list and re-render
+  conversationsList.unshift({ id: data.id, title: title, updated_at: new Date().toISOString() });
+  renderSidebar();
+  return data.id;
+}
+async function saveMessage(convId, role, content, model) {
+  if (!convId || !currentUser) return;
+  await sb.from('messages').insert({ conversation_id: convId, role: role, content: content, model: model || null });
+  // Update conversation timestamp
+  await sb.from('conversations').update({ updated_at: new Date().toISOString() }).eq('id', convId);
+}
+async function deleteConversation(convId) {
+  if (!currentUser) return;
+  await sb.from('conversations').delete().eq('id', convId);
+  conversationsList = conversationsList.filter(c => c.id !== convId);
+  if (currentConversationId === convId) {
+    currentConversationId = null;
+    messages = []; chatStarted = false;
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('messages').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+  }
+  renderSidebar();
+}
 
 // =============== THEME TOGGLE ===============
 const themeBtn = document.getElementById('themeBtn');
@@ -755,11 +963,21 @@ async function setLoggedIn(user) {
   const used = usageRow?.message_count || 0;
   remaining = Math.max(0, limit - used);
   remainingNum.textContent = remaining;
+  // Show sidebar & incognito buttons, load history
+  document.getElementById('sidebarBtn').style.display = 'flex';
+  document.getElementById('incognitoBtn').style.display = 'flex';
+  loadConversationList();
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free';
   document.getElementById('signInBtn').style.display = 'inline-flex';
   document.getElementById('userMenu').style.display = 'none';
+  // Hide sidebar & incognito buttons
+  document.getElementById('sidebarBtn').style.display = 'none';
+  document.getElementById('incognitoBtn').style.display = 'none';
+  document.getElementById('incognitoNotice').classList.remove('show');
+  isIncognito = false; currentConversationId = null; conversationsList = [];
+  closeSidebar();
   const limit = LIMITS.unauth;
   remaining = Math.max(0, limit - unauthCount);
   remainingMax.textContent = limit;
@@ -810,6 +1028,15 @@ async function sendMessage() {
   sendBtn.disabled = true; isStreaming = true;
   showTyping(); scrollToBottom();
 
+  // Create conversation on first message (if logged in and not incognito)
+  if (currentUser && !isIncognito && !currentConversationId) {
+    await createConversation(text);
+  }
+  // Save user message
+  if (currentUser && !isIncognito && currentConversationId) {
+    saveMessage(currentConversationId, 'user', text);
+  }
+
   // Journey context on first message
   let apiMessages = messages.map(m => ({ ...m }));
   if (!chatStarted && userJourney && journeyLabels[userJourney]) {
@@ -841,6 +1068,10 @@ async function sendMessage() {
     if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
     messages.push({ role: 'assistant', content: data.reply });
     renderMessage('ai', data.reply);
+    // Save assistant message
+    if (currentUser && !isIncognito && currentConversationId) {
+      saveMessage(currentConversationId, 'assistant', data.reply, data.model);
+    }
     if (!currentUser) {
       unauthCount++; localStorage.setItem('tc-unauth-count', unauthCount);
       remaining = Math.max(0, LIMITS.unauth - unauthCount); remainingNum.textContent = remaining;
@@ -899,7 +1130,6 @@ function renderMarkdown(text) {
   }).join('\n');
   return html;
 }
-function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function showTyping() {
   const container = document.getElementById('messages');
   const div = document.createElement('div'); div.className = 'typing'; div.id = 'typingIndicator';
@@ -915,10 +1145,12 @@ function showToast(msg, type) {
 }
 document.getElementById('newChatBtn').addEventListener('click', () => {
   messages = []; chatStarted = false; signupPromptShown = false;
+  currentConversationId = null;
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').style.display = 'none';
   document.getElementById('welcome').style.display = 'flex';
   inputField.value = ''; inputField.focus();
+  renderSidebar(); // Clear active highlight
 });
 
 // =============== SCROLLING PROMPT TICKER ===============
