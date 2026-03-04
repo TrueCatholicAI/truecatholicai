@@ -165,7 +165,6 @@
   }
   @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
   @keyframes tickerScrollReverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-  .mobile-only-ticker { display: none; }
   .messages { display: none; padding: 16px 0; }
   .message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
   .message.ai { background: var(--ai-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
@@ -353,6 +352,8 @@
   }
   .user-dropdown.open { display: block; }
   @keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .reveal-block { animation: blockReveal 0.25s ease forwards; }
+  @keyframes blockReveal { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
   .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
   .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
   .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
@@ -433,16 +434,12 @@
     .header-title { display: none; }
     .header-sub { display: none; }
     .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
-    .welcome { padding: 20px 12px 8px; }
-    .welcome-cross { margin-top: auto; width: 40px; height: 40px; margin-bottom: 16px; transform: translateY(-25px); }
-    .welcome-cross::before { width: 14px; }
-    .welcome-cross::after { height: 14px; }
-    .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; transform: translateY(-25px); }
-    .welcome-sub { font-size: 0.88rem; margin-bottom: auto; transform: translateY(-25px); }
-    .prompt-ticker-wrap:first-of-type { margin-top: 0; }
-    .starters { display: none; }
-    .or-explore-label { display: none; }
-    .mobile-only-ticker { display: block; }
+    .welcome { padding: 20px 12px; }
+    .welcome-cross { display: none; }
+    .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
+    .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
+    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; gap: 6px; }
+    .starter { max-width: none; padding: 10px 14px; }
     .prompt-pill { padding: 8px 14px; }
     .prompt-pill-q { font-size: 0.78rem; }
     .message { padding: 12px 14px; }
@@ -512,7 +509,7 @@
         <span class="starter-cat">Apologetics</span>
       </div>
     </div>
-    <div class="or-explore-label" style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
     <div class="prompt-ticker-wrap">
       <div class="prompt-ticker-row" id="tickerRow1" style="--ticker-speed:80s"></div>
     </div>
@@ -521,9 +518,6 @@
     </div>
     <div class="prompt-ticker-wrap" style="margin-top:10px">
       <div class="prompt-ticker-row" id="tickerRow3" style="--ticker-speed:70s"></div>
-    </div>
-    <div class="prompt-ticker-wrap mobile-only-ticker" style="margin-top:10px">
-      <div class="prompt-ticker-row reverse" id="tickerRow4" style="--ticker-speed:85s"></div>
     </div>
   </div>
   <div class="messages" id="messages"></div>
@@ -862,9 +856,9 @@ async function sendMessage() {
     }
     if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
     const data = await response.json();
-    if (data.remaining !== undefined) { var maxForPlan = LIMITS[userPlan] || LIMITS.free; remaining = Math.min(data.remaining, maxForPlan); remainingNum.textContent = remaining; }
+    if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
     messages.push({ role: 'assistant', content: data.reply });
-    renderMessage('ai', data.reply);
+    await renderMessageProgressive('ai', data.reply);
     if (!currentUser) {
       unauthCount++; localStorage.setItem('tc-unauth-count', unauthCount);
       remaining = Math.max(0, LIMITS.unauth - unauthCount); remainingNum.textContent = remaining;
@@ -875,7 +869,7 @@ async function sendMessage() {
     renderMessage('ai', "I\u2019m having trouble connecting right now. Please try again in a moment.");
     messages.pop();
   }
-  isStreaming = false; sendBtn.disabled = !inputField.value.trim(); scrollToBottom();
+  isStreaming = false; sendBtn.disabled = !inputField.value.trim();
 }
 
 // =============== SIGNUP PROMPT ===============
@@ -904,6 +898,65 @@ function renderMessage(role, text) {
   }
   container.appendChild(div); scrollToBottom();
 }
+async function renderMessageProgressive(role, text) {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+
+  // Header (avatar + name)
+  const header = document.createElement('div');
+  header.className = 'msg-header';
+  header.innerHTML = '<div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span>';
+  div.appendChild(header);
+
+  // Body container — blocks will be appended here
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+  div.appendChild(body);
+  container.appendChild(div);
+
+  // Split into logical blocks on double newlines
+  // Re-merge consecutive list lines so lists stay together
+  const rawBlocks = text.split(/\n{2,}/);
+  const blocks = [];
+  let listBuffer = '';
+  for (const b of rawBlocks) {
+    const isListLine = /^\s*(\d+\.|[-*])/.test(b.trim());
+    if (isListLine) {
+      listBuffer = listBuffer ? listBuffer + '\n\n' + b : b;
+    } else {
+      if (listBuffer) { blocks.push(listBuffer); listBuffer = ''; }
+      if (b.trim()) blocks.push(b);
+    }
+  }
+  if (listBuffer) blocks.push(listBuffer);
+
+  const chatArea = document.getElementById('chatArea');
+
+  for (let i = 0; i < blocks.length; i++) {
+    const block = blocks[i];
+    if (!block.trim()) continue;
+
+    const p = document.createElement('div');
+    p.className = 'reveal-block';
+    p.innerHTML = renderMarkdown(block);
+    body.appendChild(p);
+
+    // Scroll just enough to show the new block — not slam to bottom
+    p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+    if (i < blocks.length - 1) {
+      await new Promise(r => setTimeout(r, 300));
+    }
+  }
+
+  // Final gentle scroll to settle
+  requestAnimationFrame(() => {
+    const lastBlock = body.lastElementChild;
+    if (lastBlock) lastBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+}
+
 function renderMarkdown(text) {
   let html = escapeHTML(text);
   html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
@@ -947,10 +1000,9 @@ document.getElementById('newChatBtn').addEventListener('click', () => {
 
 // =============== SCROLLING PROMPT TICKER ===============
 const tickerPrompts = [
-  [["Is the Eucharist really the Body and Blood of Christ?","Core Doctrine"],["What is the Holy Trinity?","Doctrine"],["How is the Eucharist different from a symbol?","Doctrine"],["What happens at Baptism?","Sacraments"],["Can mortal sin be forgiven?","Moral Theology"],["What is sanctifying grace?","Doctrine"],["Why do Catholics have a Pope?","Apologetics"],["What are the seven sacraments?","Sacraments"],["Is Purgatory in the Bible?","Apologetics"],["What is the Immaculate Conception?","Mariology"],["How do I pray the Rosary?","Prayer"],["What does the Church teach about salvation?","Doctrine"],["Can non-Catholics go to heaven?","Doctrine"]],
-  [["I\u2019ve been away from the Church for years. Can I come back?","Pastoral"],["Why do Catholics pray to Mary?","Apologetics"],["What does the Church teach about divorce?","Moral Theology"],["I'm struggling with doubt \u2014 is that a sin?","Pastoral"],["How do I discern my vocation?","Spiritual Life"],["Why is contraception wrong?","Moral Theology"],["What is the Church's teaching on just war?","Moral Theology"],["How do I start a daily prayer life?","Spiritual Life"],["My spouse isn't Catholic \u2014 what do we do?","Pastoral"],["What is an examination of conscience?","Sacraments"],["Can I receive Communion if I'm in mortal sin?","Sacraments"],["What does the Church say about anxiety?","Pastoral"],["How do I offer up suffering?","Spiritual Life"],["What is the difference between a saint and a blessed?","Saints"]],
-  [["How do I prepare a good Confession?","Sacramental"],["Why do Catholics call priests 'Father'?","Apologetics"],["Did the Crusades prove the Church is corrupt?","History"],["How do Catholics interpret the Bible?","Scripture"],["What really happened at the Reformation?","History"],["Where does the Bible mention Confession?","Scripture"],["Why can't women be ordained?","Apologetics"],["What is Apostolic Succession?","Doctrine"],["Did the early Christians believe in the Real Presence?","History"],["What are the Corporal Works of Mercy?","Moral Theology"],["Why do Catholics baptize infants?","Apologetics"],["What is the Shroud of Turin?","Apologetics"],["How should I read the Book of Revelation?","Scripture"]],
-  [["What is Natural Family Planning?","Moral Theology"],["How do I talk to my kids about the faith?","Pastoral"],["What is the Liturgy of the Hours?","Prayer"],["Why does God allow suffering?","Apologetics"],["What is a plenary indulgence?","Doctrine"],["How do I find a good parish?","Pastoral"],["What are the Precepts of the Church?","Doctrine"],["Who is my patron saint?","Saints"],["What is Eucharistic adoration?","Prayer"],["How do I make a good Act of Contrition?","Sacraments"],["What is the Communion of Saints?","Doctrine"],["Can Catholics believe in evolution?","Apologetics"]]
+  [["What is the Holy Trinity?","Doctrine"],["How is the Eucharist different from a symbol?","Doctrine"],["What happens at Baptism?","Sacraments"],["Can mortal sin be forgiven?","Moral Theology"],["What is sanctifying grace?","Doctrine"],["Why do Catholics have a Pope?","Apologetics"],["What are the seven sacraments?","Sacraments"],["Is Purgatory in the Bible?","Apologetics"],["What is the Immaculate Conception?","Mariology"],["How do I pray the Rosary?","Prayer"],["What does the Church teach about salvation?","Doctrine"],["Can non-Catholics go to heaven?","Doctrine"]],
+  [["What does the Church teach about divorce?","Moral Theology"],["I'm struggling with doubt \u2014 is that a sin?","Pastoral"],["How do I discern my vocation?","Spiritual Life"],["Why is contraception wrong?","Moral Theology"],["What is the Church's teaching on just war?","Moral Theology"],["How do I start a daily prayer life?","Spiritual Life"],["My spouse isn't Catholic \u2014 what do we do?","Pastoral"],["What is an examination of conscience?","Sacraments"],["Can I receive Communion if I'm in mortal sin?","Sacraments"],["What does the Church say about anxiety?","Pastoral"],["How do I offer up suffering?","Spiritual Life"],["What is the difference between a saint and a blessed?","Saints"]],
+  [["Why do Catholics call priests 'Father'?","Apologetics"],["Did the Crusades prove the Church is corrupt?","History"],["How do Catholics interpret the Bible?","Scripture"],["What really happened at the Reformation?","History"],["Where does the Bible mention Confession?","Scripture"],["Why can't women be ordained?","Apologetics"],["What is Apostolic Succession?","Doctrine"],["Did the early Christians believe in the Real Presence?","History"],["What are the Corporal Works of Mercy?","Moral Theology"],["Why do Catholics baptize infants?","Apologetics"],["What is the Shroud of Turin?","Apologetics"],["How should I read the Book of Revelation?","Scripture"]]
 ];
 function buildTickerRow(rowEl, prompts) {
   const fragment = document.createDocumentFragment();
@@ -966,7 +1018,6 @@ function buildTickerRow(rowEl, prompts) {
 buildTickerRow(document.getElementById('tickerRow1'), tickerPrompts[0]);
 buildTickerRow(document.getElementById('tickerRow2'), tickerPrompts[1]);
 buildTickerRow(document.getElementById('tickerRow3'), tickerPrompts[2]);
-buildTickerRow(document.getElementById('tickerRow4'), tickerPrompts[3]);
 </script>
 </body>
 </html>
