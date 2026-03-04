@@ -932,6 +932,9 @@ async function renderMessageProgressive(role, text) {
 
     el.classList ? el.classList.add('reveal-block') : null;
     body.appendChild(el);
+
+    // Only scroll on the first block so the user can read from the top
+    if (i === 0) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }
 
