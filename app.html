@@ -182,9 +182,12 @@
   .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   .welcome {
     display: flex; flex-direction: column; align-items: center;
-    min-height: 100%; padding: 40px 20px; text-align: center;
-    justify-content: center; gap: 0;
+    min-height: 100%; padding: 40px 20px 24px; text-align: center;
+    gap: 0; overflow-x: hidden;
   }
+  .welcome-spacer { flex: 1; }
+  .welcome-content { flex-shrink: 0; }
+  .welcome-tickers { flex-shrink: 0; width: 100%; align-self: stretch; margin-top: auto; padding-top: 12px; }
   .welcome-cross {
     width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
     display: flex; align-items: center; justify-content: center; position: relative;
@@ -219,6 +222,7 @@
   .prompt-ticker-row {
     display: flex; gap: 10px; width: max-content;
     animation: tickerScroll var(--ticker-speed, 60s) linear infinite;
+    will-change: transform;
   }
   .prompt-ticker-row.reverse { animation-name: tickerScrollReverse; }
   .prompt-pill {
@@ -658,6 +662,7 @@
 </div>
 <div class="chat-area" id="chatArea">
   <div class="welcome" id="welcome">
+    <div class="welcome-spacer"></div>
     <div class="welcome-cross"></div>
     <h2>Ask anything about <em>the faith.</em></h2>
     <p class="welcome-sub">Doctrine, morality, Scripture, the sacraments, Church history, apologetics, or whatever is on your heart. Free. No account. No hedging on the truth.</p>
@@ -679,15 +684,18 @@
         <span class="starter-cat">Apologetics</span>
       </div>
     </div>
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
-    <div class="prompt-ticker-wrap">
-      <div class="prompt-ticker-row" id="tickerRow1" style="--ticker-speed:80s"></div>
-    </div>
-    <div class="prompt-ticker-wrap" style="margin-top:10px">
-      <div class="prompt-ticker-row reverse" id="tickerRow2" style="--ticker-speed:90s"></div>
-    </div>
-    <div class="prompt-ticker-wrap" style="margin-top:10px">
-      <div class="prompt-ticker-row" id="tickerRow3" style="--ticker-speed:70s"></div>
+    <div class="welcome-spacer"></div>
+    <div class="welcome-tickers">
+      <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:8px; opacity:0.6;">Or explore</div>
+      <div class="prompt-ticker-wrap">
+        <div class="prompt-ticker-row" id="tickerRow1" style="--ticker-speed:80s"></div>
+      </div>
+      <div class="prompt-ticker-wrap" style="margin-top:10px">
+        <div class="prompt-ticker-row reverse" id="tickerRow2" style="--ticker-speed:90s"></div>
+      </div>
+      <div class="prompt-ticker-wrap" style="margin-top:10px">
+        <div class="prompt-ticker-row" id="tickerRow3" style="--ticker-speed:70s"></div>
+      </div>
     </div>
   </div>
   <div class="messages" id="messages"></div>
@@ -1090,6 +1098,14 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wr
 
 // =============== INIT ===============
 document.addEventListener('DOMContentLoaded', async () => {
+  // Handle Stripe redirect params FIRST — before auth check
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('upgraded') === 'true') {
+    sessionStorage.setItem('tc-just-upgraded', 'true');
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (urlParams.get('cancelled') === 'true') {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
   const alreadySet = localStorage.getItem('tc-journey-set');
   if (!alreadySet) {
     const modal = document.getElementById('journeyModal');
@@ -1102,14 +1118,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
     else if (event === 'SIGNED_OUT') setLoggedOut();
   });
-  // Handle Stripe redirect params — store flag for after auth resolves
-  const urlParams = new URLSearchParams(window.location.search);
-  if (urlParams.get('upgraded') === 'true') {
-    sessionStorage.setItem('tc-just-upgraded', 'true');
-    window.history.replaceState({}, '', window.location.pathname);
-  } else if (urlParams.get('cancelled') === 'true') {
-    window.history.replaceState({}, '', window.location.pathname);
-  }
   inputField.focus();
 });
 
