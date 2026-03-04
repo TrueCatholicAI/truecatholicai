@@ -183,7 +183,7 @@
   .welcome {
     display: flex; flex-direction: column; align-items: center;
     min-height: 100%; padding: 40px 20px; text-align: center;
-    justify-content: center; gap: 0; overflow: hidden;
+    justify-content: center; gap: 0;
   }
   .welcome-cross {
     width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
@@ -1061,6 +1061,11 @@ async function setLoggedIn(user) {
   document.getElementById('sidebarBtn').style.display = 'flex';
   document.getElementById('incognitoBtn').style.display = 'flex';
   loadConversationList();
+  // Show upgrade toast if returning from Stripe
+  if (sessionStorage.getItem('tc-just-upgraded')) {
+    sessionStorage.removeItem('tc-just-upgraded');
+    showToast('Welcome to the Patron plan! You now have 100 questions per day.', 'success');
+  }
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free';
@@ -1097,10 +1102,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
     else if (event === 'SIGNED_OUT') setLoggedOut();
   });
-  // Handle Stripe redirect params
+  // Handle Stripe redirect params — store flag for after auth resolves
   const urlParams = new URLSearchParams(window.location.search);
   if (urlParams.get('upgraded') === 'true') {
-    showToast('Welcome to the Patron plan! You now have 100 questions per day.', 'success');
+    sessionStorage.setItem('tc-just-upgraded', 'true');
     window.history.replaceState({}, '', window.location.pathname);
   } else if (urlParams.get('cancelled') === 'true') {
     window.history.replaceState({}, '', window.location.pathname);
