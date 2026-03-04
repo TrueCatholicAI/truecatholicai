@@ -262,6 +262,56 @@
   }
   .msg-body ul, .msg-body ol { margin: 8px 0 12px 20px; }
   .msg-body li { margin-bottom: 4px; line-height: 1.6; }
+  /* Feedback */
+  .msg-feedback {
+    display: flex; align-items: center; gap: 4px; margin-top: 8px; padding-top: 6px;
+  }
+  .feedback-btn {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    width: 26px; height: 26px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s; opacity: 0.35; padding: 0;
+  }
+  .feedback-btn svg { width: 14px; height: 14px; }
+  .feedback-btn.selected { opacity: 1; }
+  .feedback-btn.selected.up { color: var(--green); }
+  .feedback-btn.selected.down { color: var(--danger); }
+  .feedback-form {
+    display: none; margin-top: 10px; padding: 12px 14px;
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+  }
+  .feedback-form.open { display: block; animation: dropIn 0.15s ease-out; }
+  .feedback-cats { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .feedback-cat {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.04em;
+    padding: 5px 10px; border-radius: 16px; transition: all 0.2s;
+  }
+  .feedback-cat.selected { border-color: var(--gold-dim); color: var(--gold); background: rgba(196,162,78,0.08); }
+  .feedback-comment {
+    width: 100%; background: var(--bg-card); border: 1px solid var(--border); border-radius: 6px;
+    padding: 8px 10px; color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.82rem; resize: none; outline: none; line-height: 1.5; min-height: 60px;
+    margin-bottom: 8px; transition: border-color 0.2s;
+  }
+  .feedback-comment::placeholder { color: var(--text-dim); }
+  .feedback-comment:focus { border-color: var(--gold-dim); }
+  .feedback-actions { display: flex; justify-content: flex-end; gap: 8px; }
+  .feedback-submit {
+    background: var(--gold); color: var(--bg); border: none; border-radius: 6px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 6px 14px; transition: all 0.2s;
+  }
+  .feedback-cancel {
+    background: none; color: var(--text-dim); border: 1px solid var(--border); border-radius: 6px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    letter-spacing: 0.06em; padding: 6px 12px; transition: all 0.2s;
+  }
+  .feedback-thanks {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; color: var(--green);
+    letter-spacing: 0.04em; margin-top: 8px; display: none;
+  }
+  .feedback-thanks.show { display: block; }
+
   .typing { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
   .typing-inner { display: flex; align-items: center; gap: 10px; }
   .typing-dots { display: flex; gap: 4px; }
@@ -405,6 +455,31 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
     letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
   }
+  /* Limit reached card */
+  .limit-card {
+    max-width: 800px; margin: 24px auto; padding: 32px 28px; text-align: center;
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 14px;
+  }
+  .limit-card h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .limit-card p { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 6px; line-height: 1.5; }
+  .limit-card-reset {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; color: var(--text-dim);
+    letter-spacing: 0.06em; margin-bottom: 20px;
+  }
+  .limit-card-divider {
+    width: 40px; height: 1px; background: var(--border-strong); margin: 18px auto;
+  }
+  .limit-card-patron p { font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; margin-bottom: 14px; }
+  .limit-card-patron strong { color: var(--gold-light); }
+  .limit-card-btn {
+    display: inline-block; padding: 11px 30px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
+  }
   /* User menu */
   .user-menu-wrap { position: relative; }
   .user-avatar-btn {
@@ -447,11 +522,16 @@
     .form-toggle a:hover { color: var(--gold-light); }
     .forgot-link:hover { color: var(--gold); }
     .signup-prompt-btn:hover { background: var(--gold-light); }
+    .limit-card-btn:hover { background: var(--gold-light); }
     .user-avatar-btn:hover { background: var(--gold); }
     .user-dropdown-item:hover { background: var(--bg-input); color: var(--text); }
     .user-dropdown-item.danger:hover { color: var(--danger); }
     .sidebar-btn:hover { color: var(--gold); border-color: var(--border-strong); }
     .incognito-btn:hover { opacity: 0.7; }
+    .feedback-btn:hover { opacity: 0.7; }
+    .feedback-cat:hover { border-color: var(--gold-dim); color: var(--gold); }
+    .feedback-submit:hover { background: var(--gold-light); }
+    .feedback-cancel:hover { color: var(--text); border-color: var(--border-strong); }
   }
 
   /* Faith Journey Modal */
@@ -569,6 +649,8 @@
           <div class="user-dropdown-email" id="dropdownEmail"></div>
           <div class="user-dropdown-plan" id="dropdownPlan"></div>
         </div>
+        <button class="user-dropdown-item" id="upgradeBtn" style="display:none;" onclick="openPatronSignup()">Upgrade to Patron</button>
+        <button class="user-dropdown-item" id="manageSubBtn" style="display:none;" onclick="openManageSubscription()">Manage Subscription</button>
         <button class="user-dropdown-item danger" onclick="handleSignOut()">Sign Out</button>
       </div>
     </div>
@@ -943,10 +1025,11 @@ async function handleForgot(e) {
 }
 async function handleSignOut() {
   await sb.auth.signOut(); closeUserDropdown();
-  messages = []; chatStarted = false;
+  messages = []; chatStarted = false; limitCardShown = false;
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').style.display = 'none';
   document.getElementById('welcome').style.display = 'flex';
+  inputField.disabled = false; inputField.placeholder = 'Ask about the faith...';
   showToast('Signed out');
 }
 
@@ -963,7 +1046,9 @@ async function setLoggedIn(user) {
   document.getElementById('userAvatarBtn').textContent = initial;
   document.getElementById('dropdownName').textContent = displayName;
   document.getElementById('dropdownEmail').textContent = user.email;
-  document.getElementById('dropdownPlan').textContent = userPlan + ' plan';
+  document.getElementById('dropdownPlan').textContent = userPlan === 'patron' ? 'patron plan ✦' : userPlan + ' plan';
+  document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family') ? 'block' : 'none';
+  document.getElementById('upgradeBtn').style.display = (userPlan === 'free') ? 'block' : 'none';
   const limit = LIMITS[userPlan] || LIMITS.free;
   remainingMax.textContent = limit;
   // Fetch today's usage from Supabase
@@ -1012,6 +1097,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
     else if (event === 'SIGNED_OUT') setLoggedOut();
   });
+  // Handle Stripe redirect params
+  const urlParams = new URLSearchParams(window.location.search);
+  if (urlParams.get('upgraded') === 'true') {
+    showToast('Welcome to the Patron plan! You now have 100 questions per day.', 'success');
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (urlParams.get('cancelled') === 'true') {
+    window.history.replaceState({}, '', window.location.pathname);
+  }
   inputField.focus();
 });
 
@@ -1068,8 +1161,8 @@ async function sendMessage() {
     hideTyping();
     if (response.status === 429) {
       const err = await response.json();
-      showToast(err.error || 'Daily limit reached. Come back tomorrow!');
-      if (!currentUser) showSignupPrompt();
+      if (currentUser) { showLimitCard(); }
+      else { showToast(err.error || 'Daily limit reached. Come back tomorrow!'); showSignupPrompt(); }
       messages.pop(); isStreaming = false; sendBtn.disabled = false; return;
     }
     if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
@@ -1106,13 +1199,100 @@ function showSignupPrompt() {
   container.appendChild(div); scrollToBottom();
 }
 
+let limitCardShown = false;
+function showLimitCard() {
+  if (limitCardShown) return;
+  limitCardShown = true;
+  const container = document.getElementById('messages');
+  document.getElementById('welcome').style.display = 'none';
+  container.style.display = 'block';
+  // Calculate reset time
+  const now = new Date();
+  const tomorrow = new Date(now.getFullYear(), now.getMonth(), now.getDate() + 1);
+  const hoursLeft = Math.ceil((tomorrow - now) / (1000 * 60 * 60));
+  const limit = LIMITS[userPlan] || LIMITS.free;
+  const div = document.createElement('div');
+  div.className = 'limit-card';
+  div.innerHTML =
+    '<h3>You\u2019ve used all ' + limit + ' questions for today</h3>' +
+    '<p>Your counter resets at midnight.</p>' +
+    '<div class="limit-card-reset">~' + hoursLeft + ' hour' + (hoursLeft !== 1 ? 's' : '') + ' remaining</div>' +
+    '<div class="limit-card-divider"></div>' +
+    '<div class="limit-card-patron">' +
+      '<p>Want <strong>100 questions per day</strong> and help sustain this mission?</p>' +
+      '<button class="limit-card-btn" onclick="openPatronSignup()">Become a Patron &mdash; $5/mo</button>' +
+    '</div>';
+  container.appendChild(div);
+  // Disable input
+  inputField.disabled = true;
+  inputField.placeholder = 'Daily limit reached \u2014 resets at midnight';
+  remainingNum.textContent = '0';
+  scrollToBottom();
+}
+
+async function openPatronSignup() {
+  if (!currentUser) { openAuthModal('login'); return; }
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.access_token) { showToast('Please sign in first'); return; }
+    const resp = await fetch(API_URL.replace('/chat', '/create-checkout-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    const data = await resp.json();
+    if (data.url) { window.location.href = data.url; }
+    else { showToast(data.error || 'Unable to start checkout. Please try again.'); }
+  } catch (e) { showToast('Connection error. Please try again.'); }
+}
+
+async function openManageSubscription() {
+  if (!currentUser) return;
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.access_token) return;
+    const resp = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    const data = await resp.json();
+    if (data.url) { window.location.href = data.url; }
+    else { showToast(data.error || 'Unable to open subscription management.'); }
+  } catch (e) { showToast('Connection error. Please try again.'); }
+}
+
 // =============== RENDER ===============
+let feedbackCounter = 0;
 function renderMessage(role, text) {
   const container = document.getElementById('messages');
   const div = document.createElement('div');
   div.className = 'message ' + role;
   if (role === 'ai') {
-    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+    const fbId = 'fb-' + (feedbackCounter++);
+    const thumbUp = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/></svg>';
+    const thumbDown = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"/></svg>';
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>' +
+      '<div class="msg-feedback" id="' + fbId + '">' +
+        '<button class="feedback-btn up" onclick="handleFeedback(\'' + fbId + '\',\'positive\')" title="Helpful">' + thumbUp + '</button>' +
+        '<button class="feedback-btn down" onclick="handleFeedback(\'' + fbId + '\',\'negative\')" title="Report issue">' + thumbDown + '</button>' +
+        '<span class="feedback-thanks" id="' + fbId + '-thanks">Thanks for the feedback</span>' +
+      '</div>' +
+      '<div class="feedback-form" id="' + fbId + '-form">' +
+        '<div class="feedback-cats">' +
+          '<button class="feedback-cat" onclick="selectFeedbackCat(this)" data-cat="wrong_doctrine">Wrong doctrine</button>' +
+          '<button class="feedback-cat" onclick="selectFeedbackCat(this)" data-cat="tone">Tone / approach</button>' +
+          '<button class="feedback-cat" onclick="selectFeedbackCat(this)" data-cat="unhelpful">Not helpful</button>' +
+          '<button class="feedback-cat" onclick="selectFeedbackCat(this)" data-cat="other">Other</button>' +
+        '</div>' +
+        '<textarea class="feedback-comment" id="' + fbId + '-comment" placeholder="What went wrong? (optional)"></textarea>' +
+        '<div class="feedback-actions">' +
+          '<button class="feedback-cancel" onclick="cancelFeedback(\'' + fbId + '\')">Cancel</button>' +
+          '<button class="feedback-submit" onclick="submitFeedback(\'' + fbId + '\')">Submit</button>' +
+        '</div>' +
+      '</div>';
+    div.dataset.aiText = text;
+    // Store the user message that triggered this response
+    const userMsgs = messages.filter(m => m.role === 'user');
+    if (userMsgs.length) div.dataset.userText = userMsgs[userMsgs.length - 1].content;
   } else {
     const userName = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You';
     const userInitial = userName.charAt(0).toUpperCase();
@@ -1153,14 +1333,75 @@ function showToast(msg, type) {
   setTimeout(() => { t.className = 'toast'; }, 5000);
 }
 document.getElementById('newChatBtn').addEventListener('click', () => {
-  messages = []; chatStarted = false; signupPromptShown = false;
+  messages = []; chatStarted = false; signupPromptShown = false; limitCardShown = false;
   currentConversationId = null;
   document.getElementById('messages').innerHTML = '';
   document.getElementById('messages').style.display = 'none';
   document.getElementById('welcome').style.display = 'flex';
-  inputField.value = ''; inputField.focus();
+  inputField.value = ''; inputField.disabled = false; inputField.placeholder = 'Ask about the faith...'; inputField.focus();
   renderSidebar(); // Clear active highlight
 });
+
+// =============== FEEDBACK ===============
+function handleFeedback(fbId, rating) {
+  const container = document.getElementById(fbId);
+  const btns = container.querySelectorAll('.feedback-btn');
+  // Reset all buttons
+  btns.forEach(b => b.classList.remove('selected'));
+  if (rating === 'positive') {
+    container.querySelector('.up').classList.add('selected');
+    document.getElementById(fbId + '-form').classList.remove('open');
+    // Save immediately
+    saveFeedback(fbId, 'positive', null, null);
+    document.getElementById(fbId + '-thanks').classList.add('show');
+  } else {
+    container.querySelector('.down').classList.add('selected');
+    document.getElementById(fbId + '-form').classList.add('open');
+    document.getElementById(fbId + '-thanks').classList.remove('show');
+    scrollToBottom();
+  }
+}
+function selectFeedbackCat(btn) {
+  const cats = btn.parentElement.querySelectorAll('.feedback-cat');
+  cats.forEach(c => c.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+function cancelFeedback(fbId) {
+  document.getElementById(fbId + '-form').classList.remove('open');
+  const container = document.getElementById(fbId);
+  container.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('selected'));
+}
+async function submitFeedback(fbId) {
+  const form = document.getElementById(fbId + '-form');
+  const selectedCat = form.querySelector('.feedback-cat.selected');
+  const category = selectedCat ? selectedCat.dataset.cat : null;
+  const comment = document.getElementById(fbId + '-comment').value.trim() || null;
+  await saveFeedback(fbId, 'negative', category, comment);
+  form.classList.remove('open');
+  document.getElementById(fbId + '-thanks').classList.add('show');
+}
+async function saveFeedback(fbId, rating, category, comment) {
+  const msgEl = document.getElementById(fbId)?.closest('.message');
+  const aiText = msgEl?.dataset.aiText || '';
+  const userText = msgEl?.dataset.userText || '';
+  if (!currentUser) {
+    // For unauth users, just show thanks — we can't save without login
+    return;
+  }
+  try {
+    await sb.from('feedback').insert({
+      user_id: currentUser.id,
+      conversation_id: currentConversationId || null,
+      message_content: aiText.slice(0, 2000),
+      user_message: userText.slice(0, 500),
+      rating: rating,
+      category: category,
+      comment: comment ? comment.slice(0, 1000) : null
+    });
+  } catch (e) {
+    // Silently fail — feedback is non-critical
+  }
+}
 
 // =============== SCROLLING PROMPT TICKER ===============
 const tickerPrompts = [
