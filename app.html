@@ -3,6 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="format-detection" content="telephone=no, email=no">
 <title>TrueCatholic AI — Ask Anything About the Faith</title>
 <meta name="description" content="Catholic AI that teaches the faith without apology. Ask any question about doctrine, morality, Scripture, or the spiritual life. Free. No account needed.">
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C4A24E'/%3E%3Crect x='46' y='22' width='8' height='56' rx='2' fill='%230B0B10'/%3E%3Crect x='26' y='38' width='48' height='8' rx='2' fill='%230B0B10'/%3E%3C/svg%3E">
@@ -43,7 +44,7 @@
   body.light .modal { background: var(--bg-card); }
   body.light .modal-cross { background: var(--gold); }
   body.light .modal-cross::before, body.light .modal-cross::after { background: #F4F1EB; }
-  body.light .user-avatar-btn { color: #F4F1EB; }
+  body.light .user-avatar-btn { color: var(--text-mid); }
 
   /* Theme toggle */
   .theme-btn {
@@ -339,8 +340,8 @@
   /* User menu */
   .user-menu-wrap { position: relative; }
   .user-avatar-btn {
-    width: 32px; height: 32px; border-radius: 50%; background: var(--gold-dim);
-    border: 1px solid var(--gold-faint); color: var(--bg); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 50%; background: var(--bg-input);
+    border: 1px solid var(--border-strong); color: var(--text-mid); cursor: pointer;
     font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
@@ -353,7 +354,7 @@
   @keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
   .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
   .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
-  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; }
+  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
   .user-dropdown-plan { font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
   .user-dropdown-item {
     display: block; width: 100%; padding: 9px 12px; background: none; border: none;
@@ -378,7 +379,7 @@
     .form-toggle a:hover { color: var(--gold-light); }
     .forgot-link:hover { color: var(--gold); }
     .signup-prompt-btn:hover { background: var(--gold-light); }
-    .user-avatar-btn:hover { background: var(--gold); }
+    .user-avatar-btn:hover { background: var(--border-strong); color: var(--text); }
     .user-dropdown-item:hover { background: var(--bg-input); color: var(--text); }
     .user-dropdown-item.danger:hover { color: var(--danger); }
   }
@@ -430,7 +431,7 @@
     .header { padding: 10px 14px; }
     .header-title { display: none; }
     .header-sub { display: none; }
-    .remaining-badge { font-size: 0.48rem; padding: 3px 8px; height: auto; line-height: normal; }
+    .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
     .welcome { padding: 20px 12px; }
     .welcome-cross { display: none; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
@@ -467,7 +468,7 @@
     </select>
     <div class="remaining-badge" id="remainingBadge"><span class="num" id="remainingNum">&mdash;</span> / <span id="remainingMax">&mdash;</span> today</div>
     <button class="theme-btn" id="themeBtn" title="Toggle theme">&#9789;</button>
-    <button class="header-btn" id="newChatBtn">+ New</button>
+    <button class="header-btn" id="newChatBtn">+ New Chat</button>
     <button class="header-btn gold" id="signInBtn" onclick="openAuthModal('login')">Sign In</button>
     <div class="user-menu-wrap" id="userMenu" style="display:none;">
       <button class="user-avatar-btn" id="userAvatarBtn" onclick="toggleUserDropdown()"></button>
@@ -477,6 +478,7 @@
           <div class="user-dropdown-email" id="dropdownEmail"></div>
           <div class="user-dropdown-plan" id="dropdownPlan"></div>
         </div>
+        <button class="user-dropdown-item" id="manageSubBtn" onclick="handleManageSubscription()" style="display:none;">Manage Subscription</button>
         <button class="user-dropdown-item danger" onclick="handleSignOut()">Sign Out</button>
       </div>
     </div>
@@ -749,6 +751,7 @@ async function setLoggedIn(user) {
   document.getElementById('dropdownName').textContent = displayName;
   document.getElementById('dropdownEmail').textContent = user.email;
   document.getElementById('dropdownPlan').textContent = userPlan + ' plan';
+  document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family') ? 'block' : 'none';
   const limit = LIMITS[userPlan] || LIMITS.free;
   remainingMax.textContent = limit;
   remainingNum.textContent = '\u2014';
@@ -758,6 +761,7 @@ function setLoggedOut() {
   currentUser = null; userPlan = 'free';
   document.getElementById('signInBtn').style.display = 'inline-flex';
   document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('manageSubBtn').style.display = 'none';
   const limit = LIMITS.unauth;
   remaining = Math.max(0, limit - unauthCount);
   remainingMax.textContent = limit;
@@ -768,6 +772,20 @@ function setLoggedOut() {
 function toggleUserDropdown() { document.getElementById('userDropdown').classList.toggle('open'); }
 function closeUserDropdown() { document.getElementById('userDropdown').classList.remove('open'); }
 document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wrap')) closeUserDropdown(); });
+async function handleManageSubscription() {
+  closeUserDropdown();
+  try {
+    const session = (await sb.auth.getSession()).data.session;
+    if (!session) return showToast('Please sign in first', 'error');
+    const res = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showToast('Unable to open subscription portal', 'error');
+  } catch (e) { showToast('Error opening subscription portal', 'error'); }
+}
 
 // =============== INIT ===============
 document.addEventListener('DOMContentLoaded', async () => {
