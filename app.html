@@ -435,11 +435,10 @@
     .header-sub { display: none; }
     .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
     .welcome { padding: 20px 12px; }
-    .welcome-cross { display: none; }
+    .welcome-cross { margin-bottom: 12px; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
     .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
-    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; gap: 6px; }
-    .starter { max-width: none; padding: 10px 14px; }
+    .starters { display: none; }
     .prompt-pill { padding: 8px 14px; }
     .prompt-pill-q { font-size: 0.78rem; }
     .message { padding: 12px 14px; }
@@ -999,6 +998,21 @@ function buildTickerRow(rowEl, prompts) {
 buildTickerRow(document.getElementById('tickerRow1'), tickerPrompts[0]);
 buildTickerRow(document.getElementById('tickerRow2'), tickerPrompts[1]);
 buildTickerRow(document.getElementById('tickerRow3'), tickerPrompts[2]);
+
+// On mobile, inject the 4 starter card prompts into the tickers
+if (window.innerWidth <= 600) {
+  const mobileStarters = [
+    ["Is the Eucharist really the Body and Blood of Christ?", "Core Doctrine"],
+    ["I\u2019ve been away from the Church for years. Can I come back?", "Pastoral"],
+    ["How do I prepare a good Confession?", "Sacramental"],
+    ["Why do Catholics pray to Mary?", "Apologetics"],
+  ];
+  // Spread them across the 3 rows
+  const rows = ['tickerRow1', 'tickerRow2', 'tickerRow3'];
+  mobileStarters.forEach((prompt, i) => {
+    buildTickerRow(document.getElementById(rows[i % rows.length]), [prompt]);
+  });
+}
 </script>
 </body>
 </html>
