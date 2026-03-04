@@ -95,12 +95,14 @@
   .header-btn {
     background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
     font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
-    text-transform: uppercase; padding: 6px 12px; transition: all 0.25s; border-radius: 4px;
+    text-transform: uppercase; padding: 0 12px; height: 32px; display: inline-flex; align-items: center;
+    transition: all 0.25s; border-radius: 4px;
   }
   .header-btn.gold { border-color: var(--gold-dim); color: var(--gold); }
   .remaining-badge {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
-    letter-spacing: 0.06em; padding: 4px 10px; border: 1px solid var(--border); border-radius: 4px;
+    letter-spacing: 0.06em; padding: 0 10px; height: 32px; line-height: 32px;
+    border: 1px solid var(--border); border-radius: 4px; white-space: nowrap;
   }
   .remaining-badge .num { color: var(--gold-light); font-weight: 500; }
   .chat-area {
@@ -426,9 +428,9 @@
 
   @media (max-width: 600px) {
     .header { padding: 10px 14px; }
-    .header-title { font-size: 0.62rem; }
+    .header-title { display: none; }
     .header-sub { display: none; }
-    .remaining-badge { font-size: 0.48rem; padding: 3px 8px; }
+    .remaining-badge { font-size: 0.48rem; padding: 3px 8px; height: auto; line-height: normal; }
     .welcome { padding: 20px 12px; }
     .welcome-cross { display: none; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
