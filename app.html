@@ -435,9 +435,19 @@
     .welcome { padding: 20px 12px; }
     .welcome-cross { display: none; }
     .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
-    .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
-    .starters { flex-direction: column; align-items: stretch; padding: 0 10px; gap: 6px; }
-    .starter { max-width: none; padding: 10px 14px; }
+    .welcome-sub { font-size: 0.88rem; margin-bottom: 16px; }
+    .starters {
+      flex-direction: row; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory;
+      -webkit-overflow-scrolling: touch; padding: 0 14px; gap: 10px;
+      scrollbar-width: none; justify-content: flex-start;
+      -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+      mask-image: linear-gradient(90deg, transparent 0%, black 4%, black 96%, transparent 100%);
+    }
+    .starters::-webkit-scrollbar { display: none; }
+    .starter {
+      max-width: none; min-width: 260px; flex-shrink: 0; padding: 14px 16px;
+      scroll-snap-align: start;
+    }
     .prompt-pill { padding: 8px 14px; }
     .prompt-pill-q { font-size: 0.78rem; }
     .message { padding: 12px 14px; }
@@ -805,6 +815,46 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // =============== INPUT ===============
+// Mobile starter carousel auto-scroll
+(function() {
+  var starters = document.querySelector('.starters');
+  if (!starters) return;
+  var scrollSpeed = 0.5; // px per frame
+  var paused = false;
+  var resumeTimer = null;
+  var rafId = null;
+
+  function tick() {
+    if (!paused && starters.offsetParent !== null) {
+      starters.scrollLeft += scrollSpeed;
+      // Loop back when reaching end
+      if (starters.scrollLeft >= starters.scrollWidth - starters.clientWidth - 1) {
+        starters.scrollLeft = 0;
+      }
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function startCarousel() {
+    if (window.innerWidth <= 600) {
+      if (!rafId) rafId = requestAnimationFrame(tick);
+    } else {
+      if (rafId) { cancelAnimationFrame(rafId); rafId = null; }
+    }
+  }
+
+  starters.addEventListener('touchstart', function() {
+    paused = true;
+    if (resumeTimer) clearTimeout(resumeTimer);
+  }, { passive: true });
+  starters.addEventListener('touchend', function() {
+    resumeTimer = setTimeout(function() { paused = false; }, 3000);
+  }, { passive: true });
+
+  window.addEventListener('resize', startCarousel);
+  startCarousel();
+})();
+
 inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
 function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
@@ -854,7 +904,7 @@ async function sendMessage() {
     }
     if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
     const data = await response.json();
-    if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
+    if (data.remaining !== undefined) { var maxForPlan = LIMITS[userPlan] || LIMITS.free; remaining = Math.min(data.remaining, maxForPlan); remainingNum.textContent = remaining; }
     messages.push({ role: 'assistant', content: data.reply });
     renderMessage('ai', data.reply);
     if (!currentUser) {
