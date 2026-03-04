@@ -352,8 +352,8 @@
   }
   .user-dropdown.open { display: block; }
   @keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-  .reveal-block { animation: blockReveal 0.25s ease forwards; }
-  @keyframes blockReveal { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
+  .reveal-block { opacity: 0; animation: blockReveal 0.4s ease forwards; }
+  @keyframes blockReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
   .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
   .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
@@ -900,61 +900,42 @@ function renderMessage(role, text) {
 }
 async function renderMessageProgressive(role, text) {
   const container = document.getElementById('messages');
+  const chatArea = document.getElementById('chatArea');
+
   const div = document.createElement('div');
   div.className = 'message ' + role;
 
-  // Header (avatar + name)
   const header = document.createElement('div');
   header.className = 'msg-header';
   header.innerHTML = '<div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span>';
   div.appendChild(header);
 
-  // Body container — blocks will be appended here
   const body = document.createElement('div');
   body.className = 'msg-body';
   div.appendChild(body);
   container.appendChild(div);
 
-  // Split into logical blocks on double newlines
-  // Re-merge consecutive list lines so lists stay together
-  const rawBlocks = text.split(/\n{2,}/);
-  const blocks = [];
-  let listBuffer = '';
-  for (const b of rawBlocks) {
-    const isListLine = /^\s*(\d+\.|[-*])/.test(b.trim());
-    if (isListLine) {
-      listBuffer = listBuffer ? listBuffer + '\n\n' + b : b;
-    } else {
-      if (listBuffer) { blocks.push(listBuffer); listBuffer = ''; }
-      if (b.trim()) blocks.push(b);
-    }
+  // Render the FULL text through the normal formatter first — preserves all formatting
+  const temp = document.createElement('div');
+  temp.innerHTML = renderMarkdown(text);
+  const elements = Array.from(temp.childNodes).filter(n =>
+    n.nodeType === 1 || (n.nodeType === 3 && n.textContent.trim())
+  );
+
+  // Delays: first block fast, then give the user time to read
+  const delays = [0, 700, 900, 900, 900, 900, 900, 900, 900, 900];
+
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    const delay = delays[Math.min(i, delays.length - 1)];
+    if (delay > 0) await new Promise(r => setTimeout(r, delay));
+
+    el.classList ? el.classList.add('reveal-block') : null;
+    body.appendChild(el);
+
+    // Nudge scroll just enough to bring the new block into view
+    el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
-  if (listBuffer) blocks.push(listBuffer);
-
-  const chatArea = document.getElementById('chatArea');
-
-  for (let i = 0; i < blocks.length; i++) {
-    const block = blocks[i];
-    if (!block.trim()) continue;
-
-    const p = document.createElement('div');
-    p.className = 'reveal-block';
-    p.innerHTML = renderMarkdown(block);
-    body.appendChild(p);
-
-    // Scroll just enough to show the new block — not slam to bottom
-    p.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-
-    if (i < blocks.length - 1) {
-      await new Promise(r => setTimeout(r, 300));
-    }
-  }
-
-  // Final gentle scroll to settle
-  requestAnimationFrame(() => {
-    const lastBlock = body.lastElementChild;
-    if (lastBlock) lastBlock.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  });
 }
 
 function renderMarkdown(text) {
