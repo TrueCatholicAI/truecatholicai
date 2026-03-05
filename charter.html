@@ -14,12 +14,63 @@
     --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
     --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.25);
   }
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5;
+    --bg: #F4F1EB; --bg-elevated: #EDE9E1; --bg-card: #E8E3DA; --bg-card-hover: #E0DAD0;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.15); --border-strong: rgba(139,47,47,0.3);
+  }
+  body.light nav { background: rgba(244,241,235,0.97); }
+  body.light .sidebar { background: rgba(244,241,235,0.7); }
+  .theme-btn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 1rem;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .burger {
+    display: none; flex-direction: column; justify-content: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 0; z-index: 201;
+    width: 28px; height: 28px; align-items: center;
+  }
+  .burger span {
+    display: block; width: 18px; height: 2px; background: var(--text-mid); border-radius: 1px;
+    transition: all 0.3s; transform-origin: center;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
+  .nav-mobile-actions { display: none; align-items: center; gap: 8px; }
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 260px;
+    background: var(--bg-elevated); border-left: 1px solid var(--border);
+    z-index: 200; transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; padding: 72px 28px 32px; gap: 4px;
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-mid); text-decoration: none;
+    padding: 14px 0; border-bottom: 1px solid var(--border); transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer .drawer-cta {
+    margin-top: 20px; border-bottom: none; padding: 14px; text-align: center;
+    border-radius: 6px; border: 1px solid var(--gold-dim); color: var(--gold) !important;
+  }
+  .nav-overlay {
+    display: none; position: fixed; inset: 0; z-index: 199; background: rgba(0,0,0,0.5);
+  }
+  .nav-overlay.open { display: block; }
   html { scroll-behavior: smooth; }
   body { background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; -webkit-font-smoothing: antialiased; }
   body::before { content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0.025; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E"); background-size: 256px; pointer-events: none; z-index: 9999; }
 
   /* NAV */
-  nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 200; padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; background: rgba(11,11,16,0.95); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
+  nav { position: fixed; top: 0; left: 0; width: 100%; z-index: 200; padding: 0.9rem 2rem; display: flex; align-items: center; justify-content: space-between; background: color-mix(in srgb, var(--bg) 95%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
   .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
   .nav-mark { width: 24px; height: 24px; background: var(--gold); display: flex; align-items: center; justify-content: center; border-radius: 50%; position: relative; }
   .nav-mark::before { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--bg); }
@@ -33,7 +84,7 @@
   .charter-layout { display: grid; grid-template-columns: 280px 1fr; min-height: 100vh; padding-top: 52px; }
 
   /* SIDEBAR */
-  .sidebar { position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; padding: 2rem 1.5rem; border-right: 1px solid var(--border); background: rgba(11,11,16,0.5); }
+  .sidebar { position: sticky; top: 52px; height: calc(100vh - 52px); overflow-y: auto; padding: 2rem 1.5rem; border-right: 1px solid var(--border); background: color-mix(in srgb, var(--bg) 60%, transparent); }
   .sidebar::-webkit-scrollbar { width: 4px; }
   .sidebar::-webkit-scrollbar-track { background: transparent; }
   .sidebar::-webkit-scrollbar-thumb { background: var(--gold-faint); border-radius: 2px; }
@@ -75,6 +126,9 @@
     .sidebar { position: relative; top: 0; height: auto; max-height: 50vh; border-right: none; border-bottom: 1px solid var(--border); }
     .charter-content { padding: 2rem 1.5rem 4rem; }
     nav { padding: 0.8rem 1.2rem; }
+    .nav-links { display: none; }
+    .nav-mobile-actions { display: flex; }
+    .nav-mobile-actions .burger { display: flex; }
   }
 
   /* SEARCH */
@@ -93,10 +147,28 @@
   </a>
   <div class="nav-links">
     <a href="index.html">Home</a>
+    <a href="pricing.html">Pricing</a>
     <a href="index.html#proof">Benchmark</a>
     <a href="index.html#faq">FAQ</a>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">☽</button>
+    <a href="https://truecatholicai.org/app.html" class="nav-cta" style="font-family:'IBM Plex Mono',monospace;font-size:0.6rem;letter-spacing:0.1em;text-transform:uppercase;padding:0.45em 1.2em;border:1px solid var(--gold-dim);color:var(--gold);text-decoration:none;transition:all 0.25s;">Try Free</a>
+  </div>
+  <div class="nav-mobile-actions">
+    <button class="theme-btn" id="themeBtnMobile" title="Toggle theme">☽</button>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <a href="index.html">Home</a>
+  <a href="pricing.html">Pricing</a>
+  <a href="index.html#proof">Benchmark</a>
+  <a href="index.html#faq">FAQ</a>
+  <a href="https://truecatholicai.org/app.html" class="drawer-cta">Try Free</a>
+</div>
 
 <div class="charter-layout">
   <aside class="sidebar">
@@ -1363,6 +1435,34 @@
 <button class="back-top" id="backTop" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
 
 <script>
+// Theme toggle
+const themeBtn = document.getElementById('themeBtn');
+const themeBtnMobile = document.getElementById('themeBtnMobile');
+function setTheme(light) {
+  document.body.classList.toggle('light', light);
+  const icon = light ? '☀' : '☽';
+  themeBtn.textContent = icon;
+  themeBtnMobile.textContent = icon;
+  localStorage.setItem('tc-theme', light ? 'light' : 'dark');
+}
+if (localStorage.getItem('tc-theme') === 'light') setTheme(true);
+themeBtn.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+themeBtnMobile.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+
+// Burger menu
+const burger = document.getElementById('burgerBtn');
+const drawer = document.getElementById('navDrawer');
+const overlay = document.getElementById('navOverlay');
+function toggleMenu(open) {
+  burger.classList.toggle('open', open);
+  drawer.classList.toggle('open', open);
+  overlay.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+burger.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
+overlay.addEventListener('click', () => toggleMenu(false));
+drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
 // Back to top button
 window.addEventListener('scroll', () => {
   document.getElementById('backTop').classList.toggle('visible', window.scrollY > 400);
