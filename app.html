@@ -959,6 +959,7 @@ function renderMarkdown(text) {
     return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
   }).join('\n');
   html = html.replace(/<ul>\s*<\/ul>/g, '');
+  return html;
 }
 function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function showTyping() {
