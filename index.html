@@ -9,6 +9,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { overflow-x: hidden; }
 
   :root {
     --gold: #C4A24E;
@@ -27,6 +28,24 @@
     --border-strong: rgba(196, 162, 78, 0.25);
     --red: #C45050;
     --green: #5AAF5A;
+  }
+
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5; --gold-bright: #A03535;
+    --bg: #F4F1EB; --bg-elevated: #EDE9E1; --bg-card: #E8E3DA; --bg-card-hover: #E0DAD0;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.15); --border-strong: rgba(139,47,47,0.3);
+    --red: #C62828; --green: #2E7D32;
+  }
+  .theme-btn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 1rem;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-mobile-actions {
+    display: none; align-items: center; gap: 8px;
   }
 
   html { scroll-behavior: smooth; }
@@ -54,7 +73,7 @@
     position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
     padding: 1.1rem 3rem;
     display: flex; align-items: center; justify-content: space-between;
-    background: rgba(11, 11, 16, 0.92);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
     backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
@@ -106,7 +125,47 @@
     background: var(--gold); color: var(--bg) !important;
   }
 
-  /* HERO */
+  /* Burger menu */
+  .burger {
+    display: none; flex-direction: column; justify-content: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 0; z-index: 201;
+    width: 28px; height: 28px; align-items: center;
+  }
+  .burger span {
+    display: block; width: 18px; height: 2px; background: var(--text-mid); border-radius: 1px;
+    transition: all 0.3s; transform-origin: center;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 260px;
+    background: var(--bg-elevated); border-left: 1px solid var(--border);
+    z-index: 200; transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; padding: 72px 28px 32px;
+    gap: 4px;
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-mid); text-decoration: none;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer .drawer-cta {
+    margin-top: 20px; border-bottom: none;
+    padding: 14px; text-align: center; border-radius: 6px;
+    border: 1px solid var(--gold-dim); color: var(--gold) !important;
+  }
+  .nav-overlay {
+    display: none; position: fixed; inset: 0; z-index: 199;
+    background: rgba(0,0,0,0.5);
+  }
+  .nav-overlay.open { display: block; }
   .hero {
     min-height: 100vh;
     display: flex; flex-direction: column;
@@ -120,7 +179,7 @@
     position: absolute;
     top: 35%; left: 50%;
     transform: translate(-50%, -50%);
-    width: 700px; height: 700px;
+    width: min(700px, 100vw); height: min(700px, 100vw);
     background: radial-gradient(circle, rgba(196,162,78,0.05) 0%, transparent 60%);
     pointer-events: none;
   }
@@ -212,7 +271,7 @@
   .sep { width: 100%; max-width: 920px; margin: 0 auto; height: 1px; background: var(--border); }
 
   /* THE PROOF — BEFORE/AFTER TABLE */
-  .proof-container { margin-top: 3rem; }
+  .proof-container { margin-top: 3rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
 
   .proof-table {
     width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;
@@ -455,7 +514,9 @@
   /* RESPONSIVE */
   @media (max-width: 900px) {
     nav { padding: 1rem 1.5rem; }
-    .nav-links a:not(.nav-cta) { display: none; }
+    .nav-links { display: none; }
+    .nav-mobile-actions { display: flex; }
+    .nav-mobile-actions .burger { display: flex; }
     .hero { padding: 7rem 1.5rem 4rem; }
     .feature-grid { grid-template-columns: 1fr; }
     .section, .section-wide { padding: 4rem 1.5rem; }
@@ -463,7 +524,29 @@
   }
   @media (max-width: 600px) {
     .signup-form { flex-direction: column; align-items: center; }
-    .signup-form input { min-width: 100%; }
+    .signup-form input { min-width: 0; width: 100%; }
+    .signup-form .btn { width: 100%; text-align: center; }
+    .proof-table { display: none; }
+    .proof-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+    .proof-card {
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 0.4rem 0.5rem;
+      align-items: center;
+    }
+    .proof-card-model { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text); }
+    .proof-card-provider { font-size: 0.72rem; color: var(--text-dim); grid-column: 1; }
+    .proof-card-grades { display: flex; align-items: center; gap: 0.4rem; grid-column: 2; grid-row: 1 / 3; }
+    .proof-card-arrow { color: var(--text-dim); font-size: 0.8rem; }
+    .proof-card-violations { font-size: 0.72rem; color: var(--text-dim); grid-column: 1; }
+    .proof-card-divider { grid-column: 1 / -1; border: none; border-top: 1px solid var(--border); margin: 0.25rem 0; opacity: 0.4; }
+    .proof-card-section-label { grid-column: 1 / -1; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim); padding-top: 0.25rem; }
+  }
+  @media (min-width: 601px) {
+    .proof-cards { display: none; }
   }
 
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
@@ -485,22 +568,40 @@
     <a href="#about">About</a>
     <a href="#faq">FAQ</a>
     <a href="charter.html">The Charter</a>
+    <a href="pricing.html">Pricing</a>
     <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
-    <a href="#signup" class="nav-cta">Get Early Access</a>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">☽</button>
+    <a href="#signup" class="nav-cta">Try It Out</a>
+  </div>
+  <div class="nav-mobile-actions">
+    <button class="theme-btn" id="themeBtnMobile" title="Toggle theme">☽</button>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
   </div>
 </nav>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#proof" class="drawer-link">The Proof</a>
+  <a href="#about" class="drawer-link">About</a>
+  <a href="#faq" class="drawer-link">FAQ</a>
+  <a href="charter.html" class="drawer-link">The Charter</a>
+  <a href="pricing.html" class="drawer-link">Pricing</a>
+  <a href="https://catholicfaithindex.com" target="_blank" class="drawer-link">CFI Benchmark</a>
+  <a href="#signup" class="drawer-cta">Try It Out</a>
+</div>
 
 <section class="hero">
   <div class="hero-label">Unapologetically Catholic</div>
   <h1>AI that teaches the faith<br>without <em>apology.</em></h1>
   <p class="hero-body">
     Ask any major AI about the Eucharist and you'll get a comparative religion lecture.
-    Ask about marriage and it'll cite polls. Ask it to hold the line and it'll fold.
     We built something that doesn't.
   </p>
   <div class="hero-ctas">
-    <a href="#proof" class="btn btn-gold">See the Results →</a>
-    <a href="#signup" class="btn btn-outline">Get Early Access</a>
+    <a href="#proof" class="btn btn-gold" style="min-width:200px; text-align:center;">See the Results →</a>
+    <a href="/app" class="btn btn-outline" style="min-width:200px; text-align:center;">Try It Out</a>
   </div>
 </section>
 
@@ -519,7 +620,7 @@
           <th>Model</th>
           <th>Provider</th>
           <th>Without Charter</th>
-          <th>With Charter</th>
+          <th>With TrueCatholic AI Charter</th>
           <th style="text-align:right">Violations</th>
         </tr>
       </thead>
@@ -538,11 +639,7 @@
           <td><span class="grade-badge g-a">A</span></td>
           <td><span class="violations-num v-bad">39</span> → <span class="violations-num v-zero">0</span></td>
         </tr>
-        <tr style="border-bottom: none;">
-          <td colspan="5" style="padding-top: 1.5rem; padding-bottom: 0;">
-            <div class="section-label" style="margin-bottom: 0.5rem;">Baseline Scores — No Charter</div>
-          </td>
-        </tr>
+
         <tr>
           <td><span class="model-name">Gemini 2.0 Flash</span></td>
           <td><span class="model-provider">Google</span></td>
@@ -567,6 +664,55 @@
       </tbody>
     </table>
     <div class="proof-footer">Catholic Faithfulness Index v2.0 — 50 questions, 8 categories, proportional neutrality penalty. Full methodology at catholicfaithindex.com</div>
+
+    <!-- Mobile cards (hidden on desktop) -->
+    <div class="proof-cards">
+      <div class="proof-card">
+        <span class="proof-card-model">Claude Sonnet 4.5</span>
+        <span class="proof-card-provider">Anthropic</span>
+        <span class="proof-card-violations">28 violations → 0</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+          <span class="proof-card-arrow">→</span>
+          <span class="grade-badge g-a">A</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">Claude Haiku 4.5</span>
+        <span class="proof-card-provider">Anthropic</span>
+        <span class="proof-card-violations">39 violations → 0</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-f">F</span>
+          <span class="proof-card-arrow">→</span>
+          <span class="grade-badge g-a">A</span>
+        </div>
+      </div>
+
+      <div class="proof-card">
+        <span class="proof-card-model">Gemini 2.0 Flash</span>
+        <span class="proof-card-provider">Google</span>
+        <span class="proof-card-violations">22 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C+</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">GPT-4o</span>
+        <span class="proof-card-provider">OpenAI</span>
+        <span class="proof-card-violations">28 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">Llama 3.3 70B</span>
+        <span class="proof-card-provider">Meta</span>
+        <span class="proof-card-violations">25 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+        </div>
+      </div>
+    </div>
 
     <div class="proof-callout">
       <div class="big-stat">F → A</div>
@@ -598,7 +744,7 @@
     <div class="feature-card">
       <div class="feature-icon">↗</div>
       <h3>Meets People Where They Are</h3>
-      <p>Six-stage journey model — from atheist to RCIA — with approaches calibrated to where someone actually is in their faith.</p>
+      <p>Six-stage journey model — from atheist to OCIA — with approaches calibrated to where someone actually is in their faith.</p>
     </div>
     <div class="feature-card">
       <div class="feature-icon">⊘</div>
@@ -695,11 +841,11 @@
 
 <!-- SIGNUP -->
 <section class="signup-section" id="signup">
-  <h2>Coming soon.</h2>
-  <p>TrueCatholic AI is in development. Leave your email to be notified when we launch — and to receive the first Catholic Faithfulness Index report.</p>
+  <h2>Stay in the loop.</h2>
+  <p>Get updates on new features, the Catholic Faithfulness Index reports, and the upcoming Family plan — straight to your inbox. No spam. Unsubscribe anytime.</p>
   <div class="signup-form">
-    <input type="email" placeholder="your@email.com">
-    <a href="#" class="btn btn-gold" onclick="return false;">Notify Me</a>
+    <input type="email" id="indexEmail" placeholder="your@email.com">
+    <button class="btn btn-gold" onclick="submitIndexEmail()">Subscribe</button>
   </div>
 </section>
 
@@ -713,9 +859,54 @@
     <a href="charter.html">The Charter</a>
     <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
     <a href="https://x.com/TrueCatholicAI" target="_blank">@TrueCatholicAI</a>
-    <a href="mailto:truecatholicai@proton.me">Contact</a>
-  </div>
-</footer>
+    <a href="/cdn-cgi/l/email-protection#1165636474727065797e7d787270785161637e657e7f3f7c74">
+<script>
+  const themeBtn = document.getElementById('themeBtn');
+  const themeBtnMobile = document.getElementById('themeBtnMobile');
+  const savedTheme = localStorage.getItem('tc-theme');
+  function setTheme(light) {
+    document.body.classList.toggle('light', light);
+    const icon = light ? '☀' : '☽';
+    themeBtn.textContent = icon;
+    themeBtnMobile.textContent = icon;
+    localStorage.setItem('tc-theme', light ? 'light' : 'dark');
+  }
+  if (savedTheme === 'light') setTheme(true);
+  themeBtn.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+  themeBtnMobile.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
 
-</body>
-</html>
+  function submitIndexEmail() {
+    const input = document.getElementById('indexEmail');
+    const btn = event.target;
+    const email = input.value.trim();
+    if (!email || !email.includes('@')) {
+      input.style.borderColor = 'var(--red, #C45050)';
+      setTimeout(() => input.style.borderColor = '', 1500);
+      return;
+    }
+    // TODO: wire to Buttondown or email provider
+    btn.textContent = 'You\'re in ✦';
+    btn.disabled = true;
+    btn.style.opacity = '0.7';
+    input.style.display = 'none';
+  }
+
+  const burger = document.getElementById('burgerBtn');
+  const drawer = document.getElementById('navDrawer');
+  const overlay = document.getElementById('navOverlay');
+
+  function toggleMenu(open) {
+    burger.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  burger.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
+  overlay.addEventListener('click', () => toggleMenu(false));
+
+  // Close on any drawer link click
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => toggleMenu(false));
+  });
+</script>
