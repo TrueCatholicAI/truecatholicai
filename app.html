@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
@@ -47,412 +46,411 @@
   body.light .modal-cross::before, body.light .modal-cross::after { background: #F4F1EB; }
   body.light .user-avatar-btn { color: var(--text-mid); }
 
-/* Theme toggle */
-.theme-btn {
-background: none; border: 1px solid var(–border); color: var(–text-dim); cursor: pointer;
-width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
-justify-content: center; transition: all 0.25s; font-size: 14px; line-height: 1;
-}
+  /* Theme toggle */
+  .theme-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.25s; font-size: 14px; line-height: 1;
+  }
 
-/* Admin model selector */
-.admin-select {
-display: none; background: var(–bg-input); border: 1px solid var(–border); color: var(–text-mid);
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.55rem; padding: 4px 8px;
-border-radius: 4px; letter-spacing: 0.04em; cursor: pointer; outline: none;
-}
-.admin-select:focus { border-color: var(–gold-dim); }
-body.admin .admin-select { display: block; }
+  /* Admin model selector */
+  .admin-select {
+    display: none; background: var(--bg-input); border: 1px solid var(--border); color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; padding: 4px 8px;
+    border-radius: 4px; letter-spacing: 0.04em; cursor: pointer; outline: none;
+  }
+  .admin-select:focus { border-color: var(--gold-dim); }
+  body.admin .admin-select { display: block; }
 
-html, body { height: 100%; overflow: hidden; }
-body {
-background: var(–bg); color: var(–text); font-family: ‘Source Serif 4’, Georgia, serif;
--webkit-font-smoothing: antialiased; display: flex; flex-direction: column;
-}
-body::before {
-content: ‘’; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
-background-image: url(“data:image/svg+xml,%3Csvg viewBox=‘0 0 256 256’ xmlns=‘http://www.w3.org/2000/svg’%3E%3Cfilter id=‘n’%3E%3CfeTurbulence type=‘fractalNoise’ baseFrequency=‘0.9’ numOctaves=‘4’ stitchTiles=‘stitch’/%3E%3C/filter%3E%3Crect width=‘100%25’ height=‘100%25’ filter=‘url(%23n)’/%3E%3C/svg%3E”);
-background-size: 256px;
-}
-.header {
-display: flex; align-items: center; justify-content: space-between; padding: 14px 20px;
-border-bottom: 1px solid var(–border); background: rgba(11,11,16,0.95);
-backdrop-filter: blur(16px); flex-shrink: 0; z-index: 100;
-}
-.header-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-.header-mark {
-width: 28px; height: 28px; background: var(–gold); border-radius: 50%;
-position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
-}
-.header-mark::before { content: ‘’; position: absolute; width: 10px; height: 1.5px; background: var(–bg); }
-.header-mark::after { content: ‘’; position: absolute; width: 1.5px; height: 10px; background: var(–bg); }
-.header-title {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.72rem; font-weight: 500;
-letter-spacing: 0.16em; text-transform: uppercase; color: var(–gold-light);
-}
-.header-sub {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.5rem; color: var(–text-dim);
-letter-spacing: 0.08em; margin-top: 1px;
-}
-.header-actions { display: flex; align-items: center; gap: 8px; }
-.header-btn {
-background: none; border: 1px solid var(–border); color: var(–text-dim); cursor: pointer;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.58rem; letter-spacing: 0.08em;
-text-transform: uppercase; padding: 0 12px; height: 32px; display: inline-flex; align-items: center;
-transition: all 0.25s; border-radius: 4px;
-}
-.header-btn.gold { border-color: var(–gold-dim); color: var(–gold); }
-.remaining-badge {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.52rem; color: var(–text-dim);
-letter-spacing: 0.06em; padding: 0 10px; height: 32px; line-height: 32px;
-border: 1px solid var(–border); border-radius: 4px; white-space: nowrap;
-}
-.remaining-badge .num { color: var(–gold-light); font-weight: 500; }
-.chat-area {
-flex: 1; overflow-y: auto; scroll-behavior: smooth;
-scrollbar-width: thin; scrollbar-color: var(–border) transparent;
-}
-.chat-area::-webkit-scrollbar { width: 5px; }
-.chat-area::-webkit-scrollbar-thumb { background: var(–border); border-radius: 3px; }
-.welcome {
-display: flex; flex-direction: column; align-items: center;
-min-height: 100%; padding: 40px 20px; text-align: center;
-justify-content: center; gap: 0; overflow: hidden;
-}
-.welcome-cross {
-width: 48px; height: 48px; background: var(–gold); border-radius: 50%;
-display: flex; align-items: center; justify-content: center; position: relative;
-margin-bottom: 24px; opacity: 0.9;
-}
-.welcome-cross::before { content: ‘’; position: absolute; width: 18px; height: 2px; background: var(–bg); }
-.welcome-cross::after { content: ‘’; position: absolute; width: 2px; height: 18px; background: var(–bg); }
-.welcome h2 {
-font-family: ‘Playfair Display’, serif; font-size: 1.6rem; font-weight: 400;
-color: var(–text); margin-bottom: 8px; line-height: 1.3;
-}
-.welcome h2 em { font-style: italic; color: var(–gold); }
-.welcome-sub {
-font-size: 0.95rem; color: var(–text-mid); max-width: 440px; line-height: 1.6; margin-bottom: 32px;
-}
-.starters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 600px; }
-.starter {
-background: var(–bg-card); border: 1px solid var(–border); border-radius: 10px;
-padding: 12px 16px; cursor: pointer; transition: all 0.2s; text-align: left; max-width: 280px;
-}
-.starter-q { font-size: 0.88rem; color: var(–text); line-height: 1.4; display: block; }
-.starter-cat {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.52rem; color: var(–text-dim);
-letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
-}
-/* Scrolling prompt ticker */
-.prompt-ticker-wrap {
-width: 100%; align-self: stretch; overflow: hidden; margin-top: 8px;
--webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-}
-.prompt-ticker-row {
-display: flex; gap: 10px; width: max-content;
-animation: tickerScroll var(–ticker-speed, 60s) linear infinite;
-}
-.prompt-ticker-row.reverse { animation-name: tickerScrollReverse; }
-.prompt-pill {
-background: var(–bg-card); border: 1px solid var(–border); border-radius: 20px;
-padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
-display: flex; align-items: center; gap: 10px; flex-shrink: 0;
-}
-.prompt-pill-q { font-size: 0.84rem; color: var(–text); line-height: 1; }
-.prompt-pill-cat {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.48rem; color: var(–text-dim);
-letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;
-}
-@keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-@keyframes tickerScrollReverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
-.messages { display: none; padding: 16px 0; }
-.message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
-.message.ai { background: var(–ai-bg); border-top: 1px solid var(–border); border-bottom: 1px solid var(–border); }
-.msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-.msg-avatar {
-width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.55rem; font-weight: 500; flex-shrink: 0;
-}
-.msg-avatar.ai { background: var(–gold); color: var(–bg); position: relative; }
-.msg-avatar.ai::before { content: ‘’; position: absolute; width: 8px; height: 1.5px; background: var(–bg); }
-.msg-avatar.ai::after { content: ‘’; position: absolute; width: 1.5px; height: 8px; background: var(–bg); }
-.msg-avatar.user { background: var(–border-strong); color: var(–text-mid); }
-.msg-name {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.6rem; font-weight: 500;
-letter-spacing: 0.08em; text-transform: uppercase;
-}
-.ai-name { color: var(–gold); }
-.user-name { color: var(–text-dim); }
-.msg-body { font-size: 0.95rem; line-height: 1.7; color: var(–text); }
-.msg-body p { margin-bottom: 12px; }
-.msg-body p:last-child { margin-bottom: 0; }
-.msg-body strong { color: var(–gold-light); font-weight: 500; }
-.msg-body em { font-style: italic; color: var(–text-mid); }
-.msg-body hr { border: none; border-top: 1px solid var(–border); margin: 20px 0; opacity: 0.5; }
-.msg-body .list-subhead { margin: 8px 0 2px; }
-.msg-body blockquote {
-border-left: 2px solid var(–gold-dim); padding-left: 16px; margin: 12px 0;
-color: var(–text-mid); font-style: italic;
-}
-.msg-body ul, .msg-body ol { margin: 8px 0 12px 20px; }
-.msg-body li { margin-bottom: 4px; line-height: 1.6; }
-.typing { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
-.typing-inner { display: flex; align-items: center; gap: 10px; }
-.typing-dots { display: flex; gap: 4px; }
-.typing-dot {
-width: 6px; height: 6px; border-radius: 50%; background: var(–gold-dim);
-animation: pulse 1.4s ease-in-out infinite;
-}
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
-.typing-label {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.6rem; color: var(–text-dim);
-letter-spacing: 0.06em;
-}
-.input-area {
-border-top: 1px solid var(–border); padding: 16px 20px; flex-shrink: 0;
-background: rgba(11,11,16,0.95); backdrop-filter: blur(16px);
-}
-.input-row { display: flex; align-items: flex-end; gap: 10px; max-width: 800px; margin: 0 auto; }
-.input-field {
-flex: 1; background: var(–bg-input); border: 1px solid var(–border); border-radius: 10px;
-padding: 12px 16px; color: var(–text); font-family: ‘Source Serif 4’, Georgia, serif;
-font-size: 0.95rem; resize: none; outline: none; line-height: 1.5;
-min-height: 46px; max-height: 160px; transition: border-color 0.2s;
-}
-.input-field::placeholder { color: var(–text-dim); }
-.input-field:focus { border-color: var(–gold-dim); }
-.send-btn {
-width: 46px; height: 46px; border-radius: 10px; border: none; cursor: pointer;
-background: var(–gold); color: var(–bg); display: flex; align-items: center; justify-content: center;
-transition: all 0.2s; flex-shrink: 0;
-}
-.send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
-.send-btn svg { width: 18px; height: 18px; }
-.input-footer {
-max-width: 800px; margin: 8px auto 0; text-align: center;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.5rem; color: var(–text-dim);
-letter-spacing: 0.05em;
-}
-.input-footer a { color: var(–gold-dim); text-decoration: none; }
-.toast {
-position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
-background: var(–danger); color: white; padding: 12px 24px; border-radius: 8px;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.72rem;
-z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
-max-width: 90%; text-align: center;
-}
-.toast.show { opacity: 1; }
-.toast.success { background: var(–green); }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+  .header {
+    display: flex; align-items: center; justify-content: space-between; padding: 14px 20px;
+    border-bottom: 1px solid var(--border); background: rgba(11,11,16,0.95);
+    backdrop-filter: blur(16px); flex-shrink: 0; z-index: 100;
+  }
+  .header-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .header-mark {
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .header-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .header-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
+  .header-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    letter-spacing: 0.08em; margin-top: 1px;
+  }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .header-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0 12px; height: 32px; display: inline-flex; align-items: center;
+    transition: all 0.25s; border-radius: 4px;
+  }
+  .header-btn.gold { border-color: var(--gold-dim); color: var(--gold); }
+  .remaining-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.06em; padding: 0 10px; height: 32px; line-height: 32px;
+    border: 1px solid var(--border); border-radius: 4px; white-space: nowrap;
+  }
+  .remaining-badge .num { color: var(--gold-light); font-weight: 500; }
+  .chat-area {
+    flex: 1; overflow-y: auto; scroll-behavior: smooth;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .chat-area::-webkit-scrollbar { width: 5px; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .welcome {
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100%; padding: 40px 20px; text-align: center;
+    justify-content: center; gap: 0; overflow: hidden;
+  }
+  .welcome-cross {
+    width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin-bottom: 24px; opacity: 0.9;
+  }
+  .welcome-cross::before { content: ''; position: absolute; width: 18px; height: 2px; background: var(--bg); }
+  .welcome-cross::after { content: ''; position: absolute; width: 2px; height: 18px; background: var(--bg); }
+  .welcome h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px; line-height: 1.3;
+  }
+  .welcome h2 em { font-style: italic; color: var(--gold); }
+  .welcome-sub {
+    font-size: 0.95rem; color: var(--text-mid); max-width: 440px; line-height: 1.6; margin-bottom: 32px;
+  }
+  .starters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 600px; }
+  .starter {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; cursor: pointer; transition: all 0.2s; text-align: left; max-width: 280px;
+  }
+  .starter-q { font-size: 0.88rem; color: var(--text); line-height: 1.4; display: block; }
+  .starter-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
+  }
+  /* Scrolling prompt ticker */
+  .prompt-ticker-wrap {
+    width: 100%; align-self: stretch; overflow: hidden; margin-top: 8px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .prompt-ticker-row {
+    display: flex; gap: 10px; width: max-content;
+    animation: tickerScroll var(--ticker-speed, 60s) linear infinite;
+  }
+  .prompt-ticker-row.reverse { animation-name: tickerScrollReverse; }
+  .prompt-pill {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .prompt-pill-q { font-size: 0.84rem; color: var(--text); line-height: 1; }
+  .prompt-pill-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;
+  }
+  @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes tickerScrollReverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+  .messages { display: none; padding: 16px 0; }
+  .message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .message.ai { background: var(--ai-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .msg-avatar {
+    width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500; flex-shrink: 0;
+  }
+  .msg-avatar.ai { background: var(--gold); color: var(--bg); position: relative; }
+  .msg-avatar.ai::before { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--bg); }
+  .msg-avatar.ai::after { content: ''; position: absolute; width: 1.5px; height: 8px; background: var(--bg); }
+  .msg-avatar.user { background: var(--border-strong); color: var(--text-mid); }
+  .msg-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .ai-name { color: var(--gold); }
+  .user-name { color: var(--text-dim); }
+  .msg-body { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+  .msg-body p { margin-bottom: 12px; }
+  .msg-body p:last-child { margin-bottom: 0; }
+  .msg-body strong { color: var(--gold-light); font-weight: 500; }
+  .msg-body em { font-style: italic; color: var(--text-mid); }
+  .msg-body hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; opacity: 0.5; }
+  .msg-body .list-subhead { margin: 8px 0 2px; }
+  .msg-body blockquote {
+    border-left: 2px solid var(--gold-dim); padding-left: 16px; margin: 12px 0;
+    color: var(--text-mid); font-style: italic;
+  }
+  .msg-body ul, .msg-body ol { margin: 8px 0 12px 20px; }
+  .msg-body li { margin-bottom: 4px; line-height: 1.6; }
+  .typing { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .typing-inner { display: flex; align-items: center; gap: 10px; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dim);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+  .typing-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .input-area {
+    border-top: 1px solid var(--border); padding: 16px 20px; flex-shrink: 0;
+    background: rgba(11,11,16,0.95); backdrop-filter: blur(16px);
+  }
+  .input-row { display: flex; align-items: flex-end; gap: 10px; max-width: 800px; margin: 0 auto; }
+  .input-field {
+    flex: 1; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.95rem; resize: none; outline: none; line-height: 1.5;
+    min-height: 46px; max-height: 160px; transition: border-color 0.2s;
+  }
+  .input-field::placeholder { color: var(--text-dim); }
+  .input-field:focus { border-color: var(--gold-dim); }
+  .send-btn {
+    width: 46px; height: 46px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: var(--bg); display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; }
+  .input-footer {
+    max-width: 800px; margin: 8px auto 0; text-align: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    letter-spacing: 0.05em;
+  }
+  .input-footer a { color: var(--gold-dim); text-decoration: none; }
+  .toast {
+    position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%);
+    background: var(--danger); color: white; padding: 12px 24px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    max-width: 90%; text-align: center;
+  }
+  .toast.show { opacity: 1; }
+  .toast.success { background: var(--green); }
 
-/* =============== AUTH MODAL =============== */
-.modal-overlay {
-position: fixed; inset: 0; background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
-z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px;
-opacity: 0; transition: opacity 0.35s ease;
-}
-.modal-overlay.open { display: flex; }
-.modal-overlay.visible { opacity: 1; }
-.modal {
-background: var(–bg-card); border: 1px solid var(–border-strong); border-radius: 16px;
-width: 100%; max-width: 400px; padding: 36px 32px; position: relative;
-transform: translateY(16px); transition: transform 0.35s ease;
-}
-.modal-overlay.visible .modal { transform: translateY(0); }
-.modal-close {
-position: absolute; top: 14px; right: 14px; background: none; border: none;
-color: var(–text-dim); cursor: pointer; font-size: 1.2rem; line-height: 1;
-transition: color 0.2s; padding: 4px;
-}
-.modal-cross {
-width: 36px; height: 36px; background: var(–gold); border-radius: 50%;
-display: flex; align-items: center; justify-content: center; position: relative;
-margin: 0 auto 20px;
-}
-.modal-cross::before { content: ‘’; position: absolute; width: 14px; height: 1.5px; background: var(–bg); }
-.modal-cross::after { content: ‘’; position: absolute; width: 1.5px; height: 14px; background: var(–bg); }
-.modal-title {
-font-family: ‘Playfair Display’, serif; font-size: 1.3rem; font-weight: 400;
-text-align: center; color: var(–text); margin-bottom: 6px;
-}
-.modal-subtitle {
-font-size: 0.85rem; color: var(–text-mid); text-align: center;
-line-height: 1.5; margin-bottom: 24px;
-}
-.form-group { margin-bottom: 16px; }
-.form-label {
-display: block; font-family: ‘IBM Plex Mono’, monospace; font-size: 0.58rem;
-letter-spacing: 0.1em; text-transform: uppercase; color: var(–text-dim); margin-bottom: 6px;
-}
-.form-input {
-width: 100%; background: var(–bg-input); border: 1px solid var(–border);
-border-radius: 8px; padding: 11px 14px; color: var(–text);
-font-family: ‘Source Serif 4’, Georgia, serif; font-size: 0.9rem;
-outline: none; transition: border-color 0.2s;
-}
-.form-input::placeholder { color: var(–text-dim); }
-.form-input:focus { border-color: var(–gold-dim); }
-.form-btn {
-width: 100%; padding: 13px; background: var(–gold); color: var(–bg);
-border: none; border-radius: 8px; cursor: pointer;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.72rem; font-weight: 500;
-letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; margin-top: 4px;
-}
-.form-btn:disabled { opacity: 0.4; cursor: not-allowed; }
-.form-toggle {
-text-align: center; margin-top: 20px;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.6rem; color: var(–text-dim);
-letter-spacing: 0.04em;
-}
-.form-toggle a { color: var(–gold); text-decoration: none; cursor: pointer; }
-.form-error {
-background: rgba(196,80,80,0.1); border: 1px solid rgba(196,80,80,0.25);
-color: #E08080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
-font-size: 0.8rem; line-height: 1.4; display: none;
-}
-.form-error.show { display: block; }
-.form-success {
-background: rgba(90,175,90,0.1); border: 1px solid rgba(90,175,90,0.25);
-color: #80D080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
-font-size: 0.8rem; line-height: 1.4; display: none; text-align: center;
-}
-.form-success.show { display: block; }
-.forgot-link {
-display: block; text-align: right; margin-top: -10px; margin-bottom: 16px;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.52rem;
-color: var(–text-dim); text-decoration: none; cursor: pointer; letter-spacing: 0.04em;
-}
-/* Signup prompt (inline in chat) */
-.signup-prompt {
-max-width: 800px; margin: 16px auto; padding: 24px 20px; text-align: center;
-background: var(–bg-card); border: 1px solid var(–border-strong); border-radius: 12px;
-}
-.signup-prompt h3 {
-font-family: ‘Playfair Display’, serif; font-size: 1.1rem; font-weight: 400;
-color: var(–text); margin-bottom: 8px;
-}
-.signup-prompt p { font-size: 0.85rem; color: var(–text-mid); margin-bottom: 16px; line-height: 1.5; }
-.signup-prompt-btn {
-display: inline-block; padding: 10px 28px; background: var(–gold); color: var(–bg);
-border: none; border-radius: 8px; cursor: pointer;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.65rem; font-weight: 500;
-letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
-}
-/* User menu */
-.user-menu-wrap { position: relative; }
-.user-avatar-btn {
-width: 32px; height: 32px; border-radius: 50%; background: var(–bg-input);
-border: 1px solid var(–border-strong); color: var(–text-mid); cursor: pointer;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.65rem; font-weight: 500;
-display: flex; align-items: center; justify-content: center; transition: all 0.2s;
-}
-.user-dropdown {
-position: absolute; top: calc(100% + 8px); right: 0; background: var(–bg-card);
-border: 1px solid var(–border-strong); border-radius: 10px; min-width: 200px;
-padding: 8px; z-index: 200; display: none; animation: dropIn 0.15s ease-out;
-}
-.user-dropdown.open { display: block; }
-@keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
-.reveal-block { opacity: 0; animation: blockReveal 0.7s ease forwards; }
-@keyframes blockReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
-.user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(–border); margin-bottom: 6px; }
-.user-dropdown-name { font-family: ‘IBM Plex Mono’, monospace; font-size: 0.65rem; font-weight: 500; color: var(–text); letter-spacing: 0.04em; }
-.user-dropdown-email { font-family: ‘IBM Plex Mono’, monospace; font-size: 0.52rem; color: var(–text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
-.user-dropdown-plan { font-family: ‘IBM Plex Mono’, monospace; font-size: 0.48rem; color: var(–gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
-.user-dropdown-item {
-display: block; width: 100%; padding: 9px 12px; background: none; border: none;
-color: var(–text-mid); cursor: pointer; text-align: left; border-radius: 6px;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.6rem; letter-spacing: 0.04em; transition: all 0.15s;
-}
+  /* =============== AUTH MODAL =============== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; transition: opacity 0.35s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-overlay.visible { opacity: 1; }
+  .modal {
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 16px;
+    width: 100%; max-width: 400px; padding: 36px 32px; position: relative;
+    transform: translateY(16px); transition: transform 0.35s ease;
+  }
+  .modal-overlay.visible .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; background: none; border: none;
+    color: var(--text-dim); cursor: pointer; font-size: 1.2rem; line-height: 1;
+    transition: color 0.2s; padding: 4px;
+  }
+  .modal-cross {
+    width: 36px; height: 36px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 0 auto 20px;
+  }
+  .modal-cross::before { content: ''; position: absolute; width: 14px; height: 1.5px; background: var(--bg); }
+  .modal-cross::after { content: ''; position: absolute; width: 1.5px; height: 14px; background: var(--bg); }
+  .modal-title {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400;
+    text-align: center; color: var(--text); margin-bottom: 6px;
+  }
+  .modal-subtitle {
+    font-size: 0.85rem; color: var(--text-mid); text-align: center;
+    line-height: 1.5; margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 14px; color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: var(--text-dim); }
+  .form-input:focus { border-color: var(--gold-dim); }
+  .form-btn {
+    width: 100%; padding: 13px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; margin-top: 4px;
+  }
+  .form-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .form-toggle {
+    text-align: center; margin-top: 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+  .form-toggle a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .form-error {
+    background: rgba(196,80,80,0.1); border: 1px solid rgba(196,80,80,0.25);
+    color: #E08080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+    font-size: 0.8rem; line-height: 1.4; display: none;
+  }
+  .form-error.show { display: block; }
+  .form-success {
+    background: rgba(90,175,90,0.1); border: 1px solid rgba(90,175,90,0.25);
+    color: #80D080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+    font-size: 0.8rem; line-height: 1.4; display: none; text-align: center;
+  }
+  .form-success.show { display: block; }
+  .forgot-link {
+    display: block; text-align: right; margin-top: -10px; margin-bottom: 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
+    color: var(--text-dim); text-decoration: none; cursor: pointer; letter-spacing: 0.04em;
+  }
+  /* Signup prompt (inline in chat) */
+  .signup-prompt {
+    max-width: 800px; margin: 16px auto; padding: 24px 20px; text-align: center;
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 12px;
+  }
+  .signup-prompt h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .signup-prompt p { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; line-height: 1.5; }
+  .signup-prompt-btn {
+    display: inline-block; padding: 10px 28px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
+  }
+  /* User menu */
+  .user-menu-wrap { position: relative; }
+  .user-avatar-btn {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--bg-input);
+    border: 1px solid var(--border-strong); color: var(--text-mid); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .user-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card);
+    border: 1px solid var(--border-strong); border-radius: 10px; min-width: 200px;
+    padding: 8px; z-index: 200; display: none; animation: dropIn 0.15s ease-out;
+  }
+  .user-dropdown.open { display: block; }
+  @keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .reveal-block { opacity: 0; animation: blockReveal 0.7s ease forwards; }
+  @keyframes blockReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+  .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
+  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
+  .user-dropdown-plan { font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+  .user-dropdown-item {
+    display: block; width: 100%; padding: 9px 12px; background: none; border: none;
+    color: var(--text-mid); cursor: pointer; text-align: left; border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.04em; transition: all 0.15s;
+  }
 
-/* All hover states — pointer devices only */
-@media (hover: hover) {
-.theme-btn:hover { color: var(–gold); border-color: var(–border-strong); }
-.header-btn:hover { color: var(–gold); border-color: var(–border-strong); }
-.header-btn.gold:hover { background: var(–gold); color: var(–bg); }
-.starter:hover { border-color: var(–gold-dim); background: var(–bg-input); }
-.prompt-ticker-row:hover { animation-play-state: paused; }
-.prompt-pill:hover { border-color: var(–gold-dim); background: var(–bg-input); }
-.send-btn:hover:not(:disabled) { background: var(–gold-light); }
-.input-footer a:hover { color: var(–gold); }
-.journey-option:hover { border-color: var(–gold-dim); background: rgba(196,162,78,0.05); }
-.journey-skip:hover { color: var(–gold); }
-.modal-close:hover { color: var(–text); }
-.form-btn:hover:not(:disabled) { background: var(–gold-light); }
-.form-toggle a:hover { color: var(–gold-light); }
-.forgot-link:hover { color: var(–gold); }
-.signup-prompt-btn:hover { background: var(–gold-light); }
-.user-avatar-btn:hover { background: var(–border-strong); color: var(–text); }
-.user-dropdown-item:hover { background: var(–bg-input); color: var(–text); }
-.user-dropdown-item.danger:hover { color: var(–danger); }
-}
+  /* All hover states — pointer devices only */
+  @media (hover: hover) {
+    .theme-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+    .header-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+    .header-btn.gold:hover { background: var(--gold); color: var(--bg); }
+    .starter:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+    .prompt-ticker-row:hover { animation-play-state: paused; }
+    .prompt-pill:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+    .send-btn:hover:not(:disabled) { background: var(--gold-light); }
+    .input-footer a:hover { color: var(--gold); }
+    .journey-option:hover { border-color: var(--gold-dim); background: rgba(196,162,78,0.05); }
+    .journey-skip:hover { color: var(--gold); }
+    .modal-close:hover { color: var(--text); }
+    .form-btn:hover:not(:disabled) { background: var(--gold-light); }
+    .form-toggle a:hover { color: var(--gold-light); }
+    .forgot-link:hover { color: var(--gold); }
+    .signup-prompt-btn:hover { background: var(--gold-light); }
+    .user-avatar-btn:hover { background: var(--border-strong); color: var(--text); }
+    .user-dropdown-item:hover { background: var(--bg-input); color: var(--text); }
+    .user-dropdown-item.danger:hover { color: var(--danger); }
+  }
 
-/* Faith Journey Modal */
-.journey-overlay {
-position: fixed; inset: 0; z-index: 2000;
-background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
-display: none; align-items: center; justify-content: center;
-opacity: 0; transition: opacity 0.4s ease;
-}
-.journey-overlay.visible { opacity: 1; }
-.journey-modal-box {
-width: 440px; max-width: 94%; max-height: 90vh; overflow-y: auto;
-background: var(–bg-card); border: 1px solid var(–border-strong);
-border-radius: 16px; padding: 36px 32px; position: relative;
-transform: translateY(20px); transition: transform 0.4s ease;
-}
-.journey-overlay.visible .journey-modal-box { transform: translateY(0); }
-.journey-icon {
-width: 40px; height: 40px; background: var(–gold); border-radius: 50%;
-display: flex; align-items: center; justify-content: center; position: relative;
-margin: 0 auto 20px;
-}
-.journey-icon::before { content: ‘’; position: absolute; width: 14px; height: 2px; background: var(–bg); }
-.journey-icon::after { content: ‘’; position: absolute; width: 2px; height: 14px; background: var(–bg); }
-.journey-heading {
-font-family: ‘Playfair Display’, serif; font-size: 1.3rem; font-weight: 400;
-color: var(–text); text-align: center; margin-bottom: 6px; line-height: 1.3;
-}
-.journey-sub { font-size: 0.85rem; color: var(–text-mid); text-align: center; line-height: 1.5; margin-bottom: 24px; }
-.journey-options { display: flex; flex-direction: column; gap: 10px; }
-.journey-option {
-background: var(–bg-input); border: 1px solid var(–border);
-border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; text-align: left;
-}
-.journey-option-label { font-size: 0.92rem; color: var(–text); line-height: 1.4; display: block; }
-.journey-option-desc {
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.62rem; color: var(–text-dim);
-letter-spacing: 0.04em; margin-top: 4px; display: block;
-}
-.journey-skip {
-display: block; margin: 16px auto 0; background: none; border: none; cursor: pointer;
-font-family: ‘IBM Plex Mono’, monospace; font-size: 0.6rem; color: var(–text-dim);
-letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; transition: color 0.2s;
-}
+  /* Faith Journey Modal */
+  .journey-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .journey-overlay.visible { opacity: 1; }
+  .journey-modal-box {
+    width: 440px; max-width: 94%; max-height: 90vh; overflow-y: auto;
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 36px 32px; position: relative;
+    transform: translateY(20px); transition: transform 0.4s ease;
+  }
+  .journey-overlay.visible .journey-modal-box { transform: translateY(0); }
+  .journey-icon {
+    width: 40px; height: 40px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 0 auto 20px;
+  }
+  .journey-icon::before { content: ''; position: absolute; width: 14px; height: 2px; background: var(--bg); }
+  .journey-icon::after { content: ''; position: absolute; width: 2px; height: 14px; background: var(--bg); }
+  .journey-heading {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400;
+    color: var(--text); text-align: center; margin-bottom: 6px; line-height: 1.3;
+  }
+  .journey-sub { font-size: 0.85rem; color: var(--text-mid); text-align: center; line-height: 1.5; margin-bottom: 24px; }
+  .journey-options { display: flex; flex-direction: column; gap: 10px; }
+  .journey-option {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; text-align: left;
+  }
+  .journey-option-label { font-size: 0.92rem; color: var(--text); line-height: 1.4; display: block; }
+  .journey-option-desc {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
+    letter-spacing: 0.04em; margin-top: 4px; display: block;
+  }
+  .journey-skip {
+    display: block; margin: 16px auto 0; background: none; border: none; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; transition: color 0.2s;
+  }
 
-@media (max-width: 600px) {
-.header { padding: 10px 14px; }
-.header-title { display: none; }
-.header-sub { display: none; }
-.remaining-badge { font-size: 0.48rem; padding: 0 8px; }
-.welcome { padding: 20px 12px; }
-.welcome-cross { margin-bottom: 12px; }
-.welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
-.welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
-.starters { display: none; }
-.prompt-pill { padding: 8px 14px; }
-.prompt-pill-q { font-size: 0.78rem; }
-.message { padding: 12px 14px; }
-.input-area { padding: 12px 14px; }
-.journey-modal-box { width: 94%; padding: 28px 20px; }
-.journey-option { padding: 14px 14px; }
-.journey-option-label { font-size: 0.88rem; }
-.modal { padding: 28px 22px; margin: 10px; }
-}
+  @media (max-width: 600px) {
+    .header { padding: 10px 14px; }
+    .header-title { display: none; }
+    .header-sub { display: none; }
+    .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
+    .welcome { padding: 20px 12px; }
+    .welcome-cross { margin-bottom: 12px; }
+    .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
+    .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
+    .starters { display: none; }
+    .prompt-pill { padding: 8px 14px; }
+    .prompt-pill-q { font-size: 0.78rem; }
+    .message { padding: 12px 14px; }
+    .input-area { padding: 12px 14px; }
+    .journey-modal-box { width: 94%; padding: 28px 20px; }
+    .journey-option { padding: 14px 14px; }
+    .journey-option-label { font-size: 0.88rem; }
+    .modal { padding: 28px 22px; margin: 10px; }
+  }
 </style>
-
 </head>
 <body>
 <div class="header">
@@ -536,7 +534,6 @@ letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; transition
 </div>
 
 <!-- Faith Journey Modal -->
-
 <div class="journey-overlay" id="journeyModal">
   <div class="journey-modal-box">
     <div class="journey-icon"></div>
@@ -569,7 +566,6 @@ letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; transition
 </div>
 
 <!-- Auth Modal -->
-
 <div class="modal-overlay" id="authModal">
   <div class="modal">
     <button class="modal-close" onclick="closeAuthModal()">&times;</button>
@@ -630,401 +626,397 @@ let isStreaming = false;
 let remaining = 0;
 let chatStarted = false;
 let currentUser = null;
-let userPlan = ‘free’;
-let unauthCount = parseInt(localStorage.getItem(‘tc-unauth-count’) || ‘0’);
+let userPlan = 'free';
+let unauthCount = parseInt(localStorage.getItem('tc-unauth-count') || '0');
 let signupPromptShown = false;
-const inputField = document.getElementById(‘inputField’);
-const sendBtn = document.getElementById(‘sendBtn’);
-const remainingNum = document.getElementById(‘remainingNum’);
-const remainingMax = document.getElementById(‘remainingMax’);
+const inputField = document.getElementById('inputField');
+const sendBtn = document.getElementById('sendBtn');
+const remainingNum = document.getElementById('remainingNum');
+const remainingMax = document.getElementById('remainingMax');
 
 // =============== ADMIN MODE ===============
-if (new URLSearchParams(window.location.search).get(‘admin’) === ‘true’) document.body.classList.add(‘admin’);
+if (new URLSearchParams(window.location.search).get('admin') === 'true') document.body.classList.add('admin');
 
 // =============== THEME TOGGLE ===============
-const themeBtn = document.getElementById(‘themeBtn’);
-const savedTheme = localStorage.getItem(‘tc-theme’);
-if (savedTheme === ‘light’) { document.body.classList.add(‘light’); themeBtn.innerHTML = ‘☼’; }
-themeBtn.addEventListener(‘click’, function() {
-document.body.classList.toggle(‘light’);
-const isLight = document.body.classList.contains(‘light’);
-themeBtn.innerHTML = isLight ? ‘☼’ : ‘☽’;
-localStorage.setItem(‘tc-theme’, isLight ? ‘light’ : ‘dark’);
+const themeBtn = document.getElementById('themeBtn');
+const savedTheme = localStorage.getItem('tc-theme');
+if (savedTheme === 'light') { document.body.classList.add('light'); themeBtn.innerHTML = '&#9788;'; }
+themeBtn.addEventListener('click', function() {
+  document.body.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  themeBtn.innerHTML = isLight ? '&#9788;' : '&#9789;';
+  localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
 });
 
 // =============== FAITH JOURNEY MODAL ===============
-let userJourney = localStorage.getItem(‘tc-journey’) || ‘’;
+let userJourney = localStorage.getItem('tc-journey') || '';
 const journeyLabels = {
-seeking: ‘exploring whether God exists (atheist/agnostic/curious)’,
-christian: ‘Christian but not Catholic (Protestant/Orthodox/non-denominational)’,
-returning: ‘Catholic who has been away from the Church’,
-practicing: ‘practicing Catholic looking to go deeper’,
-rcia: ‘in the process of becoming Catholic (RCIA/converting)’
+  seeking: 'exploring whether God exists (atheist/agnostic/curious)',
+  christian: 'Christian but not Catholic (Protestant/Orthodox/non-denominational)',
+  returning: 'Catholic who has been away from the Church',
+  practicing: 'practicing Catholic looking to go deeper',
+  rcia: 'in the process of becoming Catholic (RCIA/converting)'
 };
 function selectJourney(key, el) {
-userJourney = key;
-localStorage.setItem(‘tc-journey’, key);
-localStorage.setItem(‘tc-journey-set’, ‘true’);
-if (el) { el.style.borderColor = ‘var(–gold)’; el.style.background = ‘rgba(196,162,78,0.08)’; setTimeout(() => closeJourneyModal(), 350); }
-else closeJourneyModal();
+  userJourney = key;
+  localStorage.setItem('tc-journey', key);
+  localStorage.setItem('tc-journey-set', 'true');
+  if (el) { el.style.borderColor = 'var(--gold)'; el.style.background = 'rgba(196,162,78,0.08)'; setTimeout(() => closeJourneyModal(), 350); }
+  else closeJourneyModal();
 }
 function closeJourneyModal() {
-const modal = document.getElementById(‘journeyModal’);
-modal.classList.remove(‘visible’);
-setTimeout(() => { modal.style.display = ‘none’; }, 400);
-inputField.focus();
+  const modal = document.getElementById('journeyModal');
+  modal.classList.remove('visible');
+  setTimeout(() => { modal.style.display = 'none'; }, 400);
+  inputField.focus();
 }
 
 // =============== AUTH MODAL ===============
 function openAuthModal(view) {
-const modal = document.getElementById(‘authModal’);
-modal.classList.add(‘open’);
-requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add(‘visible’); }); });
-switchAuthView(view || ‘login’);
+  const modal = document.getElementById('authModal');
+  modal.classList.add('open');
+  requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add('visible'); }); });
+  switchAuthView(view || 'login');
 }
 function closeAuthModal() {
-const modal = document.getElementById(‘authModal’);
-modal.classList.remove(‘visible’);
-setTimeout(() => { modal.classList.remove(‘open’); }, 350);
-clearAuthErrors();
+  const modal = document.getElementById('authModal');
+  modal.classList.remove('visible');
+  setTimeout(() => { modal.classList.remove('open'); }, 350);
+  clearAuthErrors();
 }
 function switchAuthView(view) {
-document.getElementById(‘loginView’).style.display = view === ‘login’ ? ‘block’ : ‘none’;
-document.getElementById(‘signupView’).style.display = view === ‘signup’ ? ‘block’ : ‘none’;
-document.getElementById(‘forgotView’).style.display = view === ‘forgot’ ? ‘block’ : ‘none’;
-clearAuthErrors();
-if (view === ‘signup’) document.getElementById(‘signupForm’).style.display = ‘block’;
-if (view === ‘forgot’) document.getElementById(‘forgotForm’).style.display = ‘block’;
+  document.getElementById('loginView').style.display = view === 'login' ? 'block' : 'none';
+  document.getElementById('signupView').style.display = view === 'signup' ? 'block' : 'none';
+  document.getElementById('forgotView').style.display = view === 'forgot' ? 'block' : 'none';
+  clearAuthErrors();
+  if (view === 'signup') document.getElementById('signupForm').style.display = 'block';
+  if (view === 'forgot') document.getElementById('forgotForm').style.display = 'block';
 }
-function clearAuthErrors() { document.querySelectorAll(’.form-error, .form-success’).forEach(el => { el.classList.remove(‘show’); el.textContent = ‘’; }); }
-function showAuthError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add(‘show’); }
-function showAuthSuccess(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add(‘show’); }
-document.getElementById(‘authModal’).addEventListener(‘click’, (e) => { if (e.target === document.getElementById(‘authModal’)) closeAuthModal(); });
+function clearAuthErrors() { document.querySelectorAll('.form-error, .form-success').forEach(el => { el.classList.remove('show'); el.textContent = ''; }); }
+function showAuthError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
+function showAuthSuccess(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
+document.getElementById('authModal').addEventListener('click', (e) => { if (e.target === document.getElementById('authModal')) closeAuthModal(); });
 
 // =============== AUTH HANDLERS ===============
 async function handleLogin(e) {
-e.preventDefault();
-const btn = document.getElementById(‘loginBtn’);
-btn.disabled = true; btn.textContent = ‘Signing in…’; clearAuthErrors();
-const { error } = await sb.auth.signInWithPassword({
-email: document.getElementById(‘loginEmail’).value.trim(),
-password: document.getElementById(‘loginPassword’).value,
-});
-btn.disabled = false; btn.textContent = ‘Sign In’;
-if (error) showAuthError(‘loginError’, error.message);
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Signing in...'; clearAuthErrors();
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById('loginEmail').value.trim(),
+    password: document.getElementById('loginPassword').value,
+  });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) showAuthError('loginError', error.message);
 }
 async function handleSignup(e) {
-e.preventDefault();
-const btn = document.getElementById(‘signupBtn’);
-btn.disabled = true; btn.textContent = ‘Creating account…’; clearAuthErrors();
-const { error } = await sb.auth.signUp({
-email: document.getElementById(‘signupEmail’).value.trim(),
-password: document.getElementById(‘signupPassword’).value,
-options: { data: { full_name: document.getElementById(‘signupName’).value.trim() }, emailRedirectTo: ‘https://truecatholicai.org/app.html’ },
-});
-btn.disabled = false; btn.textContent = ‘Create Account’;
-if (error) showAuthError(‘signupError’, error.message);
-else { document.getElementById(‘signupForm’).style.display = ‘none’; showAuthSuccess(‘signupSuccess’, ‘Check your email for a confirmation link. You may need to check spam.’); }
+  e.preventDefault();
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Creating account...'; clearAuthErrors();
+  const { error } = await sb.auth.signUp({
+    email: document.getElementById('signupEmail').value.trim(),
+    password: document.getElementById('signupPassword').value,
+    options: { data: { full_name: document.getElementById('signupName').value.trim() }, emailRedirectTo: 'https://truecatholicai.org/app.html' },
+  });
+  btn.disabled = false; btn.textContent = 'Create Account';
+  if (error) showAuthError('signupError', error.message);
+  else { document.getElementById('signupForm').style.display = 'none'; showAuthSuccess('signupSuccess', 'Check your email for a confirmation link. You may need to check spam.'); }
 }
 async function handleForgot(e) {
-e.preventDefault();
-const btn = document.getElementById(‘forgotBtn’);
-btn.disabled = true; btn.textContent = ‘Sending…’; clearAuthErrors();
-const { error } = await sb.auth.resetPasswordForEmail(document.getElementById(‘forgotEmail’).value.trim(), { redirectTo: ‘https://truecatholicai.org/app.html’ });
-btn.disabled = false; btn.textContent = ‘Send Reset Link’;
-if (error) showAuthError(‘forgotError’, error.message);
-else { document.getElementById(‘forgotForm’).style.display = ‘none’; showAuthSuccess(‘forgotSuccess’, ‘If that email exists, a reset link has been sent. Check your inbox.’); }
+  e.preventDefault();
+  const btn = document.getElementById('forgotBtn');
+  btn.disabled = true; btn.textContent = 'Sending...'; clearAuthErrors();
+  const { error } = await sb.auth.resetPasswordForEmail(document.getElementById('forgotEmail').value.trim(), { redirectTo: 'https://truecatholicai.org/app.html' });
+  btn.disabled = false; btn.textContent = 'Send Reset Link';
+  if (error) showAuthError('forgotError', error.message);
+  else { document.getElementById('forgotForm').style.display = 'none'; showAuthSuccess('forgotSuccess', 'If that email exists, a reset link has been sent. Check your inbox.'); }
 }
 async function handleSignOut() {
-await sb.auth.signOut(); closeUserDropdown();
-messages = []; chatStarted = false;
-document.getElementById(‘messages’).innerHTML = ‘’;
-document.getElementById(‘messages’).style.display = ‘none’;
-document.getElementById(‘welcome’).style.display = ‘flex’;
-showToast(‘Signed out’);
+  await sb.auth.signOut(); closeUserDropdown();
+  messages = []; chatStarted = false;
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  showToast('Signed out');
 }
 
 // =============== SESSION MANAGEMENT ===============
 async function setLoggedIn(user) {
-currentUser = user;
-const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split(’@’)[0] || ‘User’;
-const initial = name.charAt(0).toUpperCase();
-const { data: profile } = await sb.from(‘profiles’).select(‘plan, display_name’).eq(‘id’, user.id).single();
-userPlan = profile?.plan || ‘free’;
-const displayName = profile?.display_name || name;
-document.getElementById(‘signInBtn’).style.display = ‘none’;
-document.getElementById(‘userMenu’).style.display = ‘block’;
-document.getElementById(‘userAvatarBtn’).textContent = initial;
-document.getElementById(‘dropdownName’).textContent = displayName;
-document.getElementById(‘dropdownEmail’).textContent = user.email;
-document.getElementById(‘dropdownPlan’).textContent = userPlan + ’ plan’;
-document.getElementById(‘manageSubBtn’).style.display = (userPlan === ‘patron’ || userPlan === ‘family’) ? ‘block’ : ‘none’;
-const limit = LIMITS[userPlan] || LIMITS.free;
-remainingMax.textContent = limit;
-remainingNum.textContent = ‘\u2014’;
-remaining = limit;
+  currentUser = user;
+  const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+  const initial = name.charAt(0).toUpperCase();
+  const { data: profile } = await sb.from('profiles').select('plan, display_name').eq('id', user.id).single();
+  userPlan = profile?.plan || 'free';
+  const displayName = profile?.display_name || name;
+  document.getElementById('signInBtn').style.display = 'none';
+  document.getElementById('userMenu').style.display = 'block';
+  document.getElementById('userAvatarBtn').textContent = initial;
+  document.getElementById('dropdownName').textContent = displayName;
+  document.getElementById('dropdownEmail').textContent = user.email;
+  document.getElementById('dropdownPlan').textContent = userPlan + ' plan';
+  document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family') ? 'block' : 'none';
+  const limit = LIMITS[userPlan] || LIMITS.free;
+  remainingMax.textContent = limit;
+  remainingNum.textContent = '\u2014';
+  remaining = limit;
 }
 function setLoggedOut() {
-currentUser = null; userPlan = ‘free’;
-document.getElementById(‘signInBtn’).style.display = ‘inline-flex’;
-document.getElementById(‘userMenu’).style.display = ‘none’;
-document.getElementById(‘manageSubBtn’).style.display = ‘none’;
-const limit = LIMITS.unauth;
-remaining = Math.max(0, limit - unauthCount);
-remainingMax.textContent = limit;
-remainingNum.textContent = remaining;
+  currentUser = null; userPlan = 'free';
+  document.getElementById('signInBtn').style.display = 'inline-flex';
+  document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('manageSubBtn').style.display = 'none';
+  const limit = LIMITS.unauth;
+  remaining = Math.max(0, limit - unauthCount);
+  remainingMax.textContent = limit;
+  remainingNum.textContent = remaining;
 }
 
 // =============== USER DROPDOWN ===============
-function toggleUserDropdown() { document.getElementById(‘userDropdown’).classList.toggle(‘open’); }
-function closeUserDropdown() { document.getElementById(‘userDropdown’).classList.remove(‘open’); }
-document.addEventListener(‘click’, (e) => { if (!e.target.closest(’.user-menu-wrap’)) closeUserDropdown(); });
+function toggleUserDropdown() { document.getElementById('userDropdown').classList.toggle('open'); }
+function closeUserDropdown() { document.getElementById('userDropdown').classList.remove('open'); }
+document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wrap')) closeUserDropdown(); });
 async function handleManageSubscription() {
-closeUserDropdown();
-try {
-const session = (await sb.auth.getSession()).data.session;
-if (!session) return showToast(‘Please sign in first’, ‘error’);
-const res = await fetch(API_URL.replace(’/chat’, ‘/create-portal-session’), {
-method: ‘POST’,
-headers: { ‘Content-Type’: ‘application/json’, ‘Authorization’: ’Bearer ’ + session.access_token }
-});
-const data = await res.json();
-if (data.url) window.location.href = data.url;
-else showToast(‘Unable to open subscription portal’, ‘error’);
-} catch (e) { showToast(‘Error opening subscription portal’, ‘error’); }
+  closeUserDropdown();
+  try {
+    const session = (await sb.auth.getSession()).data.session;
+    if (!session) return showToast('Please sign in first', 'error');
+    const res = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showToast('Unable to open subscription portal', 'error');
+  } catch (e) { showToast('Error opening subscription portal', 'error'); }
 }
 
 // =============== INIT ===============
-document.addEventListener(‘DOMContentLoaded’, async () => {
-const alreadySet = localStorage.getItem(‘tc-journey-set’);
-if (!alreadySet) {
-const modal = document.getElementById(‘journeyModal’);
-modal.style.display = ‘flex’;
-requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add(‘visible’); }); });
-}
-const { data: { session } } = await sb.auth.getSession();
-if (session) await setLoggedIn(session.user); else setLoggedOut();
-sb.auth.onAuthStateChange(async (event, session) => {
-if (event === ‘SIGNED_IN’ && session) { await setLoggedIn(session.user); closeAuthModal(); }
-else if (event === ‘SIGNED_OUT’) setLoggedOut();
-});
-inputField.focus();
+document.addEventListener('DOMContentLoaded', async () => {
+  const alreadySet = localStorage.getItem('tc-journey-set');
+  if (!alreadySet) {
+    const modal = document.getElementById('journeyModal');
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add('visible'); }); });
+  }
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) await setLoggedIn(session.user); else setLoggedOut();
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
+    else if (event === 'SIGNED_OUT') setLoggedOut();
+  });
+  inputField.focus();
 });
 
 // =============== INPUT ===============
-inputField.addEventListener(‘input’, () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
-function autoResize(el) { el.style.height = ‘auto’; el.style.height = Math.min(el.scrollHeight, 160) + ‘px’; }
-function handleKey(e) { if (e.key === ‘Enter’ && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
+inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
 function sendStarter(el) {
-const q = el.querySelector(’.starter-q’).textContent.replace(/^[\u201c\u201d”]/g, ‘’).replace(/[\u201c\u201d”]$/g, ‘’);
-inputField.value = q; sendMessage();
+  const q = el.querySelector('.starter-q').textContent.replace(/^[\u201c\u201d"]/g, '').replace(/[\u201c\u201d"]$/g, '');
+  inputField.value = q; sendMessage();
 }
 
 // =============== SEND MESSAGE ===============
 async function sendMessage() {
-const text = inputField.value.trim();
-if (!text || isStreaming) return;
-if (!currentUser && unauthCount >= LIMITS.unauth && !signupPromptShown) { showSignupPrompt(); return; }
-document.getElementById(‘welcome’).style.display = ‘none’;
-document.getElementById(‘messages’).style.display = ‘block’;
-messages.push({ role: ‘user’, content: text });
-renderMessage(‘user’, text);
-inputField.value = ‘’; inputField.style.height = ‘auto’;
-sendBtn.disabled = true; isStreaming = true;
-showTyping(); scrollToBottom();
+  const text = inputField.value.trim();
+  if (!text || isStreaming) return;
+  if (!currentUser && unauthCount >= LIMITS.unauth && !signupPromptShown) { showSignupPrompt(); return; }
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('messages').style.display = 'block';
+  messages.push({ role: 'user', content: text });
+  renderMessage('user', text);
+  inputField.value = ''; inputField.style.height = 'auto';
+  sendBtn.disabled = true; isStreaming = true;
+  showTyping(); scrollToBottom();
 
-// Journey context on first message
-let apiMessages = messages.map(m => ({ …m }));
-if (!chatStarted && userJourney && journeyLabels[userJourney]) {
-apiMessages[0] = { …apiMessages[0], content: ’[User self-identified as: ’ + journeyLabels[userJourney] + ‘]\n\n’ + apiMessages[0].content };
-chatStarted = true;
-} else if (!chatStarted) { chatStarted = true; }
+  // Journey context on first message
+  let apiMessages = messages.map(m => ({ ...m }));
+  if (!chatStarted && userJourney && journeyLabels[userJourney]) {
+    apiMessages[0] = { ...apiMessages[0], content: '[User self-identified as: ' + journeyLabels[userJourney] + ']\n\n' + apiMessages[0].content };
+    chatStarted = true;
+  } else if (!chatStarted) { chatStarted = true; }
 
-const body = { messages: apiMessages };
-const modelSelect = document.getElementById(‘modelSelect’);
-if (document.body.classList.contains(‘admin’) && modelSelect.value) body.model = modelSelect.value;
+  const body = { messages: apiMessages };
+  const modelSelect = document.getElementById('modelSelect');
+  if (document.body.classList.contains('admin') && modelSelect.value) body.model = modelSelect.value;
 
-const headers = { ‘Content-Type’: ‘application/json’ };
-if (currentUser) {
-const { data: { session } } = await sb.auth.getSession();
-if (session?.access_token) headers[‘Authorization’] = ’Bearer ’ + session.access_token;
-}
+  const headers = { 'Content-Type': 'application/json' };
+  if (currentUser) {
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
+  }
 
-try {
-const response = await fetch(API_URL, { method: ‘POST’, headers, body: JSON.stringify(body) });
-hideTyping();
-if (response.status === 429) {
-const err = await response.json();
-showToast(err.error || ‘Daily limit reached. Come back tomorrow!’);
-if (!currentUser) showSignupPrompt();
-messages.pop(); isStreaming = false; sendBtn.disabled = false; return;
-}
-if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || ’Server returned ’ + response.status); }
-const data = await response.json();
-if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
-messages.push({ role: ‘assistant’, content: data.reply });
-await renderMessageProgressive(‘ai’, data.reply);
-if (!currentUser) {
-unauthCount++; localStorage.setItem(‘tc-unauth-count’, unauthCount);
-remaining = Math.max(0, LIMITS.unauth - unauthCount); remainingNum.textContent = remaining;
-if (unauthCount >= LIMITS.unauth && !signupPromptShown) showSignupPrompt();
-}
-} catch (err) {
-hideTyping();
-renderMessage(‘ai’, “I\u2019m having trouble connecting right now. Please try again in a moment.”);
-messages.pop();
-}
-isStreaming = false; sendBtn.disabled = !inputField.value.trim();
+  try {
+    const response = await fetch(API_URL, { method: 'POST', headers, body: JSON.stringify(body) });
+    hideTyping();
+    if (response.status === 429) {
+      const err = await response.json();
+      showToast(err.error || 'Daily limit reached. Come back tomorrow!');
+      if (!currentUser) showSignupPrompt();
+      messages.pop(); isStreaming = false; sendBtn.disabled = false; return;
+    }
+    if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
+    const data = await response.json();
+    if (data.remaining !== undefined) { remaining = data.remaining; remainingNum.textContent = remaining; }
+    messages.push({ role: 'assistant', content: data.reply });
+    await renderMessageProgressive('ai', data.reply);
+    if (!currentUser) {
+      unauthCount++; localStorage.setItem('tc-unauth-count', unauthCount);
+      remaining = Math.max(0, LIMITS.unauth - unauthCount); remainingNum.textContent = remaining;
+      if (unauthCount >= LIMITS.unauth && !signupPromptShown) showSignupPrompt();
+    }
+  } catch (err) {
+    hideTyping();
+    renderMessage('ai', "I\u2019m having trouble connecting right now. Please try again in a moment.");
+    messages.pop();
+  }
+  isStreaming = false; sendBtn.disabled = !inputField.value.trim();
 }
 
 // =============== SIGNUP PROMPT ===============
 function showSignupPrompt() {
-signupPromptShown = true;
-const container = document.getElementById(‘messages’);
-document.getElementById(‘welcome’).style.display = ‘none’;
-container.style.display = ‘block’;
-const div = document.createElement(‘div’);
-div.className = ‘signup-prompt’;
-div.innerHTML = ‘<h3>You\u2019ve used your ’ + LIMITS.unauth + ’ free questions</h3><p>Create a free account to get <strong>’ + LIMITS.free + ’ questions every day</strong>. No credit card needed. Takes 30 seconds.</p><button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create Free Account</button>’;
-container.appendChild(div); scrollToBottom();
+  signupPromptShown = true;
+  const container = document.getElementById('messages');
+  document.getElementById('welcome').style.display = 'none';
+  container.style.display = 'block';
+  const div = document.createElement('div');
+  div.className = 'signup-prompt';
+  div.innerHTML = '<h3>You\u2019ve used your ' + LIMITS.unauth + ' free questions</h3><p>Create a free account to get <strong>' + LIMITS.free + ' questions every day</strong>. No credit card needed. Takes 30 seconds.</p><button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create Free Account</button>';
+  container.appendChild(div); scrollToBottom();
 }
 
 // =============== RENDER ===============
 function renderMessage(role, text) {
-const container = document.getElementById(‘messages’);
-const div = document.createElement(‘div’);
-div.className = ’message ’ + role;
-if (role === ‘ai’) {
-div.innerHTML = ‘<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">’ + renderMarkdown(text) + ‘</div>’;
-} else {
-const userName = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || ‘You’;
-const userInitial = userName.charAt(0).toUpperCase();
-div.innerHTML = ‘<div class="msg-header"><div class="msg-avatar user">’ + escapeHTML(userInitial) + ‘</div><span class="msg-name user-name">’ + escapeHTML(userName) + ‘</span></div><div class="msg-body">’ + escapeHTML(text) + ‘</div>’;
-}
-container.appendChild(div); scrollToBottom();
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  if (role === 'ai') {
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+  } else {
+    const userName = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You';
+    const userInitial = userName.charAt(0).toUpperCase();
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">' + escapeHTML(userInitial) + '</div><span class="msg-name user-name">' + escapeHTML(userName) + '</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
+  }
+  container.appendChild(div); scrollToBottom();
 }
 async function renderMessageProgressive(role, text) {
-const container = document.getElementById(‘messages’);
-const chatArea = document.getElementById(‘chatArea’);
+  const container = document.getElementById('messages');
+  const chatArea = document.getElementById('chatArea');
 
-const div = document.createElement(‘div’);
-div.className = ’message ’ + role;
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
 
-const header = document.createElement(‘div’);
-header.className = ‘msg-header’;
-header.innerHTML = ‘<div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span>’;
-div.appendChild(header);
+  const header = document.createElement('div');
+  header.className = 'msg-header';
+  header.innerHTML = '<div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span>';
+  div.appendChild(header);
 
-const body = document.createElement(‘div’);
-body.className = ‘msg-body’;
-div.appendChild(body);
-container.appendChild(div);
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+  div.appendChild(body);
+  container.appendChild(div);
 
-// Render the FULL text through the normal formatter first — preserves all formatting
-const temp = document.createElement(‘div’);
-temp.innerHTML = renderMarkdown(text);
-const elements = Array.from(temp.childNodes).filter(n =>
-n.nodeType === 1 || (n.nodeType === 3 && n.textContent.trim())
-);
+  // Render the FULL text through the normal formatter first — preserves all formatting
+  const temp = document.createElement('div');
+  temp.innerHTML = renderMarkdown(text);
+  const elements = Array.from(temp.childNodes).filter(n =>
+    n.nodeType === 1 || (n.nodeType === 3 && n.textContent.trim())
+  );
 
-// Delays: first block fast, then give the user time to read
-const delays = [0, 700, 900, 900, 900, 900, 900, 900, 900, 900];
+  // Delays: first block fast, then give the user time to read
+  const delays = [0, 700, 900, 900, 900, 900, 900, 900, 900, 900];
 
-for (let i = 0; i < elements.length; i++) {
-const el = elements[i];
-const delay = delays[Math.min(i, delays.length - 1)];
-if (delay > 0) await new Promise(r => setTimeout(r, delay));
+  for (let i = 0; i < elements.length; i++) {
+    const el = elements[i];
+    const delay = delays[Math.min(i, delays.length - 1)];
+    if (delay > 0) await new Promise(r => setTimeout(r, delay));
 
-```
-el.classList ? el.classList.add('reveal-block') : null;
-body.appendChild(el);
+    el.classList ? el.classList.add('reveal-block') : null;
+    body.appendChild(el);
 
-// Scroll on first two blocks to land the user at the start of the response
-if (i < 2) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
-```
-
-}
+    // Scroll on first two blocks to land the user at the start of the response
+    if (i < 2) el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
 }
 
 function renderMarkdown(text) {
-let html = escapeHTML(text);
-html = html.replace(/**(.+?)**/g, ‘<strong>$1</strong>’);
-html = html.replace(/*(.+?)*/g, ‘<em>$1</em>’);
-html = html.replace(/^> (.+)$/gm, ‘<blockquote>$1</blockquote>’);
-html = html.replace(/</blockquote>\n<blockquote>/g, ‘\n’);
-html = html.replace(/^#{1,3} (.+)$/gm, ‘<strong>$1</strong>’);
-html = html.replace(/^(—|___|***)$/gm, ‘<hr>’);
-html = html.replace(/(^[-*] .+)\n\n+(?=[-*] )/gm, ‘$1\n’);
-html = html.replace(/(^\d+. .+)\n\n+(?=\d+. )/gm, ‘$1\n’);
-const paragraphs = html.split(/\n\n+/);
-html = paragraphs.map(p => {
-p = p.trim(); if (!p) return ‘’;
-if (p === ‘<hr>’) return ‘<hr>’;
-if (p.startsWith(’<blockquote>’)) return p;
-if (p.match(/^[-*] /m)) { const items = p.split(/\n/).filter(l => l.trim()); return ‘<ul>’ + items.map(l => { const content = l.replace(/^[-*] /, ‘’); if (/^<strong>[^<]+</strong>:?$/.test(content.trim())) return ‘</ul><p class="list-subhead">’ + content + ‘</p><ul>’; return ‘<li>’ + content + ‘</li>’; }).join(’’) + ‘</ul>’; }
-if (p.match(/^\d+. /m)) { const items = p.split(/\n/).filter(l => l.trim()); const startMatch = items[0].match(/^(\d+). /); const startNum = startMatch ? parseInt(startMatch[1]) : 1; return ‘<ol start="' + startNum + '">’ + items.map(l => ‘<li>’ + l.replace(/^\d+. /, ‘’) + ‘</li>’).join(’’) + ‘</ol>’; }
-return ‘<p>’ + p.replace(/\n/g, ‘<br>’) + ‘</p>’;
-}).join(’\n’);
-html = html.replace(/<ul>\s*</ul>/g, ‘’);
+  let html = escapeHTML(text);
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/<\/blockquote>\n<blockquote>/g, '\n');
+  html = html.replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>');
+  html = html.replace(/^(---|___|\*\*\*)$/gm, '<hr>');
+  html = html.replace(/(^[\-\*] .+)\n\n+(?=[\-\*] )/gm, '$1\n');
+  html = html.replace(/(^\d+\. .+)\n\n+(?=\d+\. )/gm, '$1\n');
+  const paragraphs = html.split(/\n\n+/);
+  html = paragraphs.map(p => {
+    p = p.trim(); if (!p) return '';
+    if (p === '<hr>') return '<hr>';
+    if (p.startsWith('<blockquote>')) return p;
+    if (p.match(/^[\-\*] /m)) { const items = p.split(/\n/).filter(l => l.trim()); return '<ul>' + items.map(l => { const content = l.replace(/^[\-\*] /, ''); if (/^<strong>[^<]+<\/strong>:?$/.test(content.trim())) return '</ul><p class="list-subhead">' + content + '</p><ul>'; return '<li>' + content + '</li>'; }).join('') + '</ul>'; }
+    if (p.match(/^\d+\. /m)) { const items = p.split(/\n/).filter(l => l.trim()); const startMatch = items[0].match(/^(\d+)\. /); const startNum = startMatch ? parseInt(startMatch[1]) : 1; return '<ol start="' + startNum + '">' + items.map(l => '<li>' + l.replace(/^\d+\. /, '') + '</li>').join('') + '</ol>'; }
+    return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  html = html.replace(/<ul>\s*<\/ul>/g, '');
 }
-function escapeHTML(str) { const d = document.createElement(‘div’); d.textContent = str; return d.innerHTML; }
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
 function showTyping() {
-const container = document.getElementById(‘messages’);
-const div = document.createElement(‘div’); div.className = ‘typing’; div.id = ‘typingIndicator’;
-div.innerHTML = ‘<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="typing-inner"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><span class="typing-label">thinking…</span></div>’;
-container.appendChild(div);
+  const container = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = 'typing'; div.id = 'typingIndicator';
+  div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="typing-inner"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><span class="typing-label">thinking...</span></div>';
+  container.appendChild(div);
 }
-function hideTyping() { const el = document.getElementById(‘typingIndicator’); if (el) el.remove(); }
-function scrollToBottom() { const a = document.getElementById(‘chatArea’); requestAnimationFrame(() => { a.scrollTop = a.scrollHeight; }); }
+function hideTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+function scrollToBottom() { const a = document.getElementById('chatArea'); requestAnimationFrame(() => { a.scrollTop = a.scrollHeight; }); }
 function showToast(msg, type) {
-const t = document.getElementById(‘toast’);
-t.textContent = msg; t.className = ‘toast show’ + (type === ‘success’ ? ’ success’ : ‘’);
-setTimeout(() => { t.className = ‘toast’; }, 5000);
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = 'toast show' + (type === 'success' ? ' success' : '');
+  setTimeout(() => { t.className = 'toast'; }, 5000);
 }
-document.getElementById(‘newChatBtn’).addEventListener(‘click’, () => {
-messages = []; chatStarted = false; signupPromptShown = false;
-document.getElementById(‘messages’).innerHTML = ‘’;
-document.getElementById(‘messages’).style.display = ‘none’;
-document.getElementById(‘welcome’).style.display = ‘flex’;
-inputField.value = ‘’; inputField.focus();
+document.getElementById('newChatBtn').addEventListener('click', () => {
+  messages = []; chatStarted = false; signupPromptShown = false;
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  inputField.value = ''; inputField.focus();
 });
 
 // =============== SCROLLING PROMPT TICKER ===============
 const tickerPrompts = [
-[[“What is the Holy Trinity?”,“Doctrine”],[“How is the Eucharist different from a symbol?”,“Doctrine”],[“What happens at Baptism?”,“Sacraments”],[“Can mortal sin be forgiven?”,“Moral Theology”],[“What is sanctifying grace?”,“Doctrine”],[“Why do Catholics have a Pope?”,“Apologetics”],[“What are the seven sacraments?”,“Sacraments”],[“Is Purgatory in the Bible?”,“Apologetics”],[“What is the Immaculate Conception?”,“Mariology”],[“How do I pray the Rosary?”,“Prayer”],[“What does the Church teach about salvation?”,“Doctrine”],[“Can non-Catholics go to heaven?”,“Doctrine”]],
-[[“What does the Church teach about divorce?”,“Moral Theology”],[“I’m struggling with doubt \u2014 is that a sin?”,“Pastoral”],[“How do I discern my vocation?”,“Spiritual Life”],[“Why is contraception wrong?”,“Moral Theology”],[“What is the Church’s teaching on just war?”,“Moral Theology”],[“How do I start a daily prayer life?”,“Spiritual Life”],[“My spouse isn’t Catholic \u2014 what do we do?”,“Pastoral”],[“What is an examination of conscience?”,“Sacraments”],[“Can I receive Communion if I’m in mortal sin?”,“Sacraments”],[“What does the Church say about anxiety?”,“Pastoral”],[“How do I offer up suffering?”,“Spiritual Life”],[“What is the difference between a saint and a blessed?”,“Saints”]],
-[[“Why do Catholics call priests ‘Father’?”,“Apologetics”],[“Did the Crusades prove the Church is corrupt?”,“History”],[“How do Catholics interpret the Bible?”,“Scripture”],[“What really happened at the Reformation?”,“History”],[“Where does the Bible mention Confession?”,“Scripture”],[“Why can’t women be ordained?”,“Apologetics”],[“What is Apostolic Succession?”,“Doctrine”],[“Did the early Christians believe in the Real Presence?”,“History”],[“What are the Corporal Works of Mercy?”,“Moral Theology”],[“Why do Catholics baptize infants?”,“Apologetics”],[“What is the Shroud of Turin?”,“Apologetics”],[“How should I read the Book of Revelation?”,“Scripture”]]
+  [["What is the Holy Trinity?","Doctrine"],["How is the Eucharist different from a symbol?","Doctrine"],["What happens at Baptism?","Sacraments"],["Can mortal sin be forgiven?","Moral Theology"],["What is sanctifying grace?","Doctrine"],["Why do Catholics have a Pope?","Apologetics"],["What are the seven sacraments?","Sacraments"],["Is Purgatory in the Bible?","Apologetics"],["What is the Immaculate Conception?","Mariology"],["How do I pray the Rosary?","Prayer"],["What does the Church teach about salvation?","Doctrine"],["Can non-Catholics go to heaven?","Doctrine"]],
+  [["What does the Church teach about divorce?","Moral Theology"],["I'm struggling with doubt \u2014 is that a sin?","Pastoral"],["How do I discern my vocation?","Spiritual Life"],["Why is contraception wrong?","Moral Theology"],["What is the Church's teaching on just war?","Moral Theology"],["How do I start a daily prayer life?","Spiritual Life"],["My spouse isn't Catholic \u2014 what do we do?","Pastoral"],["What is an examination of conscience?","Sacraments"],["Can I receive Communion if I'm in mortal sin?","Sacraments"],["What does the Church say about anxiety?","Pastoral"],["How do I offer up suffering?","Spiritual Life"],["What is the difference between a saint and a blessed?","Saints"]],
+  [["Why do Catholics call priests 'Father'?","Apologetics"],["Did the Crusades prove the Church is corrupt?","History"],["How do Catholics interpret the Bible?","Scripture"],["What really happened at the Reformation?","History"],["Where does the Bible mention Confession?","Scripture"],["Why can't women be ordained?","Apologetics"],["What is Apostolic Succession?","Doctrine"],["Did the early Christians believe in the Real Presence?","History"],["What are the Corporal Works of Mercy?","Moral Theology"],["Why do Catholics baptize infants?","Apologetics"],["What is the Shroud of Turin?","Apologetics"],["How should I read the Book of Revelation?","Scripture"]]
 ];
 function buildTickerRow(rowEl, prompts) {
-const fragment = document.createDocumentFragment();
-[…prompts, …prompts].forEach(([q, cat]) => {
-const pill = document.createElement(‘div’);
-pill.className = ‘prompt-pill’;
-pill.innerHTML = ‘<span class="prompt-pill-q">’ + q + ‘</span><span class="prompt-pill-cat">’ + cat + ‘</span>’;
-pill.addEventListener(‘click’, () => { inputField.value = q; sendMessage(); });
-fragment.appendChild(pill);
-});
-rowEl.appendChild(fragment);
+  const fragment = document.createDocumentFragment();
+  [...prompts, ...prompts].forEach(([q, cat]) => {
+    const pill = document.createElement('div');
+    pill.className = 'prompt-pill';
+    pill.innerHTML = '<span class="prompt-pill-q">' + q + '</span><span class="prompt-pill-cat">' + cat + '</span>';
+    pill.addEventListener('click', () => { inputField.value = q; sendMessage(); });
+    fragment.appendChild(pill);
+  });
+  rowEl.appendChild(fragment);
 }
-buildTickerRow(document.getElementById(‘tickerRow1’), tickerPrompts[0]);
-buildTickerRow(document.getElementById(‘tickerRow2’), tickerPrompts[1]);
-buildTickerRow(document.getElementById(‘tickerRow3’), tickerPrompts[2]);
+buildTickerRow(document.getElementById('tickerRow1'), tickerPrompts[0]);
+buildTickerRow(document.getElementById('tickerRow2'), tickerPrompts[1]);
+buildTickerRow(document.getElementById('tickerRow3'), tickerPrompts[2]);
 
 // On mobile, inject the 4 starter card prompts into the tickers
 if (window.innerWidth <= 600) {
-const mobileStarters = [
-[“Is the Eucharist really the Body and Blood of Christ?”, “Core Doctrine”],
-[“I\u2019ve been away from the Church for years. Can I come back?”, “Pastoral”],
-[“How do I prepare a good Confession?”, “Sacramental”],
-[“Why do Catholics pray to Mary?”, “Apologetics”],
-];
-// Spread them across the 3 rows
-const rows = [‘tickerRow1’, ‘tickerRow2’, ‘tickerRow3’];
-mobileStarters.forEach((prompt, i) => {
-buildTickerRow(document.getElementById(rows[i % rows.length]), [prompt]);
-});
+  const mobileStarters = [
+    ["Is the Eucharist really the Body and Blood of Christ?", "Core Doctrine"],
+    ["I\u2019ve been away from the Church for years. Can I come back?", "Pastoral"],
+    ["How do I prepare a good Confession?", "Sacramental"],
+    ["Why do Catholics pray to Mary?", "Apologetics"],
+  ];
+  // Spread them across the 3 rows
+  const rows = ['tickerRow1', 'tickerRow2', 'tickerRow3'];
+  mobileStarters.forEach((prompt, i) => {
+    buildTickerRow(document.getElementById(rows[i % rows.length]), [prompt]);
+  });
 }
 </script>
-
 </body>
 </html>
