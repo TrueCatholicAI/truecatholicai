@@ -584,7 +584,7 @@
     </div>
     <div id="signupView" style="display:none">
       <div class="modal-title">Create Your Account</div>
-      <div class="modal-subtitle">30 free questions every day. No credit card.</div>
+      <div class="modal-subtitle">15 free questions every day. No credit card.</div>
       <div class="form-error" id="signupError"></div>
       <div class="form-success" id="signupSuccess"></div>
       <form onsubmit="handleSignup(event)" id="signupForm">
@@ -615,7 +615,7 @@
 const SUPABASE_URL = 'https://gowufpcyhaafczfkikwg.supabase.co';
 const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4'; 
 const API_URL = 'https://api.truecatholicai.org/chat';
-const LIMITS = { unauth: 5, free: 30, patron: 100, family: 100 };
+const LIMITS = { unauth: 5, free: 15, patron: 100, family: 200 };
 
 // =============== SUPABASE INIT ===============
 const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -955,7 +955,21 @@ function renderMarkdown(text) {
     if (p === '<hr>') return '<hr>';
     if (p.startsWith('<blockquote>')) return p;
     if (p.match(/^[\-\*] /m)) { const items = p.split(/\n/).filter(l => l.trim()); return '<ul>' + items.map(l => { const content = l.replace(/^[\-\*] /, ''); if (/^<strong>[^<]+<\/strong>:?$/.test(content.trim())) return '</ul><p class="list-subhead">' + content + '</p><ul>'; return '<li>' + content + '</li>'; }).join('') + '</ul>'; }
-    if (p.match(/^\d+\. /m)) { const items = p.split(/\n/).filter(l => l.trim()); const startMatch = items[0].match(/^(\d+)\. /); const startNum = startMatch ? parseInt(startMatch[1]) : 1; return '<ol start="' + startNum + '">' + items.map(l => '<li>' + l.replace(/^\d+\. /, '') + '</li>').join('') + '</ol>'; }
+    if (p.match(/^\d+\. /m)) {
+      const items = p.split(/\n/).filter(l => l.trim());
+      let result = ''; let counter = 1;
+      items.forEach(l => {
+        const content = l.replace(/^\d+\. /, '');
+        if (/^<strong>[^<]+<\/strong>:?$/.test(content.trim())) {
+          result += '<p class="list-subhead">' + content + '</p>';
+          counter = 1; // restart numbering after a subhead
+        } else {
+          result += '<ol start="' + counter + '"><li>' + content + '</li></ol>';
+          counter++;
+        }
+      });
+      return result;
+    }
     return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
   }).join('\n');
   html = html.replace(/<ul>\s*<\/ul>/g, '');
