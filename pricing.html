@@ -8,7 +8,7 @@
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
   *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-  html, body { overflow-x: hidden; }
+  body { overflow-x: clip; }
   :root {
     --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
     --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
@@ -38,7 +38,6 @@
     background: var(--bg); color: var(--text);
     font-family: 'Source Serif 4', Georgia, serif;
     -webkit-font-smoothing: antialiased;
-    overflow-x: hidden;
   }
   /* Grain overlay */
   body::before {
@@ -296,6 +295,8 @@
   .comp-x { color: var(--red); opacity: 0.5; font-size: 1.1rem; }
   .comp-partial { color: var(--orange); font-size: 0.8rem; }
   .comp-table tr:last-child td { border-bottom: none; }
+  .comp-break { display: none; }
+  .comp-slash { }
 
   /* FAQ */
   .faq { padding: 80px 28px; max-width: 700px; margin: 0 auto; border-top: 1px solid var(--border); }
@@ -408,6 +409,11 @@
     .nav-mobile-actions { display: flex; }
     .nav-mobile-actions .burger { display: flex; }
     .institutional { flex-direction: column; text-align: center; }
+
+    .comparison { overflow-x: hidden; }
+    .comp-table th, .comp-table td { font-size: 0.8rem; padding: 12px 10px; }
+    .comp-break { display: inline; }
+    .comp-slash { display: none; }
 
     /* Tab switcher */
     .plan-tabs {
@@ -596,7 +602,7 @@
       <p>Volume licensing for OCIA, youth ministry, Catholic schools, and diocesan programs. 
          Custom seat counts, admin dashboard, and dedicated support.</p>
     </div>
-    <a class="plan-cta cta-patron" href="mailto:michael@truecatholicai.org" style="white-space: nowrap; flex-shrink: 0;">
+    <a class="plan-cta cta-patron" href="/cdn-cgi/l/email-protection#83eeeae0ebe2e6efc3f7f1f6e6e0e2f7ebecefeae0e2eaadecf1e4" style="white-space: nowrap; flex-shrink: 0;">
       Contact Us
     </a>
   </div>
@@ -631,10 +637,9 @@
   <table class="comp-table">
     <thead>
       <tr>
-        <th style="width:35%">Feature</th>
-        <th>TrueCatholic AI</th>
-        <th>ChatGPT / Claude / Gemini</th>
-        <th>Magisterium AI</th>
+        <th style="width:45%">Feature</th>
+        <th>Us</th>
+        <th>ChatGPT<span class="comp-slash"> / </span><br class="comp-break">Claude<span class="comp-slash"> / </span><br class="comp-break">Gemini</th>
       </tr>
     </thead>
     <tbody>
@@ -642,49 +647,36 @@
         <td>Presents doctrine as true</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-x">✗</span></td>
-        <td><span class="comp-check">✓</span></td>
       </tr>
       <tr>
         <td>Public doctrinal charter</td>
         <td><span class="comp-check">✓</span></td>
-        <td><span class="comp-x">✗</span></td>
         <td><span class="comp-x">✗</span></td>
       </tr>
       <tr>
         <td>Independent benchmark tested</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-check">✓</span> tested, scored C/C+</td>
-        <td><span class="comp-partial">planned</span></td>
       </tr>
       <tr>
         <td>Anti-subversion protections</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-x">✗</span> all failed</td>
-        <td><span class="comp-partial">unknown</span></td>
       </tr>
       <tr>
         <td>Choice of AI models</td>
         <td><span class="comp-check">✓</span> multi-model</td>
         <td><span class="comp-partial">single provider</span></td>
-        <td><span class="comp-partial">unknown</span></td>
       </tr>
       <tr>
         <td>Free tier (no account)</td>
         <td><span class="comp-check">✓</span></td>
-        <td><span class="comp-partial">limited</span></td>
         <td><span class="comp-partial">limited</span></td>
       </tr>
       <tr>
         <td>Family plan with parental tools</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-x">✗</span></td>
-        <td><span class="comp-x">✗</span></td>
-      </tr>
-      <tr>
-        <td>Conflict of interest disclosed</td>
-        <td><span class="comp-check">✓</span> everywhere</td>
-        <td>N/A</td>
-        <td><span class="comp-partial">unknown</span></td>
       </tr>
     </tbody>
   </table>
@@ -776,11 +768,11 @@
     <a href="https://truecatholicai.org/charter.html">Charter</a>
     <a href="https://catholicfaithindex.com">Benchmark</a>
     <a href="https://truecatholicai.org/pricing.html">Pricing</a>
-    <a href="mailto:michael@truecatholicai.org">Contact</a>
+    <a href="/cdn-cgi/l/email-protection#c5a8aca6ada4a0a985b1b7b0a0a6a4b1adaaa9aca6a4acebaab7a2">Contact</a>
   </div>
 </footer>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
   function submitFamilyEmail() {
     const input = document.getElementById('familyEmail');
     const btn = document.getElementById('familyEmailBtn');
@@ -817,7 +809,7 @@
   const saved = localStorage.getItem('tc-theme');
   function setTheme(light) {
     document.body.classList.toggle('light', light);
-    const icon = light ? '☀' : '☽';
+    const icon = light ? '☼' : '☽';
     themeBtn.textContent = icon;
     themeBtnMobile.textContent = icon;
     localStorage.setItem('tc-theme', light ? 'light' : 'dark');
@@ -862,9 +854,10 @@
     if (Math.abs(dx) < 40) return;
     const active = document.querySelector('.plan-tab.active');
     const idx = planOrder.indexOf(active.dataset.plan);
-    const next = dx < 0 ? Math.min(idx + 1, planOrder.length - 1) : Math.max(idx - 1, 0);
-    if (next !== idx) showPlan(planOrder[next], dx < 0 ? 1 : -1);
+    if (dx < 0 && idx < planOrder.length - 1) showPlan(planOrder[idx + 1], 1);
+    if (dx > 0 && idx > 0) showPlan(planOrder[idx - 1], -1);
   }, { passive: true });
+
 </script>
 </body>
 </html>
