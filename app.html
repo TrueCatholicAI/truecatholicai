@@ -37,6 +37,9 @@
   body.light .welcome-cross::before, body.light .welcome-cross::after { background: #F4F1EB; }
   body.light .header-mark { background: var(--gold); }
   body.light .header-mark::before, body.light .header-mark::after { background: #F4F1EB; }
+  body.light .journey-overlay { background: rgba(244,241,235,0.88); }
+  body.light .journey-icon { background: var(--gold); }
+  body.light .journey-icon::before, body.light .journey-icon::after { background: #F4F1EB; }
   body.light .modal-overlay { background: rgba(244,241,235,0.75); }
   body.light .modal { background: var(--bg-card); }
   body.light .modal-cross { background: var(--gold); }
@@ -144,16 +147,12 @@
     width: 100%; align-self: stretch; overflow: hidden; margin-top: 8px;
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
-    opacity: 0; transition: opacity 0.4s ease;
   }
-  .prompt-ticker-wrap.ready { opacity: 1; }
   .prompt-ticker-row {
     display: flex; gap: 10px; width: max-content;
     animation: tickerScroll var(--ticker-speed, 60s) linear infinite;
-    animation-play-state: paused;
   }
   .prompt-ticker-row.reverse { animation-name: tickerScrollReverse; }
-  .prompt-ticker-wrap.ready .prompt-ticker-row { animation-play-state: running; }
   .prompt-pill {
     background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
     padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
@@ -377,6 +376,8 @@
     .prompt-pill:hover { border-color: var(--gold-dim); background: var(--bg-input); }
     .send-btn:hover:not(:disabled) { background: var(--gold-light); }
     .input-footer a:hover { color: var(--gold); }
+    .journey-option:hover { border-color: var(--gold-dim); background: rgba(196,162,78,0.05); }
+    .journey-skip:hover { color: var(--gold); }
     .modal-close:hover { color: var(--text); }
     .form-btn:hover:not(:disabled) { background: var(--gold-light); }
     .form-toggle a:hover { color: var(--gold-light); }
@@ -388,6 +389,47 @@
   }
 
   /* Faith Journey Modal */
+  .journey-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.4s ease;
+  }
+  .journey-overlay.visible { opacity: 1; }
+  .journey-modal-box {
+    width: 440px; max-width: 94%; max-height: 90vh; overflow-y: auto;
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    border-radius: 16px; padding: 36px 32px; position: relative;
+    transform: translateY(20px); transition: transform 0.4s ease;
+  }
+  .journey-overlay.visible .journey-modal-box { transform: translateY(0); }
+  .journey-icon {
+    width: 40px; height: 40px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 0 auto 20px;
+  }
+  .journey-icon::before { content: ''; position: absolute; width: 14px; height: 2px; background: var(--bg); }
+  .journey-icon::after { content: ''; position: absolute; width: 2px; height: 14px; background: var(--bg); }
+  .journey-heading {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400;
+    color: var(--text); text-align: center; margin-bottom: 6px; line-height: 1.3;
+  }
+  .journey-sub { font-size: 0.85rem; color: var(--text-mid); text-align: center; line-height: 1.5; margin-bottom: 24px; }
+  .journey-options { display: flex; flex-direction: column; gap: 10px; }
+  .journey-option {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 10px; padding: 16px 18px; cursor: pointer; transition: all 0.2s; text-align: left;
+  }
+  .journey-option-label { font-size: 0.92rem; color: var(--text); line-height: 1.4; display: block; }
+  .journey-option-desc {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim);
+    letter-spacing: 0.04em; margin-top: 4px; display: block;
+  }
+  .journey-skip {
+    display: block; margin: 16px auto 0; background: none; border: none; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.08em; text-transform: uppercase; padding: 8px 16px; transition: color 0.2s;
+  }
 
   @media (max-width: 600px) {
     .header { padding: 10px 14px; }
@@ -403,6 +445,9 @@
     .prompt-pill-q { font-size: 0.78rem; }
     .message { padding: 12px 14px; }
     .input-area { padding: 12px 14px; }
+    .journey-modal-box { width: 94%; padding: 28px 20px; }
+    .journey-option { padding: 14px 14px; }
+    .journey-option-label { font-size: 0.88rem; }
     .modal { padding: 28px 22px; margin: 10px; }
   }
 </style>
@@ -488,6 +533,38 @@
   <div class="input-footer">AI can make mistakes. For definitive teaching, consult the <a href="https://www.vatican.va/archive/ENG0015/_INDEX.HTM" target="_blank">Catechism</a> or a priest. &middot; <a href="https://truecatholicai.org">truecatholicai.org</a></div>
 </div>
 
+<!-- Faith Journey Modal -->
+<div class="journey-overlay" id="journeyModal">
+  <div class="journey-modal-box">
+    <div class="journey-icon"></div>
+    <div class="journey-heading">Where are you on your faith journey?</div>
+    <div class="journey-sub">This helps me meet you where you are. You can always change this later.</div>
+    <div class="journey-options">
+      <div class="journey-option" onclick="selectJourney('seeking', this)">
+        <span class="journey-option-label">I'm exploring whether God exists</span>
+        <span class="journey-option-desc">Atheist, agnostic, or just curious</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('christian', this)">
+        <span class="journey-option-label">I'm Christian but not Catholic</span>
+        <span class="journey-option-desc">Protestant, Orthodox, or non-denominational</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('returning', this)">
+        <span class="journey-option-label">I'm Catholic but haven't been practicing</span>
+        <span class="journey-option-desc">Fallen away or drifted from the faith</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('practicing', this)">
+        <span class="journey-option-label">I'm a practicing Catholic</span>
+        <span class="journey-option-desc">Looking to go deeper in the faith</span>
+      </div>
+      <div class="journey-option" onclick="selectJourney('rcia', this)">
+        <span class="journey-option-label">I'm becoming Catholic</span>
+        <span class="journey-option-desc">RCIA, converting, or seriously considering it</span>
+      </div>
+    </div>
+    <button class="journey-skip" onclick="selectJourney('', null)">Skip for now</button>
+  </div>
+</div>
+
 <!-- Auth Modal -->
 <div class="modal-overlay" id="authModal">
   <div class="modal">
@@ -570,6 +647,29 @@ themeBtn.addEventListener('click', function() {
   themeBtn.innerHTML = isLight ? '&#9788;' : '&#9789;';
   localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
 });
+
+// =============== FAITH JOURNEY MODAL ===============
+let userJourney = localStorage.getItem('tc-journey') || '';
+const journeyLabels = {
+  seeking: 'exploring whether God exists (atheist/agnostic/curious)',
+  christian: 'Christian but not Catholic (Protestant/Orthodox/non-denominational)',
+  returning: 'Catholic who has been away from the Church',
+  practicing: 'practicing Catholic looking to go deeper',
+  rcia: 'in the process of becoming Catholic (RCIA/converting)'
+};
+function selectJourney(key, el) {
+  userJourney = key;
+  localStorage.setItem('tc-journey', key);
+  localStorage.setItem('tc-journey-set', 'true');
+  if (el) { el.style.borderColor = 'var(--gold)'; el.style.background = 'rgba(196,162,78,0.08)'; setTimeout(() => closeJourneyModal(), 350); }
+  else closeJourneyModal();
+}
+function closeJourneyModal() {
+  const modal = document.getElementById('journeyModal');
+  modal.classList.remove('visible');
+  setTimeout(() => { modal.style.display = 'none'; }, 400);
+  inputField.focus();
+}
 
 // =============== AUTH MODAL ===============
 function openAuthModal(view) {
@@ -657,8 +757,9 @@ async function setLoggedIn(user) {
   document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family') ? 'block' : 'none';
   const limit = LIMITS[userPlan] || LIMITS.free;
   remainingMax.textContent = limit;
-  remainingNum.textContent = '\u2014';
+  remainingNum.textContent = limit;
   remaining = limit;
+  fetchRemaining();
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free';
@@ -669,6 +770,22 @@ function setLoggedOut() {
   remaining = Math.max(0, limit - unauthCount);
   remainingMax.textContent = limit;
   remainingNum.textContent = remaining;
+}
+
+async function fetchRemaining() {
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.access_token) return;
+    const res = await fetch(API_URL.replace('/chat', '/remaining'), {
+      headers: { 'Authorization': 'Bearer ' + session.access_token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    if (data.remaining !== undefined) {
+      remaining = data.remaining;
+      remainingNum.textContent = remaining;
+    }
+  } catch (e) { /* silently fail — we already show the plan limit as fallback */ }
 }
 
 // =============== USER DROPDOWN ===============
@@ -692,6 +809,12 @@ async function handleManageSubscription() {
 
 // =============== INIT ===============
 document.addEventListener('DOMContentLoaded', async () => {
+  const alreadySet = localStorage.getItem('tc-journey-set');
+  if (!alreadySet) {
+    const modal = document.getElementById('journeyModal');
+    modal.style.display = 'flex';
+    requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add('visible'); }); });
+  }
   const { data: { session } } = await sb.auth.getSession();
   if (session) await setLoggedIn(session.user); else setLoggedOut();
   sb.auth.onAuthStateChange(async (event, session) => {
@@ -723,8 +846,12 @@ async function sendMessage() {
   sendBtn.disabled = true; isStreaming = true;
   showTyping(); scrollToBottom();
 
+  // Journey context on first message
   let apiMessages = messages.map(m => ({ ...m }));
-  chatStarted = true;
+  if (!chatStarted && userJourney && journeyLabels[userJourney]) {
+    apiMessages[0] = { ...apiMessages[0], content: '[User self-identified as: ' + journeyLabels[userJourney] + ']\n\n' + apiMessages[0].content };
+    chatStarted = true;
+  } else if (!chatStarted) { chatStarted = true; }
 
   const body = { messages: apiMessages };
   const modelSelect = document.getElementById('modelSelect');
@@ -907,7 +1034,6 @@ function buildTickerRow(rowEl, prompts) {
 buildTickerRow(document.getElementById('tickerRow1'), tickerPrompts[0]);
 buildTickerRow(document.getElementById('tickerRow2'), tickerPrompts[1]);
 buildTickerRow(document.getElementById('tickerRow3'), tickerPrompts[2]);
-document.querySelectorAll('.prompt-ticker-wrap').forEach(el => el.classList.add('ready'));
 
 // On mobile, inject the 4 starter card prompts into the tickers
 if (window.innerWidth <= 600) {
