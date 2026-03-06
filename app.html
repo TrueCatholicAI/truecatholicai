@@ -545,6 +545,7 @@ let fetchStartedAt = 0;
 let remaining = 0;
 let chatStarted = false;
 let currentUser = null;
+let cachedAccessToken = null;
 let userPlan = 'free';
 let unauthCount = parseInt(localStorage.getItem('tc-unauth-count') || '0');
 let signupPromptShown = false;
@@ -628,6 +629,7 @@ async function handleForgot(e) {
   else { document.getElementById('forgotForm').style.display = 'none'; showAuthSuccess('forgotSuccess', 'If that email exists, a reset link has been sent. Check your inbox.'); }
 }
 async function handleSignOut() {
+  cachedAccessToken = null;
   await sb.auth.signOut(); closeUserDropdown();
   messages = []; chatStarted = false;
   document.getElementById('messages').innerHTML = '';
@@ -670,10 +672,10 @@ function setLoggedOut() {
 
 async function fetchRemaining() {
   try {
-    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
-    if (!session?.access_token) return;
+    const token = await getAccessToken();
+    if (!token) return;
     const res = await fetch(API_URL.replace('/chat', '/remaining'), {
-      headers: { 'Authorization': 'Bearer ' + session.access_token }
+      headers: { 'Authorization': 'Bearer ' + token }
     });
     if (!res.ok) return;
     const data = await res.json();
@@ -691,11 +693,11 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wr
 async function handleManageSubscription() {
   closeUserDropdown();
   try {
-    const session = (await withTimeout(sb.auth.getSession(), 5000)).data.session;
-    if (!session) return showToast('Please sign in first', 'error');
+    const token = await getAccessToken();
+    if (!token) return showToast('Please sign in first', 'error');
     const res = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + session.access_token }
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
@@ -711,15 +713,32 @@ function withTimeout(promise, ms) {
   ]);
 }
 
+async function getAccessToken() {
+  try {
+    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+    if (session?.access_token) {
+      cachedAccessToken = session.access_token;
+      return cachedAccessToken;
+    }
+  } catch (e) { /* timeout or error */ }
+  return cachedAccessToken; // fall back to last known good token
+}
+
 // =============== INIT ===============
 document.addEventListener('DOMContentLoaded', async () => {
   try {
     const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
-    if (session) await setLoggedIn(session.user); else setLoggedOut();
+    if (session) {
+      cachedAccessToken = session.access_token;
+      await setLoggedIn(session.user);
+    } else setLoggedOut();
   } catch (e) { setLoggedOut(); }
   sb.auth.onAuthStateChange(async (event, session) => {
-    if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
-    else if (event === 'SIGNED_OUT') setLoggedOut();
+    if (event === 'SIGNED_IN' && session) {
+      cachedAccessToken = session.access_token;
+      await setLoggedIn(session.user); closeAuthModal();
+    }
+    else if (event === 'SIGNED_OUT') { cachedAccessToken = null; setLoggedOut(); }
   });
   inputField.focus();
 });
@@ -739,12 +758,10 @@ document.addEventListener('visibilitychange', async () => {
     showToast('Connection was interrupted. Tap send to try again.');
   }
 
-  // Refresh session (with timeout so it doesn't hang)
+  // Refresh session and token cache
   if (currentUser) {
-    try {
-      const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
-      if (session) { currentUser = session.user; fetchRemaining(); }
-    } catch (e) { /* timed out or failed — non-fatal, session will refresh on next action */ }
+    const token = await getAccessToken();
+    if (token) fetchRemaining();
   }
 });
 
@@ -780,10 +797,16 @@ async function sendMessage() {
 
   const headers = { 'Content-Type': 'application/json' };
   if (currentUser) {
-    try {
-      const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
-      if (session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
-    } catch (e) { /* session refresh timed out — send without auth, will count as anon */ }
+    const token = await getAccessToken();
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token;
+    } else {
+      hideTyping(); isStreaming = false; fetchStartedAt = 0;
+      sendBtn.disabled = !inputField.value.trim();
+      messages.pop(); inputField.value = text;
+      showToast('Session expired. Please sign in again.');
+      return;
+    }
   }
 
   try {
@@ -923,13 +946,21 @@ function renderMarkdown(text) {
   return html;
 }
 function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+let typingTimer = null;
 function showTyping() {
   const container = document.getElementById('messages');
   const div = document.createElement('div'); div.className = 'typing'; div.id = 'typingIndicator';
   div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="typing-inner"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><span class="typing-label">thinking...</span></div>';
   container.appendChild(div);
+  typingTimer = setTimeout(() => {
+    const label = div.querySelector('.typing-label');
+    if (label) label.textContent = 'still thinking...';
+  }, 5000);
 }
-function hideTyping() { const el = document.getElementById('typingIndicator'); if (el) el.remove(); }
+function hideTyping() {
+  if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+  const el = document.getElementById('typingIndicator'); if (el) el.remove();
+}
 function scrollToBottom() { const a = document.getElementById('chatArea'); requestAnimationFrame(() => { a.scrollTop = a.scrollHeight; }); }
 function showToast(msg, type) {
   const t = document.getElementById('toast');
