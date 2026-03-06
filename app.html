@@ -541,6 +541,7 @@ const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // =============== STATE ===============
 let messages = [];
 let isStreaming = false;
+let fetchStartedAt = 0;
 let remaining = 0;
 let chatStarted = false;
 let currentUser = null;
@@ -669,7 +670,7 @@ function setLoggedOut() {
 
 async function fetchRemaining() {
   try {
-    const { data: { session } } = await sb.auth.getSession();
+    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
     if (!session?.access_token) return;
     const res = await fetch(API_URL.replace('/chat', '/remaining'), {
       headers: { 'Authorization': 'Bearer ' + session.access_token }
@@ -690,7 +691,7 @@ document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wr
 async function handleManageSubscription() {
   closeUserDropdown();
   try {
-    const session = (await sb.auth.getSession()).data.session;
+    const session = (await withTimeout(sb.auth.getSession(), 5000)).data.session;
     if (!session) return showToast('Please sign in first', 'error');
     const res = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
       method: 'POST',
@@ -702,10 +703,20 @@ async function handleManageSubscription() {
   } catch (e) { showToast('Error opening subscription portal', 'error'); }
 }
 
+// =============== HELPERS ===============
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
 // =============== INIT ===============
 document.addEventListener('DOMContentLoaded', async () => {
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) await setLoggedIn(session.user); else setLoggedOut();
+  try {
+    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+    if (session) await setLoggedIn(session.user); else setLoggedOut();
+  } catch (e) { setLoggedOut(); }
   sb.auth.onAuthStateChange(async (event, session) => {
     if (event === 'SIGNED_IN' && session) { await setLoggedIn(session.user); closeAuthModal(); }
     else if (event === 'SIGNED_OUT') setLoggedOut();
@@ -716,30 +727,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 // =============== RESUME AFTER BROWSER SUSPEND ===============
 document.addEventListener('visibilitychange', async () => {
   if (document.visibilityState !== 'visible') return;
-  // If stuck streaming, clean up after a brief grace period
-  if (isStreaming) {
-    setTimeout(() => {
-      if (!isStreaming) return; // resolved naturally
-      hideTyping();
-      isStreaming = false;
-      sendBtn.disabled = !inputField.value.trim();
-      // If the last message was from the user (no AI reply came back), remove it
-      if (messages.length && messages[messages.length - 1].role === 'user') {
-        const lastUserText = messages[messages.length - 1].content;
-        messages.pop();
-        inputField.value = lastUserText; // put their question back so they can re-send
-      }
-      showToast('Connection was interrupted. Your message is ready to resend.');
-    }, 3000);
-  }
-  // Refresh session — token may have expired while browser was closed
-  try {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session) {
-      currentUser = session.user;
-      fetchRemaining();
+
+  // Immediately clean up stuck streaming — if the fetch started >15s ago, it's dead
+  if (isStreaming && fetchStartedAt && (Date.now() - fetchStartedAt > 15000)) {
+    hideTyping();
+    isStreaming = false;
+    sendBtn.disabled = !inputField.value.trim();
+    if (messages.length && messages[messages.length - 1].role === 'user') {
+      inputField.value = messages.pop().content;
     }
-  } catch (e) { /* non-fatal */ }
+    showToast('Connection was interrupted. Tap send to try again.');
+  }
+
+  // Refresh session (with timeout so it doesn't hang)
+  if (currentUser) {
+    try {
+      const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+      if (session) { currentUser = session.user; fetchRemaining(); }
+    } catch (e) { /* timed out or failed — non-fatal, session will refresh on next action */ }
+  }
 });
 
 // =============== INPUT ===============
@@ -762,6 +768,7 @@ async function sendMessage() {
   renderMessage('user', text);
   inputField.value = ''; inputField.style.height = 'auto';
   sendBtn.disabled = true; isStreaming = true;
+  fetchStartedAt = Date.now();
   showTyping(); scrollToBottom();
 
   let apiMessages = messages.map(m => ({ ...m }));
@@ -773,8 +780,10 @@ async function sendMessage() {
 
   const headers = { 'Content-Type': 'application/json' };
   if (currentUser) {
-    const { data: { session } } = await sb.auth.getSession();
-    if (session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
+    try {
+      const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+      if (session?.access_token) headers['Authorization'] = 'Bearer ' + session.access_token;
+    } catch (e) { /* session refresh timed out — send without auth, will count as anon */ }
   }
 
   try {
@@ -808,7 +817,7 @@ async function sendMessage() {
     }
     messages.pop();
   }
-  isStreaming = false; sendBtn.disabled = !inputField.value.trim();
+  isStreaming = false; fetchStartedAt = 0; sendBtn.disabled = !inputField.value.trim();
 }
 
 // =============== SIGNUP PROMPT ===============
