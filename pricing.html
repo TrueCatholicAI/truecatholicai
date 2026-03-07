@@ -48,37 +48,35 @@
 
   /* NAV */
   nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 14px 28px;
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    padding: 1.1rem 3rem;
     display: flex; align-items: center; justify-content: space-between;
-    background: color-mix(in srgb, var(--bg) 92%, transparent); backdrop-filter: blur(16px);
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
     border-bottom: 1px solid var(--border);
   }
-  .nav-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
   .nav-mark {
-    width: 26px; height: 26px; background: var(--gold); border-radius: 50%;
-    position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center;
   }
-  .nav-mark::before { content:''; position:absolute; width:9px; height:1.5px; background:var(--bg); }
-  .nav-mark::after { content:''; position:absolute; width:1.5px; height:9px; background:var(--bg); }
+  .nav-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .nav-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
   .nav-name {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 500;
-    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light);
   }
-  .nav-links { display: flex; gap: 6px; align-items: center; }
-  .nav-link {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; font-weight: 400;
-    letter-spacing: 0.08em; text-transform: uppercase;
-    color: var(--text-dim); text-decoration: none;
-    padding: 6px 12px; border-radius: 4px; transition: all 0.25s;
-    display: inline-flex; align-items: center;
+  .nav-links { display: flex; gap: 2.2rem; align-items: center; }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); text-decoration: none; transition: color 0.25s;
   }
-  .nav-link:hover { color: var(--gold); }
-  .nav-link.cta {
-    border: 1px solid var(--gold-dim); color: var(--gold);
-    height: 32px; padding: 0 12px;
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links .nav-cta {
+    padding: 0.45em 1.2em; border: 1px solid var(--gold-dim);
+    color: var(--gold) !important; transition: all 0.25s;
   }
-  .nav-link.cta:hover { background: rgba(196,162,78,0.1); }
+  .nav-links .nav-cta:hover { background: var(--gold); color: var(--bg) !important; }
 
   /* HERO */
   .hero {
@@ -405,6 +403,7 @@
   .plan-tabs { display: none; }
 
   @media (max-width: 820px) {
+    nav { padding: 1rem 1.5rem; }
     .nav-links { display: none; }
     .nav-mobile-actions { display: flex; }
     .nav-mobile-actions .burger { display: flex; }
@@ -458,12 +457,12 @@
     <span class="nav-name">TrueCatholic AI</span>
   </a>
   <div class="nav-links">
-    <a class="nav-link" href="https://truecatholicai.org">Home</a>
-    <a class="nav-link" href="https://truecatholicai.org/charter.html">The Charter</a>
-    <a class="nav-link" href="https://truecatholicai.org/pricing.html">Pricing</a>
-    <a class="nav-link" href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+    <a href="https://truecatholicai.org">Home</a>
+    <a href="https://truecatholicai.org/charter.html">The Charter</a>
+    <a href="https://truecatholicai.org/pricing.html">Pricing</a>
+    <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
     <button class="theme-btn" id="themeBtn" title="Toggle theme">☽</button>
-    <a class="nav-link cta" href="https://truecatholicai.org/app.html">Try Free</a>
+    <a href="https://truecatholicai.org/app.html" class="nav-cta">Try Free</a>
   </div>
   <div class="nav-mobile-actions">
     <button class="theme-btn" id="themeBtnMobile" title="Toggle theme">☽</button>
