@@ -63,10 +63,6 @@ charter.html        # Full charter viewer with navigation
 - **Benchmark:** [catholicfaithindex.com](https://catholicfaithindex.com)
 - **Contact:** truecatholicai@proton.me
 
-## Status
-
-In development. The charter is written. The benchmark is running. The system prompt is tested. Targeting 2027 for public launch.
-
 ---
 
 *Ad Maiorem Dei Gloriam — For the Greater Glory of God*
