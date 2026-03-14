@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TrueCatholic AI — Unapologetically Catholic</title>
+<meta name="description" content="AI that teaches the Catholic faith without compromise. Built on a 2,700-line doctrinal charter, not a corporate filter.">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400;1,500&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  body { overflow-x: clip; }
+
+  :root {
+    --gold: #C4A24E;
+    --gold-light: #DABE6A;
+    --gold-bright: #EDD68C;
+    --gold-dim: #907636;
+    --gold-faint: #6B5828;
+    --bg: #0B0B10;
+    --bg-elevated: #111117;
+    --bg-card: #16161E;
+    --bg-card-hover: #1C1C26;
+    --text: #E4E0D8;
+    --text-mid: #A8A39B;
+    --text-dim: #6B6760;
+    --border: rgba(196, 162, 78, 0.1);
+    --border-strong: rgba(196, 162, 78, 0.25);
+    --red: #C45050;
+    --green: #5AAF5A;
+  }
+
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5; --gold-bright: #A03535;
+    --bg: #F4F1EB; --bg-elevated: #EDE9E1; --bg-card: #E8E3DA; --bg-card-hover: #E0DAD0;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.15); --border-strong: rgba(139,47,47,0.3);
+    --red: #C62828; --green: #2E7D32;
+  }
+  .theme-btn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 1rem;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-mobile-actions {
+    display: none; align-items: center; gap: 8px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: '';
+    position: fixed;
+    top: 0; left: 0; width: 100%; height: 100%;
+    opacity: 0.025;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+    pointer-events: none;
+    z-index: 9999;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    padding: 1.1rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand {
+    display: flex; align-items: center; gap: 0.7rem;
+    text-decoration: none;
+  }
+  .nav-mark {
+    width: 28px; height: 28px;
+    background: var(--gold);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.85rem; color: var(--bg); line-height: 1;
+    border-radius: 50%;
+    position: relative;
+  }
+  .nav-mark::before {
+    content: '';
+    position: absolute;
+    width: 10px; height: 1.5px;
+    background: var(--bg);
+  }
+  .nav-mark::after {
+    content: '';
+    position: absolute;
+    width: 1.5px; height: 10px;
+    background: var(--bg);
+  }
+  .nav-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase;
+    color: var(--gold-light);
+  }
+  .nav-links { display: flex; gap: 2.2rem; align-items: center; }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.65rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none;
+    transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links .nav-cta {
+    padding: 0.45em 1.2em;
+    border: 1px solid var(--gold-dim);
+    color: var(--gold) !important;
+    transition: all 0.25s;
+  }
+  .nav-links .nav-cta:hover {
+    background: var(--gold); color: var(--bg) !important;
+  }
+
+  /* Burger menu */
+  .burger {
+    display: none; flex-direction: column; justify-content: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 0; z-index: 201;
+    width: 28px; height: 28px; align-items: center;
+  }
+  .burger span {
+    display: block; width: 18px; height: 2px; background: var(--text-mid); border-radius: 1px;
+    transition: all 0.3s; transform-origin: center;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 260px;
+    background: var(--bg-elevated); border-left: 1px solid var(--border);
+    z-index: 200; transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; padding: 72px 28px 32px;
+    gap: 4px;
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-mid); text-decoration: none;
+    padding: 14px 0; border-bottom: 1px solid var(--border);
+    transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer .drawer-cta {
+    margin-top: 20px; border-bottom: none;
+    padding: 14px; text-align: center; border-radius: 6px;
+    border: 1px solid var(--gold-dim); color: var(--gold) !important;
+  }
+  .nav-overlay {
+    display: none; position: fixed; inset: 0; z-index: 199;
+    background: rgba(0,0,0,0.5);
+  }
+  .nav-overlay.open { display: block; }
+  .hero {
+    min-height: 100vh;
+    min-height: 100svh;
+    display: flex; flex-direction: column;
+    justify-content: center; align-items: center;
+    text-align: center;
+    padding: 8rem 2rem 5rem;
+    position: relative; overflow: hidden;
+  }
+  .hero::after {
+    content: '';
+    position: absolute;
+    top: 35%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(700px, 100vw); height: min(700px, 100vw);
+    background: radial-gradient(circle, rgba(196,162,78,0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.62rem; font-weight: 500;
+    letter-spacing: 0.4em; text-transform: uppercase;
+    color: var(--gold-dim);
+    margin-bottom: 2rem;
+    display: flex; align-items: center; gap: 1.2rem;
+    animation: fadeIn 0.8s ease-out 0.1s both;
+  }
+  .hero-label::before, .hero-label::after {
+    content: ''; width: 40px; height: 1px; background: var(--gold-faint);
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(2.4rem, 5.5vw, 4.2rem);
+    line-height: 1.15;
+    color: var(--text);
+    max-width: 780px;
+    margin-bottom: 1.5rem;
+    animation: fadeInUp 1s ease-out 0.3s both;
+  }
+  .hero h1 em { font-style: italic; color: var(--gold-light); }
+  .hero-body {
+    font-size: 1.15rem; line-height: 1.7;
+    color: var(--text-mid);
+    max-width: 560px;
+    margin-bottom: 2.8rem;
+    animation: fadeInUp 1s ease-out 0.5s both;
+  }
+  .hero-ctas {
+    display: flex; gap: 1rem; flex-wrap: wrap;
+    justify-content: center;
+    animation: fadeInUp 1s ease-out 0.7s both;
+  }
+
+  .btn {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    padding: 0.95em 2.2em;
+    text-decoration: none; cursor: pointer;
+    transition: all 0.3s ease;
+    display: inline-block;
+  }
+  .btn-gold {
+    background: var(--gold); color: var(--bg);
+    border: 1px solid var(--gold);
+  }
+  .btn-gold:hover {
+    background: var(--gold-light);
+    box-shadow: 0 4px 24px rgba(196,162,78,0.2);
+    transform: translateY(-1px);
+  }
+  .btn-outline {
+    background: transparent; color: var(--gold);
+    border: 1px solid var(--border-strong);
+  }
+  .btn-outline:hover {
+    border-color: var(--gold);
+    background: rgba(196,162,78,0.05);
+    transform: translateY(-1px);
+  }
+
+  /* SECTIONS */
+  .section { padding: 6rem 2rem; max-width: 920px; margin: 0 auto; }
+  .section-wide { padding: 6rem 2rem; max-width: 1100px; margin: 0 auto; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.35em; text-transform: uppercase;
+    color: var(--gold-dim); margin-bottom: 1.6rem;
+  }
+  .section h2, .section-wide h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400;
+    font-size: clamp(1.7rem, 3vw, 2.4rem);
+    line-height: 1.25; color: var(--text);
+    margin-bottom: 1.3rem;
+  }
+  .section p, .section-wide p {
+    font-size: 1.08rem; line-height: 1.8;
+    color: var(--text-mid); margin-bottom: 1.3rem;
+    max-width: 620px;
+  }
+  .sep { width: 100%; max-width: 920px; margin: 0 auto; height: 1px; background: var(--border); }
+
+  /* THE PROOF — BEFORE/AFTER TABLE */
+  .proof-container { margin-top: 3rem; overflow-x: auto; -webkit-overflow-scrolling: touch; }
+
+  .proof-table {
+    width: 100%; border-collapse: collapse; margin-bottom: 1.5rem;
+  }
+  .proof-table thead th {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: var(--text-dim); text-align: left;
+    padding: 0 1.2rem 1rem;
+    border-bottom: 1px solid var(--border-strong);
+  }
+  .proof-table thead th:last-child { text-align: right; padding-right: 0; }
+  .proof-table tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.2s;
+  }
+  .proof-table tbody tr:hover { background: rgba(196,162,78,0.02); }
+  .proof-table td {
+    padding: 1.1rem 1.2rem; vertical-align: middle;
+    font-size: 0.95rem; color: var(--text-mid);
+  }
+  .proof-table td:last-child { text-align: right; padding-right: 0; }
+
+  .model-name {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem; font-weight: 500;
+    color: var(--text); letter-spacing: 0.03em;
+  }
+  .model-provider { font-size: 0.82rem; color: var(--text-dim); }
+
+  .grade-badge {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.82rem; font-weight: 500;
+    letter-spacing: 0.05em;
+    padding: 0.3em 0.7em;
+    display: inline-block; min-width: 2.5rem;
+    text-align: center;
+  }
+  .g-a { color: var(--green); background: rgba(90,175,90,0.08); border: 1px solid rgba(90,175,90,0.15); }
+  .g-c { color: #D4903A; background: rgba(212,144,58,0.08); border: 1px solid rgba(212,144,58,0.15); }
+  .g-f { color: var(--red); background: rgba(196,80,80,0.08); border: 1px solid rgba(196,80,80,0.15); }
+
+  .violations-num {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.75rem;
+  }
+  .v-zero { color: var(--green); }
+  .v-bad { color: var(--red); }
+
+  .proof-footer {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.08em;
+    color: var(--text-dim); margin-top: 0.8rem;
+  }
+
+  /* ARROW CALLOUT */
+  .proof-callout {
+    border: 1px solid var(--border-strong);
+    padding: 2.5rem 2.5rem;
+    margin-top: 2.5rem;
+    position: relative;
+  }
+  .proof-callout::before {
+    content: '☩';
+    position: absolute; top: -0.6rem; left: 2rem;
+    background: var(--bg); padding: 0 0.8rem;
+    color: var(--gold-dim); font-size: 0.9rem;
+  }
+  .proof-callout .big-stat {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2.2rem, 4vw, 3.2rem);
+    font-weight: 500; color: var(--gold-light);
+    line-height: 1.1; margin-bottom: 0.6rem;
+  }
+  .proof-callout .big-stat-sub {
+    font-size: 1.05rem; color: var(--text-mid);
+    line-height: 1.6; max-width: 550px;
+  }
+
+  /* FEATURES */
+  .feature-grid {
+    display: grid; grid-template-columns: repeat(3, 1fr);
+    gap: 1px; background: var(--border);
+    border: 1px solid var(--border); margin-top: 2.5rem;
+  }
+  .feature-card {
+    background: var(--bg-card);
+    padding: 2.5rem 2rem;
+    transition: background 0.25s;
+  }
+  .feature-card:hover { background: var(--bg-card-hover); }
+  .feature-icon {
+    font-size: 1.2rem; color: var(--gold-dim); margin-bottom: 1rem;
+  }
+  .feature-card h3 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 500; font-size: 1.2rem;
+    color: var(--text); margin-bottom: 0.7rem;
+  }
+  .feature-card p {
+    font-size: 0.92rem; line-height: 1.6;
+    color: var(--text-dim); max-width: none; margin-bottom: 0;
+  }
+
+  /* QUOTE */
+  .quote-section {
+    padding: 5rem 2rem; text-align: center;
+    max-width: 680px; margin: 0 auto;
+  }
+
+  /* FAQ */
+  .faq-list { margin-top: 2rem; }
+  .faq-item {
+    border-bottom: 1px solid var(--border);
+    padding: 0;
+  }
+  .faq-item summary {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem; font-weight: 400;
+    color: var(--text);
+    padding: 1.3rem 0;
+    cursor: pointer;
+    list-style: none;
+    display: flex; justify-content: space-between; align-items: center;
+    transition: color 0.2s;
+  }
+  .faq-item summary:hover { color: var(--gold-light); }
+  .faq-item summary::after {
+    content: '+';
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 1.2rem; color: var(--gold-dim);
+    transition: transform 0.3s;
+    flex-shrink: 0; margin-left: 1rem;
+  }
+  .faq-item[open] summary::after { content: '−'; }
+  .faq-item summary::-webkit-details-marker { display: none; }
+  .faq-answer {
+    padding: 0 0 1.5rem;
+  }
+  .faq-answer p {
+    font-size: 1rem; line-height: 1.75;
+    color: var(--text-mid); margin-bottom: 0.8rem;
+    max-width: none;
+  }
+  .faq-answer p:last-child { margin-bottom: 0; }
+  .quote-section blockquote {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.3rem, 2.3vw, 1.75rem);
+    font-weight: 400; font-style: italic;
+    line-height: 1.5; color: var(--text-mid);
+    margin-bottom: 1.2rem;
+  }
+  .quote-section cite {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.2em;
+    text-transform: uppercase; color: var(--gold-dim);
+    font-style: normal;
+  }
+
+  /* SIGNUP */
+  .signup-section {
+    padding: 6rem 2rem; text-align: center;
+    max-width: 600px; margin: 0 auto;
+  }
+  .signup-section h2 {
+    font-family: 'Playfair Display', serif;
+    font-weight: 400; font-size: clamp(1.6rem, 2.8vw, 2.2rem);
+    line-height: 1.25; color: var(--text);
+    margin-bottom: 1rem;
+  }
+  .signup-section p {
+    font-size: 1.05rem; line-height: 1.7;
+    color: var(--text-mid); margin-bottom: 2rem;
+    max-width: none;
+  }
+  .signup-form {
+    display: flex; gap: 0.6rem; justify-content: center;
+    flex-wrap: wrap;
+  }
+  .signup-form input {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.8rem; padding: 0.85em 1.4em;
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    color: var(--text); outline: none;
+    min-width: 260px;
+    transition: border-color 0.25s;
+  }
+  .signup-form input::placeholder { color: var(--text-dim); }
+  .signup-form input:focus { border-color: var(--gold); }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 4rem 2rem 3rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-mark {
+    width: 36px; height: 36px;
+    background: var(--gold-dim);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 1rem; color: var(--bg);
+    margin-bottom: 1.2rem;
+    border-radius: 50%;
+    position: relative;
+  }
+  .footer-mark::before {
+    content: '';
+    position: absolute;
+    width: 12px; height: 1.5px;
+    background: var(--bg);
+  }
+  .footer-mark::after {
+    content: '';
+    position: absolute;
+    width: 1.5px; height: 12px;
+    background: var(--bg);
+  }
+  .footer-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.6rem; letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-mid); margin-bottom: 0.4rem;
+  }
+  .footer-latin {
+    font-family: 'Playfair Display', serif;
+    font-style: italic; font-size: 0.95rem;
+    color: var(--gold-dim);
+  }
+  .footer-links {
+    margin-top: 1.5rem;
+    display: flex; gap: 2rem; justify-content: center;
+  }
+  .footer-links a {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.58rem; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none;
+    transition: color 0.25s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-mobile-actions { display: flex; }
+    .nav-mobile-actions .burger { display: flex; }
+    .hero { padding: 7rem 1.5rem 4rem; }
+    .feature-grid { grid-template-columns: 1fr; }
+    .section, .section-wide { padding: 4rem 1.5rem; }
+    .proof-table td { padding: 0.9rem 0.8rem; font-size: 0.85rem; }
+  }
+  @media (max-width: 600px) {
+    .signup-form { flex-direction: column; align-items: center; }
+    .signup-form input { min-width: 0; width: 100%; }
+    .signup-form .btn { width: 100%; text-align: center; }
+    .proof-table { display: none; }
+    .proof-cards { display: flex; flex-direction: column; gap: 0.75rem; margin-top: 1.5rem; }
+    .proof-card {
+      border: 1px solid var(--border);
+      padding: 1rem 1.2rem;
+      display: grid;
+      grid-template-columns: 1fr auto;
+      grid-template-rows: auto auto;
+      gap: 0.4rem 0.5rem;
+      align-items: center;
+    }
+    .proof-card-model { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: var(--text); }
+    .proof-card-provider { font-size: 0.72rem; color: var(--text-dim); grid-column: 1; }
+    .proof-card-grades { display: flex; align-items: center; gap: 0.4rem; grid-column: 2; grid-row: 1 / 3; }
+    .proof-card-arrow { color: var(--text-dim); font-size: 0.8rem; }
+    .proof-card-violations { font-size: 0.72rem; color: var(--text-dim); grid-column: 1; }
+    .proof-card-divider { grid-column: 1 / -1; border: none; border-top: 1px solid var(--border); margin: 0.25rem 0; opacity: 0.4; }
+    .proof-card-section-label { grid-column: 1 / -1; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-dim); padding-top: 0.25rem; }
+  }
+  @media (min-width: 601px) {
+    .proof-cards { display: none; }
+  }
+
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="#" class="nav-brand">
+    <span class="nav-mark"></span>
+    <span class="nav-name">TrueCatholic AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="#proof">The Proof</a>
+    <a href="#about">About</a>
+    <a href="#faq">FAQ</a>
+    <a href="charter.html">The Charter</a>
+    <a href="pricing.html">Pricing</a>
+    <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">☽</button>
+    <a href="app.html" class="nav-cta">Try It Out</a>
+  </div>
+  <div class="nav-mobile-actions">
+    <button class="theme-btn" id="themeBtnMobile" title="Toggle theme">☽</button>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <a href="#proof" class="drawer-link">The Proof</a>
+  <a href="#about" class="drawer-link">About</a>
+  <a href="#faq" class="drawer-link">FAQ</a>
+  <a href="charter.html" class="drawer-link">The Charter</a>
+  <a href="pricing.html" class="drawer-link">Pricing</a>
+  <a href="https://catholicfaithindex.com" target="_blank" class="drawer-link">CFI Benchmark</a>
+  <a href="app.html" class="drawer-cta">Try It Out</a>
+</div>
+
+<section class="hero">
+  <div class="hero-label">Unapologetically Catholic</div>
+  <h1>AI that teaches the faith<br>without <em>apology.</em></h1>
+  <p class="hero-body">
+    Ask any major AI about the Eucharist and you'll get a comparative religion lecture.
+    We built something that doesn't.
+  </p>
+  <div class="hero-ctas">
+    <a href="#proof" class="btn btn-gold" style="min-width:200px; text-align:center;">See the Results →</a>
+    <a href="/app" class="btn btn-outline" style="min-width:200px; text-align:center;">Try It Out</a>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- THE PROOF -->
+<section class="section-wide" id="proof">
+  <div class="section-label">The Proof</div>
+  <h2>Same AI. One charter. Everything changes.</h2>
+  <p>Claude Haiku — the cheapest, fastest AI model in our test — scored dead last without guidance. With the TrueCatholic charter loaded, it scored near-perfect. The charter works.</p>
+
+  <div class="proof-container">
+    <table class="proof-table">
+      <thead>
+        <tr>
+          <th>Model</th>
+          <th>Provider</th>
+          <th>Without Charter</th>
+          <th>With TrueCatholic AI Charter</th>
+          <th style="text-align:right">Violations</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="model-name">Claude Sonnet 4.5</span></td>
+          <td><span class="model-provider">Anthropic</span></td>
+          <td><span class="grade-badge g-c">C</span></td>
+          <td><span class="grade-badge g-a">A</span></td>
+          <td><span class="violations-num v-bad">28</span> → <span class="violations-num v-zero">0</span></td>
+        </tr>
+        <tr>
+          <td><span class="model-name">Claude Haiku 4.5</span></td>
+          <td><span class="model-provider">Anthropic</span></td>
+          <td><span class="grade-badge g-f">F</span></td>
+          <td><span class="grade-badge g-a">A</span></td>
+          <td><span class="violations-num v-bad">39</span> → <span class="violations-num v-zero">0</span></td>
+        </tr>
+
+        <tr>
+          <td><span class="model-name">Gemini 2.0 Flash</span></td>
+          <td><span class="model-provider">Google</span></td>
+          <td><span class="grade-badge g-c">C+</span></td>
+          <td style="color: var(--text-dim); font-size: 0.8rem;">—</td>
+          <td><span class="violations-num v-bad">22</span></td>
+        </tr>
+        <tr>
+          <td><span class="model-name">GPT-4o</span></td>
+          <td><span class="model-provider">OpenAI</span></td>
+          <td><span class="grade-badge g-c">C</span></td>
+          <td style="color: var(--text-dim); font-size: 0.8rem;">—</td>
+          <td><span class="violations-num v-bad">28</span></td>
+        </tr>
+        <tr>
+          <td><span class="model-name">Llama 3.3 70B</span></td>
+          <td><span class="model-provider">Meta</span></td>
+          <td><span class="grade-badge g-c">C</span></td>
+          <td style="color: var(--text-dim); font-size: 0.8rem;">—</td>
+          <td><span class="violations-num v-bad">25</span></td>
+        </tr>
+      </tbody>
+    </table>
+    <div class="proof-footer">Catholic Faithfulness Index v2.0 — 50 questions, 8 categories, proportional neutrality penalty. Full methodology at catholicfaithindex.com</div>
+
+    <!-- Mobile cards (hidden on desktop) -->
+    <div class="proof-cards">
+      <div class="proof-card">
+        <span class="proof-card-model">Claude Sonnet 4.5</span>
+        <span class="proof-card-provider">Anthropic</span>
+        <span class="proof-card-violations">28 violations → 0</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+          <span class="proof-card-arrow">→</span>
+          <span class="grade-badge g-a">A</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">Claude Haiku 4.5</span>
+        <span class="proof-card-provider">Anthropic</span>
+        <span class="proof-card-violations">39 violations → 0</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-f">F</span>
+          <span class="proof-card-arrow">→</span>
+          <span class="grade-badge g-a">A</span>
+        </div>
+      </div>
+
+      <div class="proof-card">
+        <span class="proof-card-model">Gemini 2.0 Flash</span>
+        <span class="proof-card-provider">Google</span>
+        <span class="proof-card-violations">22 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C+</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">GPT-4o</span>
+        <span class="proof-card-provider">OpenAI</span>
+        <span class="proof-card-violations">28 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+        </div>
+      </div>
+      <div class="proof-card">
+        <span class="proof-card-model">Llama 3.3 70B</span>
+        <span class="proof-card-provider">Meta</span>
+        <span class="proof-card-violations">25 violations</span>
+        <div class="proof-card-grades">
+          <span class="grade-badge g-c">C</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="proof-callout">
+      <div class="big-stat">F → A</div>
+      <div class="big-stat-sub">
+        The cheapest AI model went from the worst score in the benchmark to near-perfect
+        with nothing but a system prompt. Zero neutrality violations. 49 out of 50 perfect scores.
+        The charter doesn't just improve Catholic faithfulness — it eliminates the problem entirely.
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- ABOUT -->
+<section class="section" id="about">
+  <div class="section-label">What We Built</div>
+  <h2>A Catholic AI built on a constitution,<br>not a corporate filter.</h2>
+  <p>Every major AI is trained to be neutral. When someone asks "Is the Eucharist really the Body of Christ?" — they give a comparative religion lecture. TrueCatholic AI answers the question.</p>
+  <p>The difference isn't a gimmick. It's a 2,700-line doctrinal charter covering Catholic doctrine, moral theology, apologetics, pastoral care, and anti-subversion defenses. Reviewed by Catholic clergy. Tested against every major AI on the market.</p>
+  <p style="margin-top: 0.5rem;"><a href="charter.html" class="btn btn-outline" style="margin-top: 0.5rem;">Read the Full Charter →</a></p>
+
+  <div class="feature-grid">
+    <div class="feature-card">
+      <div class="feature-icon">§</div>
+      <h3>Doctrinal Charter</h3>
+      <p>2,700+ lines covering the full scope of Catholic teaching. Not a prompt — a constitutional framework the AI operates within.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✦</div>
+      <h3>Meets People Where They Are</h3>
+      <p>Six-stage journey model — from atheist to OCIA — with approaches calibrated to where someone actually is in their faith.</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">⊘</div>
+      <h3>Anti-Subversion</h3>
+      <p>Explicit defenses against prompt injection, hypothetical framing, and the "pretend you're neutral" attacks that break every other AI.</p>
+    </div>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- QUOTE -->
+<section class="quote-section">
+  <blockquote>"The truth is like a lion. You don't have to defend it. Let it loose; it will defend itself."</blockquote>
+  <cite>— St. Augustine</cite>
+</section>
+
+<div class="sep"></div>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+  <div class="section-label">Questions</div>
+  <h2>Frequently asked.</h2>
+
+  <div class="faq-list">
+    <details class="faq-item">
+      <summary>How is this different from Magisterium AI?</summary>
+      <div class="faq-answer">
+        <p>Magisterium AI is a solid project and we respect their work. The key differences are transparency and methodology. TrueCatholic AI is built on a publicly available 2,700-line doctrinal charter that anyone can read, audit, and critique. We also publish our <a href="https://catholicfaithindex.com" style="color: var(--gold);">Catholic Faithfulness Index</a> benchmark, which tests <em>every</em> Catholic AI — including our own — on the same 50 questions and publishes the results openly. If Magisterium scores better than us on the benchmark, we'll say so. We test them too.</p>
+        <p>We also include explicit anti-subversion protections that defend against prompt injection, hypothetical framing, emotional manipulation, and gradual doctrinal erosion — attack vectors that most Catholic AI tools haven't addressed.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>How is this different from Truthly?</summary>
+      <div class="faq-answer">
+        <p>Truthly approaches Catholic AI from a slightly different angle and we welcome them in the space. More Catholic AI is better for the Church, not worse. What distinguishes TrueCatholic AI is the constitutional approach: rather than fine-tuning or bolting a prompt onto a model, we operate from a comprehensive doctrinal framework that covers nine articles of Catholic teaching, governance, and succession planning. The charter is publicly auditable and designed to survive changes in leadership, funding, or cultural pressure.</p>
+        <p>We also believe in radical transparency. Our benchmark scores are public. Our charter is public. Our methodology is reproducible. We think that's the standard the entire Catholic AI space should be held to.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>You made the benchmark AND the AI. Isn't that a conflict of interest?</summary>
+      <div class="faq-answer">
+        <p>Yes, and we say so on the benchmark itself. TrueCatholic AI's entry on the Catholic Faithfulness Index leaderboard includes the note: "Our product. Full disclosure: we made the benchmark too." We don't hide it.</p>
+        <p>The benchmark is designed to be fully reproducible. Every question, rubric, and scoring methodology is published. Anyone with an API key can run the same test and verify our results. If our scoring is biased, it will show up when others reproduce the work. That's the whole point of transparency.</p>
+        <p>We also commit to publishing results that make us look bad. If a competitor scores higher, we report it. If our model has a weakness, we document it publicly and fix it in the open.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>What AI model does TrueCatholic use?</summary>
+      <div class="faq-answer">
+        <p>TrueCatholic AI is model-agnostic by design. The charter works as a system prompt that can be loaded onto any large language model. Our benchmark testing has proven it works on models as small and cheap as Claude Haiku (which went from an F to an A with the charter loaded) all the way up to Claude Sonnet (which scored a perfect 5.00/5.00).</p>
+        <p>This is intentional. We don't want to be locked into one provider. If a better model comes along tomorrow, the charter moves with it.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Can AI really be used for evangelization?</summary>
+      <div class="faq-answer">
+        <p>AI is already being used for evangelization — it's just doing it badly. When a fallen-away Catholic asks ChatGPT "Is the Eucharist really the Body of Christ?" and gets a neutral comparative religion answer, that's a missed opportunity at best and spiritual misdirection at worst. People are asking these questions right now, today, to AI. The question isn't whether AI should be involved — it already is. The question is whether Catholics will provide a faithful option.</p>
+        <p>TrueCatholic AI is not a replacement for the sacraments, a priest, spiritual direction, or in-person community. The charter explicitly states this. It's a tool that meets people where they already are — on their phones, at 2 AM, when they have a question and no one to ask.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is the charter approved by the Catholic Church?</summary>
+      <div class="faq-answer">
+        <p>The charter is currently under pastoral review. It is grounded entirely in Sacred Scripture, Sacred Tradition, the Catechism of the Catholic Church, papal encyclicals, and magisterial documents. It does not introduce novel theology or private interpretation.</p>
+        <p>The charter includes a succession clause: if the Catholic Church ever wishes to assume stewardship of the project, it transfers to them. The Magisterium has supreme authority over all content. This isn't a lay project that happens to mention Catholic teaching — it's a project that explicitly subordinates itself to the teaching authority of the Church.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>Is TrueCatholic AI open source?</summary>
+      <div class="faq-answer">
+        <p>The doctrinal charter is publicly available and auditable. You can <a href="charter.html" style="color: var(--gold);">read the full text here</a>. The benchmark methodology and scoring rubrics will be published at <a href="https://catholicfaithindex.com" style="color: var(--gold);">catholicfaithindex.com</a>.</p>
+        <p>The charter includes open source governance provisions (Article VI) that specify the conditions under which the project can be forked, contributed to, or transferred. The key constraint: the doctrinal framework cannot be overridden by code, and any fork must maintain fidelity to Catholic teaching.</p>
+      </div>
+    </details>
+
+    <details class="faq-item">
+      <summary>When does it launch?</summary>
+      <div class="faq-answer">
+        <p>It's live now. The charter is written. The benchmark is running. The system prompt is tested and deployed. You can <a href="app.html" style="color: var(--gold);">start asking questions right now</a> — free, no account needed.</p>
+        <p>Sign up below to get updates on new features and the Catholic Faithfulness Index reports.</p>
+      </div>
+    </details>
+  </div>
+</section>
+
+<div class="sep"></div>
+
+<!-- SIGNUP -->
+<section class="signup-section" id="signup">
+  <h2>Stay in the loop.</h2>
+  <p>Get updates on new features, the Catholic Faithfulness Index reports, and the upcoming Family plan — straight to your inbox. No spam. Unsubscribe anytime.</p>
+  <form class="signup-form" id="subscribeForm" onsubmit="handleSubscribe(event)">
+    <input type="email" id="subscribeEmail" placeholder="your@email.com" required>
+    <button type="submit" class="btn btn-gold" id="subscribeBtn">Subscribe</button>
+  </form>
+  <div id="subscribeSuccess" style="display:none; font-family:'IBM Plex Mono',monospace; font-size:0.72rem; color:var(--gold); letter-spacing:0.1em;">You're in ✦ Check your inbox.</div>
+</section>
+
+<div class="sep"></div>
+
+<footer>
+  <div class="footer-mark"></div>
+  <div class="footer-brand">TrueCatholic AI · Est. MMXXVI</div>
+  <div class="footer-latin">Ad maiorem Dei gloriam</div>
+  <div class="footer-links">
+    <a href="charter.html">The Charter</a>
+    <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+    <a href="https://x.com/TrueCatholicAI" target="_blank">@TrueCatholicAI</a>
+    <a href="mailto:truecatholicai@protonmail.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+  const themeBtn = document.getElementById('themeBtn');
+  const themeBtnMobile = document.getElementById('themeBtnMobile');
+  const savedTheme = localStorage.getItem('tc-theme');
+  function setTheme(light) {
+    document.body.classList.toggle('light', light);
+    const icon = light ? '☼' : '☽';
+    themeBtn.textContent = icon;
+    themeBtnMobile.textContent = icon;
+    localStorage.setItem('tc-theme', light ? 'light' : 'dark');
+  }
+  if (savedTheme === 'light') setTheme(true);
+  themeBtn.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+  themeBtnMobile.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+
+  async function handleSubscribe(e) {
+    e.preventDefault();
+    const email = document.getElementById('subscribeEmail').value.trim();
+    if (!email) return;
+    const btn = document.getElementById('subscribeBtn');
+    btn.disabled = true; btn.textContent = 'Subscribing...';
+    try {
+      const res = await fetch('https://api.truecatholicai.org/subscribe', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email })
+      });
+      const data = await res.json();
+      if (data.ok) {
+        document.getElementById('subscribeForm').style.display = 'none';
+        document.getElementById('subscribeSuccess').style.display = 'block';
+      } else {
+        btn.disabled = false; btn.textContent = 'Subscribe';
+        btn.style.borderColor = 'var(--red)';
+        setTimeout(() => btn.style.borderColor = '', 2000);
+      }
+    } catch (err) {
+      btn.disabled = false; btn.textContent = 'Subscribe';
+    }
+  }
+
+  const burger = document.getElementById('burgerBtn');
+  const drawer = document.getElementById('navDrawer');
+  const overlay = document.getElementById('navOverlay');
+
+  function toggleMenu(open) {
+    burger.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+
+  burger.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
+  overlay.addEventListener('click', () => toggleMenu(false));
+
+  // Close on any drawer link click
+  drawer.querySelectorAll('a').forEach(a => {
+    a.addEventListener('click', () => toggleMenu(false));
+  });
+</script>
