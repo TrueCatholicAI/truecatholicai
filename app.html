@@ -1,0 +1,2995 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<link rel="canonical" href="https://truecatholicai.org/app.html" />
+<meta name="theme-color" content="#0B0B10" id="themeColorMeta">
+<meta name="format-detection" content="telephone=no, email=no">
+<title>TrueCatholic AI — Ask Anything About the Faith</title>
+<meta name="description" content="Catholic AI that teaches the faith without apology. Ask any question about doctrine, morality, Scripture, or the spiritual life. Free. No account needed.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C4A24E'/%3E%3Crect x='46' y='22' width='8' height='56' rx='2' fill='%230B0B10'/%3E%3Crect x='26' y='38' width='48' height='8' rx='2' fill='%230B0B10'/%3E%3C/svg%3E">
+<!-- Supabase JS Client -->
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+    --ai-bg: rgba(17,17,23,0.6); --danger: #C45050; --green: #5AAF5A; --radius: 12px;
+  }
+  /* Light mode overrides */
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A83838; --gold-dim: #6B2424; --gold-faint: #5A1E1E;
+    --bg: #F4F1EB; --bg-el: #EDEAE4; --bg-card: #E8E5DF; --bg-input: #ECEAE5;
+    --text: #2A2520; --text-mid: #6B6560; --text-dim: #9B9590;
+    --border: rgba(139,47,47,0.12); --border-strong: rgba(139,47,47,0.2);
+    --ai-bg: rgba(237,234,228,0.6);
+  }
+  body.light::before { opacity: 0.01; }
+  body.light .header { background: rgba(244,241,235,0.95); }
+  body.light .input-area { background: rgba(244,241,235,0.95); }
+  body.light .msg-avatar.ai { color: #F4F1EB; }
+  body.light .msg-avatar.user { background: rgba(139,47,47,0.12); color: var(--text-mid); }
+  body.light .send-btn { color: #F4F1EB; }
+  body.light .welcome-cross { background: var(--gold); }
+  body.light .welcome-cross::before, body.light .welcome-cross::after { background: #F4F1EB; }
+  body.light .header-mark { background: var(--gold); }
+  body.light .header-mark::before, body.light .header-mark::after { background: #F4F1EB; }
+  body.light .modal-overlay { background: rgba(244,241,235,0.75); }
+  body.light .modal { background: var(--bg-card); }
+  body.light .modal-cross { background: var(--gold); }
+  body.light .modal-cross::before, body.light .modal-cross::after { background: #F4F1EB; }
+  body.light .user-avatar-btn { color: var(--text-mid); }
+
+  /* Theme toggle */
+  .theme-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    width: 32px; height: 32px; border-radius: 4px; display: flex; align-items: center;
+    justify-content: center; transition: all 0.25s; font-size: 14px; line-height: 1;
+  }
+
+  /* Model toggle (in input row) */
+  .input-model-btn {
+    display: none; width: 40px; height: 46px; border-radius: 10px; border: 1px solid var(--border);
+    background: var(--bg-input); color: var(--gold); cursor: pointer; flex-shrink: 0;
+    align-items: center; justify-content: center; transition: all 0.2s; padding: 0;
+  }
+  .input-model-btn.visible { display: flex; }
+  .input-model-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .input-model-btn:hover:not(:disabled) { border-color: var(--gold-dim); }
+
+  html { height: 100%; overflow: hidden; background: #0B0B10; }
+  html.light { background: #F4F1EB; }
+  body { height: 100%; overflow: hidden; }
+  body {
+    background: var(--bg); color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased; display: flex; flex-direction: column;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+  .header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 20px; padding-top: calc(14px + env(safe-area-inset-top, 0px));
+    border-bottom: 1px solid var(--border); background: rgba(11,11,16,0.95);
+    backdrop-filter: blur(16px); flex-shrink: 0; z-index: 100;
+  }
+  .header-brand { display: flex; align-items: center; gap: 10px; text-decoration: none; }
+  .header-mark {
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  }
+  .header-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .header-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
+  .header-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .header-sub {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    letter-spacing: 0.08em; margin-top: 1px;
+  }
+  .header-actions { display: flex; align-items: center; gap: 8px; }
+  .header-btn {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 0 12px; height: 32px; display: inline-flex; align-items: center;
+    transition: all 0.25s; border-radius: 4px;
+  }
+  .header-btn.gold { border-color: var(--gold-dim); color: var(--gold); }
+  .remaining-badge {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.06em; padding: 0 10px; height: 32px; line-height: 32px;
+    border: 1px solid var(--border); border-radius: 4px; white-space: nowrap;
+  }
+  .remaining-badge .num { color: var(--gold-light); font-weight: 500; }
+  .chat-area {
+    flex: 1; overflow-y: auto; scroll-behavior: smooth;
+    scrollbar-width: thin; scrollbar-color: var(--border) transparent;
+  }
+  .chat-area::-webkit-scrollbar { width: 5px; }
+  .chat-area::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  .welcome {
+    display: flex; flex-direction: column; align-items: center;
+    min-height: 100%; padding: 40px 20px; text-align: center;
+    justify-content: center; gap: 0; overflow: hidden;
+  }
+  .welcome-cross {
+    width: 48px; height: 48px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin-bottom: 24px; opacity: 0.9;
+  }
+  .welcome-cross::before { content: ''; position: absolute; width: 18px; height: 2px; background: var(--bg); }
+  .welcome-cross::after { content: ''; position: absolute; width: 2px; height: 18px; background: var(--bg); }
+  .welcome h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px; line-height: 1.3;
+  }
+  .welcome h2 em { font-style: italic; color: var(--gold); }
+  .welcome-sub {
+    font-size: 0.95rem; color: var(--text-mid); max-width: 440px; line-height: 1.6; margin-bottom: 32px;
+  }
+  .starters { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; max-width: 600px; }
+  .starter {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; cursor: pointer; transition: all 0.2s; text-align: left; max-width: 280px;
+  }
+  .starter-q { font-size: 0.88rem; color: var(--text); line-height: 1.4; display: block; }
+  .starter-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
+  }
+  /* Scrolling prompt ticker */
+  .prompt-ticker-wrap {
+    width: 100%; align-self: stretch; overflow: hidden; margin-top: 8px;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, black 8%, black 92%, transparent 100%);
+  }
+  .prompt-ticker-row {
+    display: flex; gap: 10px; width: max-content;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    /* No animation here — added via .animating class after first layout commit.
+       iOS Safari can cache translateX(-50%) against a width:max-content element
+       whose layout hasn't settled yet, which manifests as the row appearing
+       frozen, invisible, or partially painted on reload. Double-rAF from JS
+       guarantees the animation starts against a committed layout. */
+  }
+  .prompt-ticker-row.animating {
+    animation: tickerScroll var(--ticker-speed, 60s) linear infinite;
+  }
+  .prompt-ticker-row.animating.reverse { animation-name: tickerScrollReverse; }
+  .prompt-pill {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 20px;
+    padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .prompt-pill-q { font-size: 0.84rem; color: var(--text); line-height: 1; }
+  .prompt-pill-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;
+  }
+  .prompt-pill-icon { flex-shrink: 0; color: var(--gold); }
+  @keyframes tickerScroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  @keyframes tickerScrollReverse { 0% { transform: translateX(-50%); } 100% { transform: translateX(0); } }
+  .messages { display: none; padding: 16px 0; }
+  .message { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .message.ai { background: var(--ai-bg); border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); }
+  .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+  .msg-avatar {
+    width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500; flex-shrink: 0;
+  }
+  .msg-avatar.ai { background: var(--gold); color: var(--bg); position: relative; }
+  .msg-avatar.ai::before { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--bg); }
+  .msg-avatar.ai::after { content: ''; position: absolute; width: 1.5px; height: 8px; background: var(--bg); }
+  .msg-avatar.user { background: var(--border-strong); color: var(--text-mid); }
+  .msg-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .ai-name { color: var(--gold); }
+  .user-name { color: var(--text-dim); }
+  .msg-body { font-size: 0.95rem; line-height: 1.7; color: var(--text); }
+  .msg-body p { margin-bottom: 12px; position: relative; z-index: 0; }
+  .msg-body p:last-child { margin-bottom: 0; }
+  .msg-body strong { color: var(--gold-light); font-weight: 500; }
+  .msg-body em { font-style: italic; color: var(--text-mid); }
+  .msg-body hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; opacity: 0.5; }
+  .msg-body .list-subhead { margin: 8px 0 2px; }
+  .msg-body blockquote {
+    border-left: 2px solid var(--gold-dim); padding-left: 16px; margin: 12px 0;
+    color: var(--text-mid); font-style: italic;
+  }
+  .msg-body ul, .msg-body ol { margin: 8px 0 12px 20px; }
+  .msg-body li { margin-bottom: 4px; line-height: 1.6; }
+
+  /* Inline images */
+  .msg-image-wrap {
+    float: right; margin: 0 0 12px 16px; max-width: 180px; position: relative;
+    z-index: 1;
+  }
+  .msg-image-wrap img {
+    width: 100%; border-radius: 8px; border: 1px solid var(--border-strong);
+    display: block; transition: opacity 0.2s;
+  }
+  .msg-image-wrap:hover img { opacity: 0.9; }
+  .msg-image-caption {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-mid);
+    letter-spacing: 0.04em; margin-top: 6px; text-align: center; line-height: 1.5;
+  }
+  .msg-image-heart {
+    position: absolute; top: 6px; right: 6px; width: 28px; height: 28px; min-width: 28px;
+    background: rgba(0,0,0,0.55); border: none; border-radius: 50%; cursor: pointer;
+    color: rgba(255,255,255,0.8); display: flex; align-items: center;
+    justify-content: center; transition: all 0.2s; backdrop-filter: blur(4px);
+    pointer-events: auto; z-index: 2; flex-shrink: 0;
+  }
+  .msg-image-heart:hover, .msg-image-heart.saved { color: #E05555; }
+  .msg-image-heart.pop { animation: heartPop 0.3s ease; }
+  @keyframes heartPop { 0% { transform: scale(1); } 50% { transform: scale(1.3); } 100% { transform: scale(1); } }
+
+  /* Gallery button in header */
+  .gallery-btn {
+    display: none; position: relative; background: none; border: 1px solid var(--border);
+    color: var(--text-dim); cursor: pointer; width: 32px; height: 32px; border-radius: 4px;
+    align-items: center; justify-content: center; font-size: 14px; transition: all 0.25s;
+  }
+  .gallery-btn.visible { display: flex; }
+  .gallery-count {
+    position: absolute; top: -4px; right: -4px; background: var(--gold); color: var(--bg);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.42rem; font-weight: 700;
+    width: 14px; height: 14px; border-radius: 50%; display: none; align-items: center;
+    justify-content: center; line-height: 1;
+  }
+  .gallery-count.show { display: flex; }
+
+  /* Gallery tray */
+  .gallery-overlay {
+    position: fixed; inset: 0; background: rgba(5,5,8,0.7); z-index: 400;
+    display: none; opacity: 0; transition: opacity 0.3s;
+  }
+  .gallery-overlay.open { display: block; }
+  .gallery-overlay.visible { opacity: 1; }
+  body.light .gallery-overlay { background: rgba(244,241,235,0.7); }
+  .gallery-tray {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 320px; max-width: 85vw;
+    background: var(--bg-card); border-left: 1px solid var(--border-strong);
+    z-index: 401; display: flex; flex-direction: column; transform: translateX(100%);
+    transition: transform 0.3s ease;
+  }
+  .gallery-overlay.visible .gallery-tray { transform: translateX(0); }
+  .gallery-tray-header {
+    padding: 16px 20px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .gallery-tray-title {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold);
+  }
+  .gallery-tray-close {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 1.2rem; padding: 4px; transition: color 0.2s;
+  }
+  .gallery-tray-close:hover { color: var(--text); }
+  .gallery-tray-tabs {
+    display: flex; border-bottom: 1px solid var(--border); padding: 0 20px;
+  }
+  .gallery-tab {
+    background: none; border: none; padding: 10px 0; margin-right: 20px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.08em;
+    text-transform: uppercase; color: var(--text-dim); border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+  }
+  .gallery-tab.active { color: var(--gold); border-bottom-color: var(--gold); }
+  .gallery-grid {
+    flex: 1; overflow-y: auto; padding: 12px; display: grid;
+    grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start;
+  }
+  .gallery-thumb {
+    border-radius: 6px; border: 1px solid var(--border); overflow: hidden;
+    cursor: pointer; position: relative; aspect-ratio: 3/4; transition: border-color 0.2s;
+  }
+  .gallery-thumb:hover { border-color: var(--gold-dim); }
+  .gallery-thumb img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .gallery-thumb-label {
+    position: absolute; bottom: 0; left: 0; right: 0; padding: 4px 6px;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.42rem; color: #fff;
+    letter-spacing: 0.04em;
+  }
+  .gallery-empty {
+    grid-column: 1 / -1; text-align: center; padding: 40px 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+  }
+
+  /* Family management modal */
+  .family-modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; transition: opacity 0.35s ease;
+  }
+  .family-modal-overlay.open { display: flex; }
+  .family-modal-overlay.visible { opacity: 1; }
+  body.light .family-modal-overlay { background: rgba(244,241,235,0.75); }
+  .family-modal {
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 16px;
+    width: 100%; max-width: 440px; padding: 32px 28px; position: relative;
+    transform: translateY(16px); transition: transform 0.35s ease;
+  }
+  .family-modal-overlay.visible .family-modal { transform: translateY(0); }
+  .family-modal-close {
+    position: absolute; top: 14px; right: 14px; background: none; border: none;
+    color: var(--text-dim); cursor: pointer; font-size: 1.2rem; line-height: 1; padding: 4px;
+  }
+  .family-modal-title {
+    font-family: 'Playfair Display', serif; font-size: 1.2rem; font-weight: 400;
+    color: var(--text); margin-bottom: 20px;
+  }
+  .family-code-section {
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+    padding: 16px; margin-bottom: 20px; text-align: center;
+  }
+  .family-code-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .family-code {
+    font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 500;
+    letter-spacing: 0.3em; color: var(--gold); margin-bottom: 8px;
+  }
+  .family-code-copy {
+    background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.06em;
+    padding: 5px 14px; border-radius: 4px; transition: all 0.2s;
+  }
+  .family-code-copy:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .family-members-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
+  }
+  .family-member-row {
+    display: flex; align-items: center; justify-content: space-between; padding: 10px 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .family-member-row:last-child { border-bottom: none; }
+  .family-member-info {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text);
+  }
+  .family-member-email {
+    font-size: 0.5rem; color: var(--text-dim); margin-top: 2px;
+  }
+  .family-member-role {
+    font-size: 0.48rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase;
+    margin-top: 2px;
+  }
+  .family-remove-btn {
+    background: none; border: 1px solid var(--border); color: var(--danger); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; letter-spacing: 0.04em;
+    padding: 4px 10px; border-radius: 4px; transition: all 0.2s;
+  }
+  .family-remove-btn:hover { background: rgba(196,80,80,0.1); border-color: var(--danger); }
+  .family-empty {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-dim);
+    text-align: center; padding: 16px 0;
+  }
+  .family-seats-count {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    text-align: right; margin-top: 12px;
+  }
+  /* Join family */
+  .join-family-input {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+    padding: 12px 14px; color: var(--text); font-family: 'IBM Plex Mono', monospace;
+    font-size: 1rem; letter-spacing: 0.2em; text-align: center; text-transform: uppercase;
+    outline: none; transition: border-color 0.2s; margin-bottom: 12px;
+  }
+  .join-family-input::placeholder { color: var(--text-dim); letter-spacing: 0.1em; font-size: 0.7rem; }
+  .join-family-input:focus { border-color: var(--gold-dim); }
+  .join-family-warning {
+    background: rgba(196,162,78,0.1); border: 1px solid rgba(196,162,78,0.25);
+    color: var(--gold); padding: 10px 14px; border-radius: 8px; margin-bottom: 12px;
+    font-size: 0.75rem; line-height: 1.5; display: none;
+  }
+  .join-family-warning.show { display: block; }
+
+  /* Image lightbox */
+  .lightbox {
+    position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 500;
+    display: none; align-items: center; justify-content: center; padding: 20px;
+    cursor: pointer;
+  }
+  .lightbox.open { display: flex; }
+  .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; cursor: default; }
+  .lightbox-caption {
+    position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.7);
+    letter-spacing: 0.06em; text-align: center;
+  }
+
+  /* =============== WINDOWS PLAYER =============== */
+  .window-pill {
+    background: linear-gradient(135deg, rgba(196,162,78,0.15), rgba(196,162,78,0.05));
+    border: 1px solid var(--gold-dim); border-radius: 20px;
+    padding: 10px 18px; cursor: pointer; transition: all 0.2s; white-space: nowrap;
+    display: flex; align-items: center; gap: 10px; flex-shrink: 0;
+  }
+  .window-pill:hover { border-color: var(--gold); background: rgba(196,162,78,0.12); }
+  .window-pill-icon { flex-shrink: 0; color: var(--gold); }
+  .window-pill-title { font-size: 0.84rem; color: var(--gold-light); line-height: 1; }
+  .window-pill-cat {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold-dim);
+    letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8;
+  }
+  .window-player {
+    position: fixed; inset: 0; z-index: 600; background: #000;
+    display: none; flex-direction: column; overflow: hidden;
+  }
+  .window-player.open { display: flex; }
+  .window-canvas {
+    flex: 1; position: relative; overflow: hidden;
+  }
+  .window-slide {
+    position: absolute; inset: 0;
+    opacity: 0; transition: opacity 1.5s ease;
+  }
+  .window-slide.active { opacity: 1; }
+  .window-slide img {
+    width: 100%; height: 100%; object-fit: cover;
+    animation: kenBurns 12s ease-in-out infinite alternate;
+  }
+  .window-slide.kb-tl img { animation-name: kenBurnsTL; }
+  .window-slide.kb-tr img { animation-name: kenBurnsTR; }
+  .window-slide.kb-bl img { animation-name: kenBurnsBL; }
+  .window-slide.kb-br img { animation-name: kenBurnsBR; }
+  @keyframes kenBurnsTL { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(-2%,-2%); } }
+  @keyframes kenBurnsTR { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(2%,-2%); } }
+  @keyframes kenBurnsBL { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(-2%,2%); } }
+  @keyframes kenBurnsBR { 0% { transform: scale(1) translate(0,0); } 100% { transform: scale(1.12) translate(2%,2%); } }
+  .window-vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.6) 100%);
+  }
+  .window-gradient {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 50%; pointer-events: none;
+    background: linear-gradient(transparent, rgba(0,0,0,0.7));
+  }
+  .window-text {
+    position: absolute; bottom: 80px; left: 0; right: 0; text-align: center; padding: 0 32px;
+    opacity: 0; transition: opacity 0.8s ease;
+  }
+  .window-text.visible { opacity: 1; }
+  .window-text-main {
+    font-family: 'Playfair Display', serif; font-size: clamp(1.2rem, 3.5vw, 1.8rem);
+    font-weight: 400; color: #fff; line-height: 1.4;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.8), 0 1px 4px rgba(0,0,0,0.6);
+  }
+  .window-title-bar {
+    position: absolute; top: 0; left: 0; right: 0; padding: 20px 24px;
+    display: flex; align-items: center; justify-content: space-between; z-index: 2;
+    background: linear-gradient(rgba(0,0,0,0.5), transparent);
+  }
+  .window-title-text {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500;
+    letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+  }
+  .window-close {
+    width: 36px; height: 36px; border-radius: 50%; border: none; cursor: pointer;
+    background: rgba(0,0,0,0.4); color: rgba(255,255,255,0.8); font-size: 1.2rem;
+    display: flex; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px); transition: all 0.2s;
+  }
+  .window-close:hover { background: rgba(0,0,0,0.6); color: #fff; }
+  .window-progress {
+    position: absolute; bottom: 0; left: 0; right: 0; height: 3px; z-index: 2;
+    background: rgba(255,255,255,0.15);
+  }
+  .window-progress-bar {
+    height: 100%; background: var(--gold); width: 0%;
+    transition: width 0.3s linear;
+  }
+  .window-watermark {
+    position: absolute; bottom: 16px; right: 20px; z-index: 2;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.42rem; font-weight: 500;
+    letter-spacing: 0.15em; text-transform: uppercase;
+    color: rgba(255,255,255,0.3);
+  }
+  .typing { padding: 12px 20px; max-width: 800px; margin: 0 auto; }
+  .typing-inner { display: flex; align-items: center; gap: 10px; }
+  .typing-dots { display: flex; gap: 4px; }
+  .typing-dot {
+    width: 6px; height: 6px; border-radius: 50%; background: var(--gold-dim);
+    animation: pulse 1.4s ease-in-out infinite;
+  }
+  .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+  .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+  .typing-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.06em;
+  }
+  .input-area {
+    border-top: 1px solid var(--border); padding: 16px 20px; flex-shrink: 0;
+    background: rgba(11,11,16,0.95); backdrop-filter: blur(16px);
+  }
+  .input-row { display: flex; align-items: flex-end; gap: 10px; max-width: 800px; margin: 0 auto; }
+  .input-field {
+    flex: 1; background: var(--bg-input); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 16px; color: var(--text); font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 0.95rem; resize: none; outline: none; line-height: 1.5;
+    min-height: 46px; max-height: 160px; transition: border-color 0.2s;
+  }
+  .input-field::placeholder { color: var(--text-dim); }
+  .input-field:focus { border-color: var(--gold-dim); }
+  .send-btn {
+    width: 46px; height: 46px; border-radius: 10px; border: none; cursor: pointer;
+    background: var(--gold); color: var(--bg); display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; flex-shrink: 0;
+  }
+  .send-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+  .send-btn svg { width: 18px; height: 18px; }
+  .input-footer {
+    max-width: 800px; margin: 8px auto 0; text-align: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-mid);
+    letter-spacing: 0.05em;
+  }
+  .input-footer a { color: var(--gold-dim); text-decoration: none; }
+  .free-account-hint {
+    max-width: 800px; margin: 0 auto 8px; text-align: center;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; color: var(--text-mid);
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .free-account-hint a {
+    color: var(--gold); text-decoration: none; cursor: pointer; border-bottom: 1px dotted var(--gold-dim);
+  }
+  .free-account-hint a:hover { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .toast {
+    position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
+    background: var(--danger); color: white; padding: 12px 24px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    z-index: 1000; opacity: 0; transition: opacity 0.3s; pointer-events: none;
+    max-width: 90%; text-align: center;
+  }
+  .toast.show { opacity: 1; pointer-events: auto; }
+  .toast.success { background: var(--green); }
+  .toast.neutral { background: var(--bg-card); color: var(--text); border: 1px solid var(--border); min-width: 160px; }
+
+  /* =============== AUTH MODAL =============== */
+  .modal-overlay {
+    position: fixed; inset: 0; background: rgba(5,5,8,0.85); backdrop-filter: blur(12px);
+    z-index: 500; display: none; align-items: center; justify-content: center; padding: 20px;
+    opacity: 0; transition: opacity 0.35s ease;
+  }
+  .modal-overlay.open { display: flex; }
+  .modal-overlay.visible { opacity: 1; }
+  .modal {
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 16px;
+    width: 100%; max-width: 400px; padding: 36px 32px; position: relative;
+    transform: translateY(16px); transition: transform 0.35s ease;
+  }
+  .modal-overlay.visible .modal { transform: translateY(0); }
+  .modal-close {
+    position: absolute; top: 14px; right: 14px; background: none; border: none;
+    color: var(--text-dim); cursor: pointer; font-size: 1.2rem; line-height: 1;
+    transition: color 0.2s; padding: 4px;
+  }
+  .modal-cross {
+    width: 36px; height: 36px; background: var(--gold); border-radius: 50%;
+    display: flex; align-items: center; justify-content: center; position: relative;
+    margin: 0 auto 20px;
+  }
+  .modal-cross::before { content: ''; position: absolute; width: 14px; height: 1.5px; background: var(--bg); }
+  .modal-cross::after { content: ''; position: absolute; width: 1.5px; height: 14px; background: var(--bg); }
+  .modal-title {
+    font-family: 'Playfair Display', serif; font-size: 1.3rem; font-weight: 400;
+    text-align: center; color: var(--text); margin-bottom: 6px;
+  }
+  .modal-subtitle {
+    font-size: 0.85rem; color: var(--text-mid); text-align: center;
+    line-height: 1.5; margin-bottom: 24px;
+  }
+  .form-group { margin-bottom: 16px; }
+  .form-label {
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
+  }
+  .form-input {
+    width: 100%; background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 8px; padding: 11px 14px; color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 0.9rem;
+    outline: none; transition: border-color 0.2s;
+  }
+  .form-input::placeholder { color: var(--text-dim); }
+  .form-input:focus { border-color: var(--gold-dim); }
+  .form-btn {
+    width: 100%; padding: 13px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; margin-top: 4px;
+  }
+  .form-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .form-toggle {
+    text-align: center; margin-top: 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+  .form-toggle a { color: var(--gold); text-decoration: none; cursor: pointer; }
+  .form-error {
+    background: rgba(196,80,80,0.1); border: 1px solid rgba(196,80,80,0.25);
+    color: #E08080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+    font-size: 0.8rem; line-height: 1.4; display: none;
+  }
+  .form-error.show { display: block; }
+  .form-success {
+    background: rgba(90,175,90,0.1); border: 1px solid rgba(90,175,90,0.25);
+    color: #80D080; padding: 10px 14px; border-radius: 8px; margin-bottom: 16px;
+    font-size: 0.8rem; line-height: 1.4; display: none; text-align: center;
+  }
+  .form-success.show { display: block; }
+  .forgot-link {
+    display: block; text-align: right; margin-top: -10px; margin-bottom: 16px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
+    color: var(--text-dim); text-decoration: none; cursor: pointer; letter-spacing: 0.04em;
+  }
+  /* Signup prompt (inline in chat) */
+  .signup-prompt {
+    max-width: 800px; margin: 16px auto; padding: 24px 20px; text-align: center;
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 12px;
+  }
+  .signup-prompt h3 {
+    font-family: 'Playfair Display', serif; font-size: 1.1rem; font-weight: 400;
+    color: var(--text); margin-bottom: 8px;
+  }
+  .signup-prompt p { font-size: 0.85rem; color: var(--text-mid); margin-bottom: 16px; line-height: 1.5; }
+  .signup-prompt-btn {
+    display: inline-block; padding: 10px 28px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 8px; cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
+  }
+  .signup-prompt-link {
+    display: block; margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
+  }
+  .signup-prompt-secondary {
+    display: block; margin-top: 18px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
+    color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
+    cursor: pointer; background: none; border: none; transition: color 0.2s;
+    width: 100%; text-align: center;
+  }
+
+  /* Conversion nudge banner */
+  .nudge-banner {
+    display: none; max-width: 800px; margin: 12px auto; padding: 12px 20px;
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 10px;
+    align-items: center; gap: 12px; justify-content: space-between;
+  }
+  .nudge-banner.show { display: flex; }
+  .nudge-banner-text {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    color: var(--text-mid); letter-spacing: 0.03em; line-height: 1.5; flex: 1;
+  }
+  .nudge-banner-text strong { color: var(--gold-light); font-weight: 500; }
+  .nudge-banner-btn {
+    flex-shrink: 0; padding: 7px 16px; background: var(--gold); color: var(--bg); border: none;
+    border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.52rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    transition: all 0.2s; white-space: nowrap;
+  }
+  .nudge-banner-close {
+    background: none; border: none; color: var(--text-dim); cursor: pointer;
+    font-size: 1rem; line-height: 1; padding: 0 2px; transition: color 0.2s; flex-shrink: 0;
+  }
+  /* User menu */
+  .user-menu-wrap { position: relative; }
+  .user-avatar-btn {
+    width: 32px; height: 32px; border-radius: 50%; background: var(--bg-input);
+    border: 1px solid var(--border-strong); color: var(--text-mid); cursor: pointer;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+  }
+  .user-dropdown {
+    position: absolute; top: calc(100% + 8px); right: 0; background: var(--bg-card);
+    border: 1px solid var(--border-strong); border-radius: 10px; min-width: 200px;
+    padding: 8px; z-index: 200; display: none; animation: dropIn 0.15s ease-out;
+  }
+  .user-dropdown.open { display: block; }
+  @keyframes dropIn { from { opacity: 0; transform: translateY(-4px); } to { opacity: 1; transform: none; } }
+  .reveal-block { opacity: 0; animation: blockReveal 0.7s ease forwards; }
+  @keyframes blockReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+  .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
+  .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
+  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
+  .user-dropdown-plan { font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+  .user-dropdown-item {
+    display: block; width: 100%; padding: 9px 12px; background: none; border: none;
+    color: var(--text-mid); cursor: pointer; text-align: left; border-radius: 6px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.04em; transition: all 0.15s;
+  }
+
+  /* All hover states — pointer devices only */
+  @media (hover: hover) {
+    .theme-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+    .header-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+    .header-btn.gold:hover { background: var(--gold); color: var(--bg); }
+    .starter:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+    .prompt-ticker-row:hover { animation-play-state: paused; }
+    .prompt-pill:hover { border-color: var(--gold-dim); background: var(--bg-input); }
+    .send-btn:hover:not(:disabled) { background: var(--gold-light); }
+    .input-footer a:hover { color: var(--gold); }
+    .modal-close:hover { color: var(--text); }
+    .form-btn:hover:not(:disabled) { background: var(--gold-light); }
+    .form-toggle a:hover { color: var(--gold-light); }
+    .forgot-link:hover { color: var(--gold); }
+    .signup-prompt-btn:hover { background: var(--gold-light); }
+    .signup-prompt-link:hover { color: var(--gold); }
+    .signup-prompt-secondary:hover { color: var(--gold); }
+    .nudge-banner-btn:hover { background: var(--gold-light); }
+    .nudge-banner-close:hover { color: var(--text); }
+    .gallery-btn:hover { color: var(--gold); border-color: var(--border-strong); }
+    .user-avatar-btn:hover { background: var(--border-strong); color: var(--text); }
+    .user-dropdown-item:hover { background: var(--bg-input); color: var(--text); }
+    .user-dropdown-item.danger:hover { color: var(--danger); }
+  }
+
+
+  @media (max-width: 600px) {
+    .header { padding: 10px 14px; }
+    .header-title { display: none; }
+    .header-sub { display: none; }
+    .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
+    /* Hide max values on mobile family badge — just show remaining */
+    .remaining-max { display: none; }
+    #remainingFamily { font-size: 0.48rem; }
+    /* Collapse new chat label */
+    .new-chat-label { display: none; }
+    #shareChatBtn { display: none !important; }
+    .welcome { padding: 20px 12px; }
+    .welcome-cross { margin-bottom: 12px; }
+    .welcome h2 { font-size: 1.3rem; margin-bottom: 4px; }
+    .welcome-sub { font-size: 0.88rem; margin-bottom: 20px; }
+    .starters { display: none; }
+    .prompt-pill { padding: 8px 14px; }
+    .prompt-pill-q { font-size: 0.78rem; }
+    .message { padding: 12px 14px; }
+    .input-area { padding: 12px 14px; }
+    .toast { bottom: 116px; }
+    .signup-prompt { margin: 16px 12px; padding: 20px 16px; }
+    .signup-prompt h3 { font-size: 1rem; }
+    .signup-prompt p { font-size: 0.8rem; }
+    .msg-image-wrap { max-width: 140px; margin: 0 0 10px 12px; }
+    /* On mobile, shift the hint left so it sits centered over the textarea
+       rather than the whole input row. Textarea + 10px gap + 46px send button
+       means the textarea's center is ~28px left of the row's center. */
+    .free-account-hint { padding-right: 56px; }
+    .nudge-banner { flex-direction: column; text-align: center; gap: 10px; margin: 12px 14px; padding: 14px 16px 14px 16px; position: relative; }
+    .nudge-banner-text { font-size: 0.55rem; padding-right: 18px; }
+    .nudge-banner-btn { width: 100%; padding: 11px 16px; font-size: 0.58rem; }
+    .nudge-banner-close { position: absolute; top: 6px; right: 8px; padding: 4px 6px; font-size: 1.1rem; }
+    .gallery-tray { width: 280px; }
+    .modal { padding: 28px 22px; margin: 10px; }
+    .conv-history-label { display: none; }
+    .conv-history { padding: 20px 14px; }
+    .conv-item-actions { opacity: 1; }
+    .incognito-label { display: none; }
+  }
+
+  /* =============== CONVERSATION HISTORY =============== */
+  .conv-history-btn { display: none; }
+  .incognito-btn { display: none; }
+  .incognito-btn.active { color: var(--gold); }
+  .incognito-btn.active svg { stroke: var(--gold); }
+  .incognito-banner {
+    display: none; align-items: center; justify-content: center; gap: 12px;
+    background: var(--gold-dim); color: var(--bg);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.56rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    padding: 4px 16px; text-align: center;
+  }
+  .incognito-banner.visible { display: flex; }
+  .incognito-banner-close {
+    background: none; border: none; color: var(--bg); cursor: pointer;
+    font-size: 0.9rem; line-height: 1; padding: 0 2px; opacity: 0.7;
+  }
+  .incognito-banner-close:hover { opacity: 1; }
+  .conv-history {
+    display: none; flex-direction: column; align-items: center;
+    padding: 40px 20px 20px; max-width: 600px; margin: 0 auto; width: 100%;
+  }
+  .conv-history-header { width: 100%; margin-bottom: 24px; text-align: center; }
+  .conv-history-header h2 {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
+    margin: 0 0 16px;
+  }
+  .conv-search {
+    width: 100%; padding: 12px 14px; display: block;
+    background: var(--bg-input); border: 1px solid var(--border); border-radius: 4px;
+    color: var(--text); font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.04em; outline: none; transition: border-color 0.2s;
+  }
+  .conv-search:focus { border-color: var(--gold-dim); }
+  .conv-search::placeholder { color: var(--text-dim); }
+  .conv-list { width: 100%; display: flex; flex-direction: column; gap: 6px; }
+  .conv-item {
+    background: var(--bg-card); border: 1px solid var(--border); border-radius: 4px;
+    padding: 12px 14px; cursor: pointer; transition: all 0.2s; text-align: left;
+    display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  }
+  .conv-item:hover { border-color: var(--gold-dim); background: rgba(196,162,78,0.04); }
+  .conv-item.active { border-color: var(--gold-dim); }
+  .conv-item-body { flex: 1; min-width: 0; }
+  .conv-item-title {
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 0.88rem; color: var(--text);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;
+  }
+  .conv-item-time {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem;
+    color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px;
+  }
+  .conv-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
+  .conv-item-action {
+    background: none; border: 1px solid var(--border); color: var(--text-dim);
+    cursor: pointer; width: 26px; height: 26px; border-radius: 4px;
+    display: flex; align-items: center; justify-content: center; font-size: 0.65rem;
+    transition: all 0.2s;
+  }
+  .conv-item-action:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .conv-item-action.danger:hover { border-color: #c44; color: #c44; }
+  .conv-empty {
+    text-align: center; padding: 40px 20px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
+    letter-spacing: 0.04em;
+  }
+  .conv-loading {
+    text-align: center; padding: 40px 20px; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+  }
+  .conv-upsell {
+    text-align: center; padding: 40px 20px; max-width: 400px; margin: 0 auto;
+  }
+  .conv-upsell p {
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 1rem;
+    color: var(--text); margin: 0 0 16px; line-height: 1.6;
+  }
+  .conv-rename-input {
+    background: var(--bg-input); border: 1px solid var(--gold-dim); border-radius: 4px;
+    color: var(--text); font-family: 'Source Serif 4', Georgia, serif; font-size: 0.88rem;
+    padding: 4px 8px; width: 100%; outline: none;
+  }
+</style>
+</head>
+<body>
+<div class="header">
+  <a href="#" class="header-brand" onclick="handleBrandClick(event)">
+    <div class="header-mark"></div>
+    <div>
+      <div class="header-title">TrueCatholic AI</div>
+      <div class="header-sub">Powered by the Catholic Doctrinal Charter</div>
+    </div>
+  </a>
+  <div class="header-actions">
+    <button class="gallery-btn" id="galleryBtn" onclick="openGallery()" title="Image gallery">
+      <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="M21 15l-5-5L5 21"/></svg>
+      <span class="gallery-count" id="galleryCount">0</span>
+    </button>
+    <div class="remaining-badge" id="remainingBadge">
+      <span id="remainingStandard"><span class="num" id="remainingNum">&mdash;</span> / <span id="remainingMax">&mdash;</span> today</span>
+      <span id="remainingFamily" style="display:none"><span class="num" id="remainingHaiku">&mdash;</span><span class="remaining-max">/<span id="remainingHaikuMax">200</span></span> F &middot; <span class="num" id="remainingSonnet">&mdash;</span><span class="remaining-max">/<span id="remainingSonnetMax">30</span></span> S</span>
+    </div>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+    <button class="header-btn conv-history-btn" id="convHistoryBtn" onclick="showHistory()" style="gap:5px" title="Conversation history"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="conv-history-label">History</span></button>
+    <button class="header-btn incognito-btn" id="incognitoBtn" onclick="toggleIncognito()" style="display:none; gap:5px" title="Incognito mode — chat won't be saved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="incognito-label">Incognito</span></button>
+    <button class="header-btn" id="shareChatBtn" onclick="shareCurrentChat()" style="display:none;gap:5px" title="Share this chat"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span class="new-chat-label">Share</span></button>
+    <button class="header-btn" id="newChatBtn" style="gap:5px"><span style="font-size:1rem;line-height:1;position:relative;top:-0.5px">+</span><span class="new-chat-label">New Chat</span></button>
+    <button class="header-btn gold" id="signInBtn" onclick="openAuthModal('login')">Sign In</button>
+    <div class="user-menu-wrap" id="userMenu" style="display:none;">
+      <button class="user-avatar-btn" id="userAvatarBtn" onclick="toggleUserDropdown()"></button>
+      <div class="user-dropdown" id="userDropdown">
+        <div class="user-dropdown-info">
+          <div class="user-dropdown-name" id="dropdownName"></div>
+          <div class="user-dropdown-email" id="dropdownEmail"></div>
+          <div class="user-dropdown-plan" id="dropdownPlan"></div>
+        </div>
+        <button class="user-dropdown-item" id="manageSubBtn" onclick="handleManageSubscription()" style="display:none;">Manage Subscription</button>
+        <button class="user-dropdown-item" id="manageFamilyBtn" onclick="openFamilyModal()" style="display:none; color:var(--gold);">Manage Family</button>
+        <button class="user-dropdown-item" id="joinFamilyBtn" onclick="openJoinFamilyModal()" style="display:none;">Join a Family</button>
+        <button class="user-dropdown-item" id="upgradeBtn" onclick="handleUpgrade()" style="display:none; color:var(--gold);">Upgrade to Patron</button>
+        <button class="user-dropdown-item danger" onclick="handleSignOut()">Sign Out</button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="incognito-banner" id="incognitoBanner">
+  <span>Incognito mode — chats will not be saved</span>
+  <button class="incognito-banner-close" onclick="toggleIncognito()">&times;</button>
+</div>
+<div class="chat-area" id="chatArea">
+  <div class="welcome" id="welcome">
+    <div class="welcome-cross"></div>
+    <h2>Ask anything about <em>the faith.</em> And everything else, too.</h2>
+    <p class="welcome-sub">Doctrine, Scripture, the sacraments &mdash; and homework, history, science, and anything else you need. Every answer grounded in Catholic truth.</p>
+    <div class="starters">
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">&ldquo;Is the Eucharist really the Body and Blood of Christ?&rdquo;</span>
+        <span class="starter-cat">Core Doctrine</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">&ldquo;I&rsquo;ve been away from the Church for years. Can I come back?&rdquo;</span>
+        <span class="starter-cat">Pastoral</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">&ldquo;How do I prepare a good Confession?&rdquo;</span>
+        <span class="starter-cat">Sacramental</span>
+      </div>
+      <div class="starter" onclick="sendStarter(this)">
+        <span class="starter-q">&ldquo;Why do Catholics pray to Mary?&rdquo;</span>
+        <span class="starter-cat">Apologetics</span>
+      </div>
+    </div>
+    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
+    <div class="windows-showcase" id="windowsShowcase" style="display:none; margin-bottom:16px; justify-content:center; flex-wrap:wrap; gap:10px;">
+      <div style="width:100%; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:0.48rem; color:var(--gold-dim); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:4px;">&#10022; Windows</div>
+    </div>
+    <div class="prompt-ticker-wrap">
+      <div class="prompt-ticker-row" id="tickerRow1" style="--ticker-speed:80s"></div>
+    </div>
+    <div class="prompt-ticker-wrap" style="margin-top:10px">
+      <div class="prompt-ticker-row reverse" id="tickerRow2" style="--ticker-speed:90s"></div>
+    </div>
+    <div class="prompt-ticker-wrap" style="margin-top:10px">
+      <div class="prompt-ticker-row" id="tickerRow3" style="--ticker-speed:70s"></div>
+    </div>
+  </div>
+  <div class="conv-history" id="convHistory">
+    <div class="conv-history-header">
+      <h2>Your Conversations</h2>
+      <input class="conv-search" id="convSearch" placeholder="Search conversations..." oninput="filterConversations(this.value)">
+    </div>
+    <div class="conv-list" id="convList"></div>
+  </div>
+  <div class="messages" id="messages"></div>
+</div>
+<div class="input-area">
+  <div class="free-account-hint" id="freeAccountHint">Free account = 15 chats/day &middot; <a onclick="openAuthModal('signup')">Sign up in 10 seconds</a></div>
+  <div class="input-row">
+    <button class="input-model-btn" id="inputModelBtn" onclick="setFamilyModel(familyModel==='haiku'?'sonnet':'haiku')" title="Fast — tap for Smart"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg></button>
+    <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+  </div>
+  <div class="input-footer">AI can make mistakes. For definitive teaching, consult the <a href="https://www.vatican.va/archive/ENG0015/_INDEX.HTM" target="_blank">Catechism</a> or a <a href="https://masstimes.org" target="_blank">priest</a>. &middot; <a href="https://truecatholicai.org">truecatholicai.org</a></div>
+</div>
+
+<!-- Auth Modal -->
+<div class="modal-overlay" id="authModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeAuthModal()">&times;</button>
+    <div class="modal-cross"></div>
+    <div id="loginView">
+      <div class="modal-title">Welcome Back</div>
+      <div class="modal-subtitle">Sign in to continue your journey with the faith.</div>
+      <div class="form-error" id="loginError"></div>
+      <form onsubmit="handleLogin(event)">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="loginEmail" placeholder="your@email.com" required autocomplete="email"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="loginPassword" placeholder="Enter your password" required autocomplete="current-password"></div>
+        <a class="forgot-link" onclick="switchAuthView('forgot')">Forgot password?</a>
+        <button class="form-btn" type="submit" id="loginBtn">Sign In</button>
+      </form>
+      <div class="form-toggle">Don't have an account? <a onclick="switchAuthView('signup')">Create one</a></div>
+    </div>
+    <div id="signupView" style="display:none">
+      <div class="modal-title">Create Your Account</div>
+      <div class="modal-subtitle">15 free questions every day. Saved chat history. No credit card.</div>
+      <div class="form-error" id="signupError"></div>
+      <div class="form-success" id="signupSuccess"></div>
+      <form onsubmit="handleSignup(event)" id="signupForm">
+        <div class="form-group"><label class="form-label">Name</label><input class="form-input" type="text" id="signupName" placeholder="Your name" autocomplete="name"></div>
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="signupEmail" placeholder="your@email.com" required autocomplete="email"></div>
+        <div class="form-group"><label class="form-label">Password</label><input class="form-input" type="password" id="signupPassword" placeholder="At least 6 characters" required minlength="6" autocomplete="new-password"></div>
+        <button class="form-btn" type="submit" id="signupBtn">Create Account</button>
+      </form>
+      <div class="form-toggle">Already have an account? <a onclick="switchAuthView('login')">Sign in</a></div>
+    </div>
+    <div id="forgotView" style="display:none">
+      <div class="modal-title">Reset Password</div>
+      <div class="modal-subtitle">We'll send a link to reset your password.</div>
+      <div class="form-error" id="forgotError"></div>
+      <div class="form-success" id="forgotSuccess"></div>
+      <form onsubmit="handleForgot(event)" id="forgotForm">
+        <div class="form-group"><label class="form-label">Email</label><input class="form-input" type="email" id="forgotEmail" placeholder="your@email.com" required autocomplete="email"></div>
+        <button class="form-btn" type="submit" id="forgotBtn">Send Reset Link</button>
+      </form>
+      <div class="form-toggle"><a onclick="switchAuthView('login')">Back to sign in</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- Gallery Tray -->
+<div class="gallery-overlay" id="galleryOverlay" onclick="if(event.target===this)closeGallery()">
+  <div class="gallery-tray">
+    <div class="gallery-tray-header">
+      <span class="gallery-tray-title">Images</span>
+      <button class="gallery-tray-close" onclick="closeGallery()">&times;</button>
+    </div>
+    <div class="gallery-tray-tabs">
+      <button class="gallery-tab active" id="tabSession" onclick="switchGalleryTab('session')">This Chat</button>
+      <button class="gallery-tab" id="tabFavorites" onclick="switchGalleryTab('favorites')">Saved</button>
+    </div>
+    <div class="gallery-grid" id="galleryGrid">
+      <div class="gallery-empty">No images yet. Ask about a saint, miracle, or apparition.</div>
+    </div>
+  </div>
+</div>
+
+<!-- Lightbox -->
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)closeLightbox()">
+  <button style="position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.5);border:none;color:#fff;font-size:1.5rem;width:40px;height:40px;border-radius:50%;cursor:pointer;backdrop-filter:blur(4px);z-index:2;" onclick="closeLightbox()">&times;</button>
+  <img id="lightboxImg" src="">
+  <div class="lightbox-caption" id="lightboxCaption"></div>
+</div>
+
+<!-- Family Management Modal (owner only) -->
+<div class="family-modal-overlay" id="familyModal" onclick="if(event.target===this)closeFamilyModal()">
+  <div class="family-modal">
+    <button class="family-modal-close" onclick="closeFamilyModal()">&times;</button>
+    <div class="family-modal-title">Manage Family</div>
+    <div class="family-code-section">
+      <div class="family-code-label">Your Join Code</div>
+      <div class="family-code" id="familyCode">------</div>
+      <button class="family-code-copy" id="familyCodeCopy" onclick="copyFamilyCode()">Copy Code</button>
+    </div>
+    <div class="family-members-label">Members</div>
+    <div id="familyMembersList">
+      <div class="family-empty">Loading...</div>
+    </div>
+    <div class="family-seats-count" id="familySeatsCount"></div>
+  </div>
+</div>
+
+<!-- Join Family Modal -->
+<div class="family-modal-overlay" id="joinFamilyModal" onclick="if(event.target===this)closeJoinFamilyModal()">
+  <div class="family-modal">
+    <button class="family-modal-close" onclick="closeJoinFamilyModal()">&times;</button>
+    <div class="family-modal-title">Join a Family Plan</div>
+    <p style="font-size:0.85rem; color:var(--text-mid); line-height:1.5; margin-bottom:20px;">Enter the join code shared by your family plan owner.</p>
+    <div class="join-family-warning" id="joinFamilyWarning">
+      Joining this family will cancel your $5/mo Patron plan and issue a prorated refund. Continue?
+    </div>
+    <div class="form-error" id="joinFamilyError"></div>
+    <input class="join-family-input" id="joinFamilyCode" placeholder="Enter code" maxlength="10">
+    <button class="form-btn" id="joinFamilyBtn" onclick="handleJoinFamily()">Join Family</button>
+  </div>
+</div>
+
+<!-- Windows Player -->
+<div class="window-player" id="windowPlayer">
+  <div class="window-canvas">
+    <div class="window-slide" id="windowSlide0"></div>
+    <div class="window-slide" id="windowSlide1"></div>
+    <div class="window-vignette"></div>
+    <div class="window-gradient"></div>
+    <div class="window-text" id="windowText">
+      <div class="window-text-main" id="windowTextMain"></div>
+    </div>
+    <div class="window-title-bar">
+      <span class="window-title-text" id="windowTitle"></span>
+      <button class="window-close" onclick="closeWindow()">&times;</button>
+    </div>
+    <div class="window-progress">
+      <div class="window-progress-bar" id="windowProgressBar"></div>
+    </div>
+    <div class="window-watermark">TrueCatholic AI</div>
+  </div>
+</div>
+<audio id="windowAudio" preload="none"></audio>
+
+<div class="toast" id="toast"></div>
+<script>
+// =============== CONFIG ===============
+const SUPABASE_URL = 'https://gowufpcyhaafczfkikwg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4'; 
+const API_URL = 'https://api.truecatholicai.org/chat';
+const LIMITS = { unauth: 5, free: 15, patron: 100, family: 200 };
+
+// =============== SUPABASE INIT ===============
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+// =============== STATE ===============
+let messages = [];
+let isStreaming = false;
+let fetchStartedAt = 0;
+let remaining = 0;
+let chatStarted = false;
+let currentUser = null;
+let cachedAccessToken = null;
+let userPlan = 'free';
+let familyModel = 'haiku'; // 'haiku' or 'sonnet' — for family plan users
+let currentConversationId = null;
+let conversationsList = [];
+let convListStale = true;
+let incognitoMode = false;
+let chatIncognito = false; // locked per-conversation
+let unauthCount = 0;
+(function() {
+  const savedDate = localStorage.getItem('tc-unauth-date');
+  const today = new Date().toLocaleDateString('en-CA');
+  if (savedDate !== today) {
+    localStorage.setItem('tc-unauth-count', '0');
+    localStorage.setItem('tc-unauth-date', today);
+    // New day = fresh allowance = fresh chance to nudge the user. If they
+    // dismissed yesterday without signing up, we want to try again today.
+    localStorage.removeItem('tc-nudge-dismissed');
+  }
+  unauthCount = parseInt(localStorage.getItem('tc-unauth-count') || '0');
+})();
+let signupPromptShown = false;
+let sessionMsgCount = 0;
+let nudgeDismissed = localStorage.getItem('tc-nudge-dismissed') === '1';
+const inputField = document.getElementById('inputField');
+const sendBtn = document.getElementById('sendBtn');
+const remainingNum = document.getElementById('remainingNum');
+const remainingMax = document.getElementById('remainingMax');
+
+// =============== ADMIN MODE ===============
+if (new URLSearchParams(window.location.search).get('admin') === 'true') document.body.classList.add('admin');
+
+// =============== FAMILY MODEL TOGGLE ===============
+function setFamilyModel(model) {
+  familyModel = model;
+  var btn = document.getElementById('inputModelBtn');
+  if (model === 'haiku') {
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg>';
+    btn.title = 'Fast \u2014 tap for Smart';
+    showToast('<svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor" style="vertical-align:-2px"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg> Fast mode', 'neutral');
+  } else {
+    btn.innerHTML = '<svg viewBox="0 0 217 217" width="19" height="19" fill="currentColor"><path d="m97.95 210c-29.94-5.22-48.78-25.27-55.04-50-3.89-15.19-0.68-29.66 6.91-43.14 7.49-13.28 13.56-23.3 9.67-42.33 10.81 9.37 17.3 20.2 14.26 39.01-0.22 0.69-0.33 0.81 0.21 0.36 6.38-5.22 10.6-15.36 10.27-24.28-0.34-9.26-2.82-16.52-2.92-28.79-0.11-13.9 5.63-28.99 16.43-40.78 4.55-5.02 9.32-9.62 13.87-13.17-6.48 14.01-5.43 30.05 2.28 44.62 9.99 18.48 20.09 27.5 26.24 43.43 4.56 11.8 3.72 23.07 2.14 30 11.02-10.14 12.18-25.86 6.97-44.01 14.68 18.15 24.45 37.62 25 62.68 0.65 26.01-17.31 56.15-57.26 66.18 13.23-7.82 21.49-20.88 21.16-34.16-0.21-7.38-2.48-14.2-6.05-20.79 0.11 8.04-4.12 16.31-12.27 16.31-4.22 0-9.74-3.44-9.53-9.28 0.33-8.38 6.92-17.39 7.13-28.54 0.22-9.48-5.3-20.85-11.35-26.91 1.94 11.04-0.82 21.53-9.3 32.91-9.78 13.05-18.78 22.54-18.78 37.68-0.22 12.94 7.17 26.43 19.96 33z"/></svg>';
+    btn.title = 'Smart \u2014 tap for Fast';
+    showToast('<svg viewBox="0 0 217 217" width="14" height="14" fill="currentColor" style="vertical-align:-2px"><path d="m97.95 210c-29.94-5.22-48.78-25.27-55.04-50-3.89-15.19-0.68-29.66 6.91-43.14 7.49-13.28 13.56-23.3 9.67-42.33 10.81 9.37 17.3 20.2 14.26 39.01-0.22 0.69-0.33 0.81 0.21 0.36 6.38-5.22 10.6-15.36 10.27-24.28-0.34-9.26-2.82-16.52-2.92-28.79-0.11-13.9 5.63-28.99 16.43-40.78 4.55-5.02 9.32-9.62 13.87-13.17-6.48 14.01-5.43 30.05 2.28 44.62 9.99 18.48 20.09 27.5 26.24 43.43 4.56 11.8 3.72 23.07 2.14 30 11.02-10.14 12.18-25.86 6.97-44.01 14.68 18.15 24.45 37.62 25 62.68 0.65 26.01-17.31 56.15-57.26 66.18 13.23-7.82 21.49-20.88 21.16-34.16-0.21-7.38-2.48-14.2-6.05-20.79 0.11 8.04-4.12 16.31-12.27 16.31-4.22 0-9.74-3.44-9.53-9.28 0.33-8.38 6.92-17.39 7.13-28.54 0.22-9.48-5.3-20.85-11.35-26.91 1.94 11.04-0.82 21.53-9.3 32.91-9.78 13.05-18.78 22.54-18.78 37.68-0.22 12.94 7.17 26.43 19.96 33z"/></svg> Smart mode', 'neutral');
+  }
+}
+function handleSonnetExhausted() {
+  familyModel = 'haiku';
+  var btn = document.getElementById('inputModelBtn');
+  btn.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg>';
+  btn.title = 'Fast \u2014 Smart limit reached';
+  btn.disabled = true;
+  document.getElementById('remainingSonnet').textContent = '0';
+  showToast('Smart limit reached for today \u2014 using Fast.');
+}
+
+// =============== THEME TOGGLE ===============
+const themeBtn = document.getElementById('themeBtn');
+const savedTheme = localStorage.getItem('tc-theme');
+var moonSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+var sunSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+if (savedTheme === 'light') { document.body.classList.add('light'); document.documentElement.classList.add('light'); themeBtn.innerHTML = sunSVG; document.getElementById('themeColorMeta').content = '#F4F1EB'; }
+themeBtn.addEventListener('click', function() {
+  document.body.classList.toggle('light');
+  document.documentElement.classList.toggle('light');
+  const isLight = document.body.classList.contains('light');
+  themeBtn.innerHTML = isLight ? sunSVG : moonSVG;
+  localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
+  document.getElementById('themeColorMeta').content = isLight ? '#F4F1EB' : '#0B0B10';
+});
+
+// =============== AUTH MODAL ===============
+function openAuthModal(view) {
+  const modal = document.getElementById('authModal');
+  modal.classList.add('open');
+  requestAnimationFrame(() => { requestAnimationFrame(() => { modal.classList.add('visible'); }); });
+  switchAuthView(view || 'login');
+}
+function closeAuthModal() {
+  const modal = document.getElementById('authModal');
+  modal.classList.remove('visible');
+  setTimeout(() => { modal.classList.remove('open'); }, 350);
+  clearAuthErrors();
+}
+function switchAuthView(view) {
+  document.getElementById('loginView').style.display = view === 'login' ? 'block' : 'none';
+  document.getElementById('signupView').style.display = view === 'signup' ? 'block' : 'none';
+  document.getElementById('forgotView').style.display = view === 'forgot' ? 'block' : 'none';
+  clearAuthErrors();
+  if (view === 'signup') document.getElementById('signupForm').style.display = 'block';
+  if (view === 'forgot') document.getElementById('forgotForm').style.display = 'block';
+}
+function clearAuthErrors() { document.querySelectorAll('.form-error, .form-success').forEach(el => { el.classList.remove('show'); el.textContent = ''; }); }
+function showAuthError(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
+function showAuthSuccess(id, msg) { const el = document.getElementById(id); el.textContent = msg; el.classList.add('show'); }
+document.getElementById('authModal').addEventListener('click', (e) => { if (e.target === document.getElementById('authModal')) closeAuthModal(); });
+
+// =============== AUTH HANDLERS ===============
+async function handleLogin(e) {
+  e.preventDefault();
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Signing in...'; clearAuthErrors();
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById('loginEmail').value.trim(),
+    password: document.getElementById('loginPassword').value,
+  });
+  btn.disabled = false; btn.textContent = 'Sign In';
+  if (error) showAuthError('loginError', error.message);
+}
+async function handleSignup(e) {
+  e.preventDefault();
+  const btn = document.getElementById('signupBtn');
+  btn.disabled = true; btn.textContent = 'Creating account...'; clearAuthErrors();
+  const email = document.getElementById('signupEmail').value.trim();
+  const { data, error } = await sb.auth.signUp({
+    email: email,
+    password: document.getElementById('signupPassword').value,
+    options: { data: { full_name: document.getElementById('signupName').value.trim() }, emailRedirectTo: 'https://truecatholicai.org/app.html' },
+  });
+  btn.disabled = false; btn.textContent = 'Create Account';
+  if (error) {
+    console.log('[Signup] error:', error.message);
+    showAuthError('signupError', error.message);
+    return;
+  }
+  // Fire-and-forget: add to drip sequence (acts as the welcome/confirmation email via Resend)
+  fetch('https://api.truecatholicai.org/subscribe', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ email: email })
+  }).catch(function() {});
+  if (data && data.session) {
+    // Email confirmation is disabled in Supabase — user is logged in immediately.
+    // onAuthStateChange will fire SIGNED_IN, call setLoggedIn(), and close the modal.
+    console.log('[Signup] success WITH session — immediate login path (email confirmation OFF). user_id:', data.user && data.user.id);
+    document.getElementById('signupForm').style.display = 'none';
+    showAuthSuccess('signupSuccess', 'Welcome! Loading your account\u2026');
+  } else {
+    // Email confirmation still required in Supabase — fall back to old behavior.
+    console.log('[Signup] success WITHOUT session — confirmation-required path (email confirmation still ON). user_id:', data && data.user && data.user.id);
+    document.getElementById('signupForm').style.display = 'none';
+    showAuthSuccess('signupSuccess', 'Check your email for a confirmation link. You may need to check spam.');
+  }
+}
+async function handleForgot(e) {
+  e.preventDefault();
+  const btn = document.getElementById('forgotBtn');
+  btn.disabled = true; btn.textContent = 'Sending...'; clearAuthErrors();
+  const { error } = await sb.auth.resetPasswordForEmail(document.getElementById('forgotEmail').value.trim(), { redirectTo: 'https://truecatholicai.org/app.html' });
+  btn.disabled = false; btn.textContent = 'Send Reset Link';
+  if (error) showAuthError('forgotError', error.message);
+  else { document.getElementById('forgotForm').style.display = 'none'; showAuthSuccess('forgotSuccess', 'If that email exists, a reset link has been sent. Check your inbox.'); }
+}
+async function handleSignOut() {
+  cachedAccessToken = null;
+  await sb.auth.signOut(); closeUserDropdown();
+  messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  var hint = document.getElementById('freeAccountHint'); if (hint) hint.style.display = '';
+  showToast('Signed out');
+}
+
+// =============== SESSION MANAGEMENT ===============
+async function setLoggedIn(user) {
+  currentUser = user;
+  const name = user.user_metadata?.full_name || user.user_metadata?.name || user.email?.split('@')[0] || 'User';
+  const initial = name.charAt(0).toUpperCase();
+  const { data: profile } = await sb.from('profiles').select('plan, display_name').eq('id', user.id).single();
+  userPlan = profile?.plan || 'free';
+  const displayName = profile?.display_name || name;
+  const isFamily = userPlan === 'family_owner' || userPlan === 'family_member';
+  document.getElementById('signInBtn').style.display = 'none';
+  document.getElementById('userMenu').style.display = 'block';
+  var hint = document.getElementById('freeAccountHint'); if (hint) hint.style.display = 'none';
+  // Clear any anon-state paywall cards / nudges left over in the chat from before sign-in
+  var msgsEl = document.getElementById('messages');
+  if (msgsEl) {
+    var stalePrompts = msgsEl.querySelectorAll('.signup-prompt');
+    for (var i = 0; i < stalePrompts.length; i++) stalePrompts[i].remove();
+  }
+  var staleNudge = document.getElementById('nudgeBanner');
+  if (staleNudge) staleNudge.remove();
+  signupPromptShown = false;
+  document.getElementById('incognitoBtn').style.display = 'inline-flex';
+  document.getElementById('convHistoryBtn').style.display = 'inline-flex';
+  document.getElementById('userAvatarBtn').textContent = initial;
+  document.getElementById('dropdownName').textContent = displayName;
+  document.getElementById('dropdownEmail').textContent = user.email;
+  document.getElementById('dropdownPlan').textContent = (isFamily ? 'family' : userPlan) + ' plan';
+  document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family_owner') ? 'block' : 'none';
+  document.getElementById('manageFamilyBtn').style.display = (userPlan === 'family_owner') ? 'block' : 'none';
+  document.getElementById('joinFamilyBtn').style.display = (userPlan === 'free' || userPlan === 'patron') ? 'block' : 'none';
+  document.getElementById('upgradeBtn').style.display = (userPlan === 'free') ? 'block' : 'none';
+  // Family model toggle
+  const inputBtn = document.getElementById('inputModelBtn');
+  if (isFamily) {
+    inputBtn.classList.add('visible');
+    familyModel = 'haiku';
+    inputBtn.innerHTML = '<svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg>';
+    inputBtn.disabled = false;
+    inputBtn.title = 'Fast \u2014 tap for Smart';
+  } else {
+    inputBtn.classList.remove('visible');
+  }
+  const limit = LIMITS[isFamily ? 'family' : userPlan] || LIMITS.free;
+  if (isFamily) {
+    document.getElementById('remainingStandard').style.display = 'none';
+    document.getElementById('remainingFamily').style.display = 'inline';
+    document.getElementById('remainingHaiku').textContent = 200;
+    document.getElementById('remainingSonnet').textContent = 30;
+  } else {
+    document.getElementById('remainingStandard').style.display = 'inline';
+    document.getElementById('remainingFamily').style.display = 'none';
+    remainingMax.textContent = limit;
+    remainingNum.textContent = limit;
+  }
+  remaining = limit;
+  fetchRemaining();
+  updateGalleryBtn();
+  // Mark conversation list as stale on login (new session)
+  convListStale = true;
+}
+function setLoggedOut() {
+  currentUser = null; userPlan = 'free'; familyModel = 'haiku';
+  document.getElementById('signInBtn').style.display = 'inline-flex';
+  document.getElementById('userMenu').style.display = 'none';
+  document.getElementById('incognitoBtn').style.display = 'none';
+  document.getElementById('incognitoBtn').classList.remove('active');
+  document.getElementById('incognitoBanner').classList.remove('visible');
+  document.getElementById('convHistoryBtn').style.display = 'none';
+  incognitoMode = false;
+  document.getElementById('manageSubBtn').style.display = 'none';
+  document.getElementById('inputModelBtn').classList.remove('visible');
+  document.getElementById('remainingStandard').style.display = 'inline';
+  document.getElementById('remainingFamily').style.display = 'none';
+  currentConversationId = null; conversationsList = []; convListStale = true;
+  const limit = LIMITS.unauth;
+  remaining = Math.max(0, limit - unauthCount);
+  remainingMax.textContent = limit;
+  remainingNum.textContent = remaining;
+  updateGalleryBtn();
+  updateShareBtn();
+}
+
+async function fetchRemaining() {
+  try {
+    const token = await getAccessToken();
+    if (!token) return;
+    const res = await fetch(API_URL.replace('/chat', '/remaining'), {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    const data = await res.json();
+    const isFamily = userPlan === 'family_owner' || userPlan === 'family_member';
+    if (isFamily && data.haiku_remaining !== undefined) {
+      document.getElementById('remainingHaiku').textContent = data.haiku_remaining;
+      document.getElementById('remainingSonnet').textContent = data.sonnet_remaining;
+      if (data.haiku_limit) document.getElementById('remainingHaikuMax').textContent = data.haiku_limit;
+      if (data.sonnet_limit) document.getElementById('remainingSonnetMax').textContent = data.sonnet_limit;
+      remaining = data.haiku_remaining;
+    } else if (data.remaining !== undefined) {
+      remaining = data.remaining;
+      remainingNum.textContent = remaining;
+    }
+  } catch (e) { /* silently fail — we already show the plan limit as fallback */ }
+}
+
+// =============== USER DROPDOWN ===============
+function toggleUserDropdown() { document.getElementById('userDropdown').classList.toggle('open'); }
+function closeUserDropdown() { document.getElementById('userDropdown').classList.remove('open'); }
+document.addEventListener('click', (e) => { if (!e.target.closest('.user-menu-wrap')) closeUserDropdown(); });
+async function handleManageSubscription() {
+  closeUserDropdown();
+  try {
+    const token = await getAccessToken();
+    if (!token) return showToast('Please sign in first', 'error');
+    const res = await fetch(API_URL.replace('/chat', '/create-portal-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showToast('Unable to open subscription portal', 'error');
+  } catch (e) { showToast('Error opening subscription portal', 'error'); }
+}
+async function handleUpgrade(plan) {
+  closeUserDropdown();
+  plan = plan || 'patron';
+  try {
+    const token = await getAccessToken();
+    if (!token) { openAuthModal('login'); return; }
+    showToast('Redirecting to checkout...', 'success');
+    const res = await fetch(API_URL.replace('/chat', '/create-checkout-session'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ plan: plan })
+    });
+    const data = await res.json();
+    if (data.url) window.location.href = data.url;
+    else showToast(data.error || 'Unable to start checkout', 'error');
+  } catch (e) { showToast('Error starting checkout', 'error'); }
+}
+
+// =============== FAMILY MANAGEMENT (Task 4) ===============
+function openFamilyModal() {
+  closeUserDropdown();
+  const modal = document.getElementById('familyModal');
+  modal.classList.add('open');
+  requestAnimationFrame(function() { requestAnimationFrame(function() { modal.classList.add('visible'); }); });
+  fetchFamilyMembers();
+}
+function closeFamilyModal() {
+  const modal = document.getElementById('familyModal');
+  modal.classList.remove('visible');
+  setTimeout(function() { modal.classList.remove('open'); }, 350);
+}
+async function fetchFamilyMembers() {
+  try {
+    const token = await getAccessToken();
+    if (!token) return;
+    const res = await fetch(API_URL.replace('/chat', '/family/members'), {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    const data = await res.json();
+    if (data.join_code) document.getElementById('familyCode').textContent = data.join_code;
+    const list = document.getElementById('familyMembersList');
+    if (!data.members || data.members.length === 0) {
+      list.innerHTML = '<div class="family-empty">No members yet. Share your join code to invite family.</div>';
+    } else {
+      list.innerHTML = data.members.map(function(m) {
+        var role = m.role === 'owner' ? '<div class="family-member-role">Owner</div>' : '';
+        var removeBtn = m.role !== 'owner' ? '<button class="family-remove-btn" onclick="removeFamilyMember(\'' + m.id + '\', \'' + escapeHTML(m.name || m.email) + '\')">Remove</button>' : '';
+        return '<div class="family-member-row"><div><div class="family-member-info">' + escapeHTML(m.name || 'Member') + '</div><div class="family-member-email">' + escapeHTML(m.email) + '</div>' + role + '</div>' + removeBtn + '</div>';
+      }).join('');
+    }
+    var used = data.seats_used !== undefined ? data.seats_used : (data.members ? data.members.length : 0);
+    var max = data.seats_max || 6;
+    document.getElementById('familySeatsCount').textContent = used + ' / ' + max + ' seats used';
+  } catch (e) {
+    document.getElementById('familyMembersList').innerHTML = '<div class="family-empty">Unable to load members.</div>';
+  }
+}
+async function removeFamilyMember(memberId, memberName) {
+  if (!confirm('Remove ' + memberName + ' from your family plan?')) return;
+  try {
+    const token = await getAccessToken();
+    const res = await fetch(API_URL.replace('/chat', '/family/remove'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ member_id: memberId })
+    });
+    const data = await res.json();
+    if (data.ok) { showToast('Member removed', 'success'); fetchFamilyMembers(); }
+    else showToast(data.error || 'Unable to remove member');
+  } catch (e) { showToast('Error removing member'); }
+}
+function copyFamilyCode() {
+  var code = document.getElementById('familyCode').textContent;
+  navigator.clipboard.writeText(code).then(function() {
+    var btn = document.getElementById('familyCodeCopy');
+    btn.textContent = 'Copied!';
+    setTimeout(function() { btn.textContent = 'Copy Code'; }, 2000);
+  });
+}
+
+// =============== JOIN FAMILY (Task 5) ===============
+function openJoinFamilyModal() {
+  closeUserDropdown();
+  var modal = document.getElementById('joinFamilyModal');
+  modal.classList.add('open');
+  requestAnimationFrame(function() { requestAnimationFrame(function() { modal.classList.add('visible'); }); });
+  document.getElementById('joinFamilyCode').value = '';
+  document.getElementById('joinFamilyError').classList.remove('show');
+  // Show warning if user is a Patron (auto-cancel + refund)
+  var warning = document.getElementById('joinFamilyWarning');
+  if (userPlan === 'patron') warning.classList.add('show');
+  else warning.classList.remove('show');
+}
+function closeJoinFamilyModal() {
+  var modal = document.getElementById('joinFamilyModal');
+  modal.classList.remove('visible');
+  setTimeout(function() { modal.classList.remove('open'); }, 350);
+}
+async function handleJoinFamily() {
+  var code = document.getElementById('joinFamilyCode').value.trim().toUpperCase();
+  if (!code) return;
+  var btn = document.getElementById('joinFamilyBtn');
+  btn.disabled = true; btn.textContent = 'Joining...';
+  document.getElementById('joinFamilyError').classList.remove('show');
+  try {
+    var token = await getAccessToken();
+    if (!token) { showToast('Please sign in first'); btn.disabled = false; btn.textContent = 'Join Family'; return; }
+    var res = await fetch(API_URL.replace('/chat', '/family/join'), {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ join_code: code })
+    });
+    var data = await res.json();
+    if (data.ok) {
+      closeJoinFamilyModal();
+      showToast('Welcome to the family plan!', 'success');
+      // Refresh session to pick up new plan
+      var session = (await sb.auth.getSession()).data.session;
+      if (session) await setLoggedIn(session.user);
+    } else {
+      var errEl = document.getElementById('joinFamilyError');
+      errEl.textContent = data.error || 'Invalid code or family is full.';
+      errEl.classList.add('show');
+    }
+  } catch (e) {
+    var errEl = document.getElementById('joinFamilyError');
+    errEl.textContent = 'Connection error. Please try again.';
+    errEl.classList.add('show');
+  }
+  btn.disabled = false; btn.textContent = 'Join Family';
+}
+
+// =============== HELPERS ===============
+function withTimeout(promise, ms) {
+  return Promise.race([
+    promise,
+    new Promise((_, reject) => setTimeout(() => reject(new Error('timeout')), ms))
+  ]);
+}
+
+async function getAccessToken() {
+  try {
+    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+    if (session?.access_token) {
+      cachedAccessToken = session.access_token;
+      return cachedAccessToken;
+    }
+  } catch (e) { /* timeout or error */ }
+  return cachedAccessToken; // fall back to last known good token
+}
+
+// =============== INIT ===============
+const urlParams = new URLSearchParams(window.location.search);
+const pendingUpgrade = urlParams.get('upgrade');
+const checkoutSuccess = urlParams.get('checkout') === 'success';
+if (checkoutSuccess) history.replaceState(null, '', window.location.pathname);
+document.addEventListener('DOMContentLoaded', async () => {
+  try {
+    const { data: { session } } = await withTimeout(sb.auth.getSession(), 5000);
+    if (session) {
+      cachedAccessToken = session.access_token;
+      await setLoggedIn(session.user);
+      if (checkoutSuccess) showToast('Welcome! You\u2019re all set.', 'success');
+      else if (pendingUpgrade && (userPlan === 'free' || (pendingUpgrade === 'family' && userPlan === 'patron'))) {
+        history.replaceState(null, '', window.location.pathname);
+        handleUpgrade(pendingUpgrade);
+      }
+    } else {
+      setLoggedOut();
+      if (pendingUpgrade) openAuthModal('signup');
+    }
+  } catch (e) {
+    setLoggedOut();
+    if (pendingUpgrade) openAuthModal('signup');
+  }
+  sb.auth.onAuthStateChange(async (event, session) => {
+    if (event === 'SIGNED_IN' && session) {
+      cachedAccessToken = session.access_token;
+      await setLoggedIn(session.user); closeAuthModal();
+      if (pendingUpgrade && (userPlan === 'free' || (pendingUpgrade === 'family' && userPlan === 'patron'))) {
+        history.replaceState(null, '', window.location.pathname);
+        handleUpgrade(pendingUpgrade);
+      }
+    }
+    else if (event === 'SIGNED_OUT') { cachedAccessToken = null; setLoggedOut(); }
+  });
+  inputField.focus();
+});
+
+// =============== RESUME AFTER BROWSER SUSPEND ===============
+document.addEventListener('visibilitychange', async () => {
+  if (document.visibilityState !== 'visible') return;
+
+  // Immediately clean up stuck streaming — if the fetch started >15s ago, it's dead
+  if (isStreaming && fetchStartedAt && (Date.now() - fetchStartedAt > 15000)) {
+    hideTyping();
+    isStreaming = false;
+    sendBtn.disabled = !inputField.value.trim();
+    if (messages.length && messages[messages.length - 1].role === 'user') {
+      inputField.value = messages.pop().content;
+    }
+    showToast('Connection was interrupted. Tap send to try again.');
+  }
+
+  // Refresh session and token cache
+  if (currentUser) {
+    const token = await getAccessToken();
+    if (token) fetchRemaining();
+  }
+});
+
+// =============== INPUT ===============
+inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
+function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
+function sendStarter(el) {
+  const q = el.querySelector('.starter-q').textContent.replace(/^[\u201c\u201d"]/g, '').replace(/[\u201c\u201d"]$/g, '');
+  inputField.value = q; sendMessage();
+}
+
+// =============== SEND MESSAGE ===============
+async function sendMessage() {
+  const text = inputField.value.trim();
+  if (!text || isStreaming) return;
+  if (!currentUser && unauthCount >= LIMITS.unauth) {
+    if (!signupPromptShown) showSignupPrompt();
+    return;
+  }
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('convHistory').style.display = 'none';
+  document.getElementById('messages').style.display = 'block';
+  messages.push({ role: 'user', content: text });
+  renderMessage('user', text);
+  inputField.value = ''; inputField.style.height = 'auto';
+  sendBtn.disabled = true; isStreaming = true;
+  fetchStartedAt = Date.now();
+  showTyping(); scrollToBottom();
+
+  let apiMessages = messages.map(m => ({ ...m }));
+  if (!chatStarted) chatIncognito = incognitoMode;
+  chatStarted = true;
+
+  const body = { messages: apiMessages };
+  const isFamily = userPlan === 'family_owner' || userPlan === 'family_member';
+  if (isFamily && familyModel === 'sonnet') body.model = 'anthropic/claude-sonnet-4.5';
+  // Conversation history: tell worker to save this conversation
+  if (currentUser && !chatIncognito) {
+    body.save_conversation = true;
+    if (currentConversationId) body.conversation_id = currentConversationId;
+  }
+
+  const headers = { 'Content-Type': 'application/json' };
+  if (currentUser) {
+    const token = await getAccessToken();
+    if (token) {
+      headers['Authorization'] = 'Bearer ' + token;
+    } else {
+      hideTyping(); isStreaming = false; fetchStartedAt = 0;
+      sendBtn.disabled = !inputField.value.trim();
+      messages.pop(); inputField.value = text;
+      showToast('Session expired. Please sign in again.');
+      return;
+    }
+  }
+
+  try {
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 30000);
+    const response = await fetch(API_URL, { method: 'POST', headers, body: JSON.stringify(body), signal: controller.signal });
+    clearTimeout(timeout);
+    hideTyping();
+    if (response.status === 429) {
+      const err = await response.json().catch(() => ({}));
+      if (currentUser) {
+        const isFamily = userPlan === 'family_owner' || userPlan === 'family_member';
+        if (isFamily) {
+          showFamilyLimitPrompt();
+        } else if (userPlan === 'patron') {
+          showPatronLimitPrompt();
+        } else {
+          showUpgradePrompt();
+        }
+      } else {
+        // Sync frontend counter to backend reality
+        unauthCount = LIMITS.unauth;
+        localStorage.setItem('tc-unauth-count', unauthCount);
+        remaining = 0; remainingNum.textContent = 0;
+        showSignupPrompt();
+      }
+      messages.pop();
+      // Remove the user message bubble that was already rendered
+      var lastMsg = document.getElementById('messages').lastElementChild;
+      if (lastMsg && lastMsg.classList.contains('message')) lastMsg.remove();
+      isStreaming = false; fetchStartedAt = 0; sendBtn.disabled = false; return;
+    }
+    if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
+    const data = await response.json();
+    // Update remaining counts
+    if (isFamily && data.haiku_remaining !== undefined) {
+      document.getElementById('remainingHaiku').textContent = data.haiku_remaining;
+      document.getElementById('remainingSonnet').textContent = data.sonnet_remaining;
+      remaining = data.haiku_remaining;
+    } else if (data.remaining !== undefined) {
+      remaining = data.remaining; remainingNum.textContent = remaining;
+    }
+    // Sonnet exhausted fallback
+    if (data.sonnet_exhausted) handleSonnetExhausted();
+    messages.push({ role: 'assistant', content: data.reply });
+    // Capture conversation ID from worker response
+    if (data.conversation_id) { currentConversationId = data.conversation_id; convListStale = true; updateShareBtn(); }
+    await renderMessageProgressive('ai', data.reply, data.images);
+    if (!currentUser) {
+      // Trust the server: the worker rate-limits anon by IP+UA fingerprint and
+      // is the source of truth across fresh incognito windows / reloads. The
+      // local counter is only a fallback if the server didn't send remaining.
+      if (data.remaining !== undefined) {
+        unauthCount = LIMITS.unauth - data.remaining;
+      } else {
+        unauthCount++;
+      }
+      localStorage.setItem('tc-unauth-count', unauthCount);
+      remaining = Math.max(0, LIMITS.unauth - unauthCount);
+      remainingNum.textContent = remaining;
+      sessionMsgCount++;
+      if (sessionMsgCount >= 1 && !nudgeDismissed && !signupPromptShown) showNudgeBanner();
+      if (unauthCount >= LIMITS.unauth && !signupPromptShown) showSignupPrompt();
+    }
+  } catch (err) {
+    hideTyping();
+    if (err.name === 'AbortError') {
+      renderMessage('ai', "That took too long \u2014 the connection may have been interrupted. Please try again.");
+    } else {
+      renderMessage('ai', "I\u2019m having trouble connecting right now. Please try again in a moment.");
+    }
+    messages.pop();
+  }
+  isStreaming = false; fetchStartedAt = 0; sendBtn.disabled = !inputField.value.trim();
+}
+
+// =============== CONVERSION NUDGE ===============
+function showNudgeBanner() {
+  var existing = document.getElementById('nudgeBanner');
+  if (existing) return;
+  var container = document.getElementById('messages');
+  var div = document.createElement('div');
+  div.className = 'nudge-banner show';
+  div.id = 'nudgeBanner';
+  div.innerHTML = '<span class="nudge-banner-text">You\u2019re using <strong>5 free questions/day</strong>. Create a free account and get <strong>15</strong>, plus <strong>saved chat history</strong> you can search and revisit. No cost, just an email.</span>'
+    + '<button class="nudge-banner-btn" onclick="dismissNudge();openAuthModal(\'signup\')">Sign Up Free</button>'
+    + '<button class="nudge-banner-close" onclick="dismissNudge()" title="Dismiss">&times;</button>';
+  container.appendChild(div);
+  // No scrollToBottom — let the user finish reading the AI response; the nudge waits at the bottom.
+}
+function dismissNudge() {
+  nudgeDismissed = true;
+  try { localStorage.setItem('tc-nudge-dismissed', '1'); } catch (e) {}
+  var el = document.getElementById('nudgeBanner');
+  if (el) el.remove();
+}
+
+// =============== SIGNUP PROMPT (anon 5/day wall) ===============
+function showSignupPrompt() {
+  if (signupPromptShown) return;
+  signupPromptShown = true;
+  dismissNudge();
+  const container = document.getElementById('messages');
+  document.getElementById('welcome').style.display = 'none';
+  container.style.display = 'block';
+  const div = document.createElement('div');
+  div.className = 'signup-prompt';
+  div.innerHTML = '<h3>You\u2019ve used your 5 free questions for today</h3>'
+    + '<p>Create a free account to get <strong>15 questions every day</strong> and <strong>save your chat history</strong> so you can come back and search past conversations. No credit card needed. Takes 30 seconds.</p>'
+    + '<button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create Free Account \u2014 Get 15/day</button>'
+    + '<button class="signup-prompt-secondary" onclick="handleUpgrade()">Or become a Patron \u2014 100/day, $5/month</button>';
+  container.appendChild(div); scrollToBottom();
+}
+
+// =============== UPGRADE PROMPT (logged-in free 15/day wall) ===============
+let upgradePromptShown = false;
+function showUpgradePrompt() {
+  if (upgradePromptShown) return;
+  upgradePromptShown = true;
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'signup-prompt';
+  div.innerHTML = '<h3>You\u2019ve used your 15 free questions for today</h3>'
+    + '<p>Patron members get <strong>100 questions per day</strong> and keep TrueCatholic AI free for everyone.</p>'
+    + '<button class="signup-prompt-btn" onclick="handleUpgrade()">Become a Patron \u2014 $5/mo</button>'
+    + '<button class="signup-prompt-secondary" onclick="this.closest(\'.signup-prompt\').remove()">Come back tomorrow</button>';
+  container.appendChild(div); scrollToBottom();
+}
+
+// =============== PATRON LIMIT (100/day wall) ===============
+function showPatronLimitPrompt() {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'signup-prompt';
+  div.innerHTML = '<h3>You\u2019ve used your 100 questions for today</h3>'
+    + '<p>Your Patron limit resets at midnight. Thank you for supporting TrueCatholic AI.</p>'
+    + '<button class="signup-prompt-secondary" onclick="this.closest(\'.signup-prompt\').remove()">Got it</button>';
+  container.appendChild(div); scrollToBottom();
+}
+
+// =============== FAMILY LIMIT (shared pool wall) ===============
+function showFamilyLimitPrompt() {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'signup-prompt';
+  div.innerHTML = '<h3>Your family has used all shared messages for today</h3>'
+    + '<p>Your family\u2019s shared pool resets at midnight. Thank you for keeping the faith with TrueCatholic AI.</p>'
+    + '<button class="signup-prompt-secondary" onclick="this.closest(\'.signup-prompt\').remove()">Got it</button>';
+  container.appendChild(div); scrollToBottom();
+}
+
+// =============== RENDER ===============
+function renderMessage(role, text) {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+  if (role === 'ai') {
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + renderMarkdown(text) + '</div>';
+  } else {
+    const userName = currentUser?.user_metadata?.full_name || currentUser?.user_metadata?.name || 'You';
+    const userInitial = userName.charAt(0).toUpperCase();
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">' + escapeHTML(userInitial) + '</div><span class="msg-name user-name">' + escapeHTML(userName) + '</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
+  }
+  container.appendChild(div); scrollToBottom();
+}
+async function renderMessageProgressive(role, text, images) {
+  const container = document.getElementById('messages');
+  const chatArea = document.getElementById('chatArea');
+
+  const div = document.createElement('div');
+  div.className = 'message ' + role;
+
+  const header = document.createElement('div');
+  header.className = 'msg-header';
+  header.innerHTML = '<div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span>';
+  div.appendChild(header);
+
+  const body = document.createElement('div');
+  body.className = 'msg-body';
+
+  // Inject image BEFORE text so it's there when text starts wrapping
+  if (images && images.length) {
+    const img = images[0];
+    const alreadyShown = sessionImages.some(function(s) { return s.url === img.url || (s.entity && img.entity && s.entity === img.entity); });
+    if (!alreadyShown) {
+    const imgIdx = sessionImages.length;
+    const wrap = document.createElement('div');
+    wrap.className = 'msg-image-wrap';
+    const imgEl = document.createElement('img');
+    imgEl.src = img.url;
+    imgEl.alt = img.alt || '';
+    imgEl.loading = 'lazy';
+    imgEl.style.cursor = 'pointer';
+    (function(url, alt) { imgEl.addEventListener('click', function() { openLightbox(url, alt); }); })(img.url, img.alt || '');
+    wrap.appendChild(imgEl);
+    const heart = document.createElement('button');
+    heart.className = 'msg-image-heart';
+    heart.innerHTML = favoriteImages.some(function(f) { return f.url === img.url; }) ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="#E05555" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+    if (favoriteImages.some(function(f) { return f.url === img.url; })) heart.classList.add('saved');
+    heart.title = 'Save to favorites';
+    (function(h, idx) { heart.addEventListener('click', function(e) { e.stopPropagation(); toggleFavorite(h, idx); }); })(heart, imgIdx);
+    wrap.appendChild(heart);
+    if (img.alt) {
+      const cap = document.createElement('div');
+      cap.className = 'msg-image-caption';
+      cap.textContent = img.alt + (img.attribution ? ' \u00b7 ' + img.attribution : '');
+      wrap.appendChild(cap);
+    }
+    body.appendChild(wrap);
+    sessionImages.push({ url: img.url, alt: img.alt || '', attribution: img.attribution || '', entity: img.entity || '' });
+    updateGalleryBtn();
+    }
+  }
+
+  div.appendChild(body);
+  container.appendChild(div);
+
+  // Render the FULL text through the normal formatter first — preserves all formatting
+  const temp = document.createElement('div');
+  temp.innerHTML = renderMarkdown(text);
+  const elements = Array.from(temp.childNodes).filter(n =>
+    n.nodeType === 1 || (n.nodeType === 3 && n.textContent.trim())
+  );
+
+  const isMobile = window.innerWidth <= 768;
+
+  // Phase 1: First paragraph immediately
+  if (elements.length > 0) {
+    elements[0].classList ? elements[0].classList.add('reveal-block') : null;
+    body.appendChild(elements[0]);
+    // On desktop, scroll to start of response (not bottom); on mobile, scroll to bottom
+    if (isMobile) { scrollToBottom(); } else { elements[0].scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+  }
+  // Phase 2-4: Next three paragraphs each fade in
+  var fadeCount = Math.min(elements.length, 4);
+  for (var fi = 1; fi < fadeCount; fi++) {
+    await new Promise(r => setTimeout(r, 500));
+    elements[fi].classList ? elements[fi].classList.add('reveal-block') : null;
+    body.appendChild(elements[fi]);
+    // On mobile, scroll for first 2 paragraphs then stop
+    if (isMobile && fi <= 2) scrollToBottom();
+  }
+  // Phase 5: Everything else after one more beat
+  if (elements.length > 4) {
+    await new Promise(r => setTimeout(r, 400));
+    for (let i = 4; i < elements.length; i++) {
+      elements[i].classList ? elements[i].classList.add('reveal-block') : null;
+      body.appendChild(elements[i]);
+    }
+  }
+}
+
+function renderMarkdown(text) {
+  let html = escapeHTML(text);
+  html = html.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+  html = html.replace(/\*(.+?)\*/g, '<em>$1</em>');
+  html = html.replace(/^&gt; (.+)$/gm, '<blockquote>$1</blockquote>');
+  html = html.replace(/<\/blockquote>\n<blockquote>/g, '\n');
+  html = html.replace(/^#{1,3} (.+)$/gm, '<strong>$1</strong>');
+  html = html.replace(/^(---|___|\*\*\*)$/gm, '<hr>');
+  html = html.replace(/(^[\-\*] .+)\n\n+(?=[\-\*] )/gm, '$1\n');
+  html = html.replace(/(^\d+\. .+)\n\n+(?=\d+\. )/gm, '$1\n');
+  const paragraphs = html.split(/\n\n+/);
+  html = paragraphs.map(p => {
+    p = p.trim(); if (!p) return '';
+    if (p === '<hr>') return '<hr>';
+    if (p.startsWith('<blockquote>')) return p;
+    if (p.match(/^[\-\*] /m)) { const items = p.split(/\n/).filter(l => l.trim()); return '<ul>' + items.map(l => { const content = l.replace(/^[\-\*] /, ''); if (/^<strong>[^<]+<\/strong>:?$/.test(content.trim())) return '</ul><p class="list-subhead">' + content + '</p><ul>'; return '<li>' + content + '</li>'; }).join('') + '</ul>'; }
+    if (p.match(/^\d+\. /m)) {
+      const items = p.split(/\n/).filter(l => l.trim());
+      let result = ''; let counter = 1;
+      items.forEach(l => {
+        const content = l.replace(/^\d+\. /, '');
+        if (/^<strong>[^<]+<\/strong>:?$/.test(content.trim())) {
+          result += '<p class="list-subhead">' + content + '</p>';
+          counter = 1; // restart numbering after a subhead
+        } else {
+          result += '<ol start="' + counter + '"><li>' + content + '</li></ol>';
+          counter++;
+        }
+      });
+      return result;
+    }
+    return '<p>' + p.replace(/\n/g, '<br>') + '</p>';
+  }).join('\n');
+  html = html.replace(/<ul>\s*<\/ul>/g, '');
+  return html;
+}
+function escapeHTML(str) { const d = document.createElement('div'); d.textContent = str; return d.innerHTML; }
+let typingTimer = null;
+function showTyping() {
+  const container = document.getElementById('messages');
+  const div = document.createElement('div'); div.className = 'typing'; div.id = 'typingIndicator';
+  div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="typing-inner"><div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div><span class="typing-label">thinking...</span></div>';
+  container.appendChild(div);
+  typingTimer = setTimeout(() => {
+    const label = div.querySelector('.typing-label');
+    if (label) label.textContent = 'still thinking...';
+  }, 5000);
+}
+function hideTyping() {
+  if (typingTimer) { clearTimeout(typingTimer); typingTimer = null; }
+  const el = document.getElementById('typingIndicator'); if (el) el.remove();
+}
+function scrollToBottom() { const a = document.getElementById('chatArea'); requestAnimationFrame(() => { a.scrollTop = a.scrollHeight; }); }
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  if (msg.indexOf('<') !== -1) t.innerHTML = msg; else t.textContent = msg;
+  var cls = type === 'success' ? ' success' : type === 'neutral' ? ' neutral' : '';
+  t.className = 'toast show' + cls;
+  setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.className = 'toast'; t.style.opacity = ''; }, 300); }, 5000);
+}
+const ICON_EYE_OPEN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
+const ICON_EYE_OFF = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
+function toggleIncognito() {
+  incognitoMode = !incognitoMode;
+  var btn = document.getElementById('incognitoBtn');
+  btn.classList.toggle('active', incognitoMode);
+  btn.querySelector('svg').outerHTML = incognitoMode ? ICON_EYE_OFF : ICON_EYE_OPEN;
+  btn.title = incognitoMode ? 'Incognito ON \u2014 chats won\u2019t be saved' : 'Incognito mode \u2014 chat won\u2019t be saved';
+  var banner = document.getElementById('incognitoBanner');
+  var bannerText = banner.querySelector('span');
+  if (chatIncognito && chatStarted) {
+    // Current chat is locked as incognito regardless of toggle
+    banner.classList.add('visible');
+    bannerText.textContent = incognitoMode
+      ? 'Incognito mode \u2014 chats will not be saved'
+      : 'This chat won\u2019t be saved \u2014 start a new chat to save again';
+  } else {
+    banner.classList.toggle('visible', incognitoMode);
+    bannerText.textContent = 'Incognito mode \u2014 chats will not be saved';
+  }
+}
+function handleBrandClick(e) {
+  e.preventDefault();
+  var historyVisible = document.getElementById('convHistory').style.display === 'flex';
+  if (chatStarted || historyVisible) {
+    // Reset to welcome screen (same as New Chat)
+    messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
+    currentConversationId = null; chatIncognito = false;
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('messages').style.display = 'none';
+    document.getElementById('convHistory').style.display = 'none';
+    document.getElementById('welcome').style.display = 'flex';
+    document.getElementById('incognitoBanner').classList.toggle('visible', incognitoMode);
+    document.getElementById('incognitoBanner').querySelector('span').textContent = 'Incognito mode \u2014 chats will not be saved';
+    inputField.value = ''; inputField.focus();
+    updateShareBtn();
+  } else {
+    window.location.href = 'https://truecatholicai.org';
+  }
+}
+document.getElementById('newChatBtn').addEventListener('click', () => {
+  messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
+  currentConversationId = null; chatIncognito = false;
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('convHistory').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  document.getElementById('incognitoBanner').classList.toggle('visible', incognitoMode);
+  document.getElementById('incognitoBanner').querySelector('span').textContent = 'Incognito mode \u2014 chats will not be saved';
+
+  inputField.value = ''; inputField.focus();
+  updateShareBtn();
+});
+
+// =============== INLINE IMAGES & GALLERY ===============
+let sessionImages = [];
+let favoriteImages = JSON.parse(localStorage.getItem('tc-favorites') || '[]');
+
+function updateGalleryBtn() {
+  const btn = document.getElementById('galleryBtn');
+  const count = document.getElementById('galleryCount');
+  if (currentUser) btn.classList.add('visible');
+  else btn.classList.remove('visible');
+  if (sessionImages.length > 0) {
+    count.textContent = sessionImages.length;
+    count.classList.add('show');
+  } else {
+    count.classList.remove('show');
+  }
+}
+
+function openGallery() {
+  const overlay = document.getElementById('galleryOverlay');
+  overlay.classList.add('open');
+  requestAnimationFrame(() => { requestAnimationFrame(() => { overlay.classList.add('visible'); }); });
+  switchGalleryTab('session');
+}
+function closeGallery() {
+  const overlay = document.getElementById('galleryOverlay');
+  overlay.classList.remove('visible');
+  setTimeout(() => overlay.classList.remove('open'), 300);
+}
+function switchGalleryTab(tab) {
+  document.getElementById('tabSession').classList.toggle('active', tab === 'session');
+  document.getElementById('tabFavorites').classList.toggle('active', tab === 'favorites');
+  const grid = document.getElementById('galleryGrid');
+  const images = tab === 'session' ? sessionImages : favoriteImages;
+  if (images.length === 0) {
+    grid.innerHTML = '<div class="gallery-empty">' + (tab === 'session' ? 'No images yet. Ask about a saint, miracle, or apparition.' : 'No saved images yet. Tap the heart on any image to save it.') + '</div>';
+    return;
+  }
+  grid.innerHTML = '';
+  images.forEach(function(img) {
+    const thumb = document.createElement('div');
+    thumb.className = 'gallery-thumb';
+    thumb.onclick = function() { openLightbox(img.url, img.alt); };
+    const imgEl = document.createElement('img');
+    imgEl.src = img.url; imgEl.alt = img.alt || ''; imgEl.loading = 'lazy';
+    thumb.appendChild(imgEl);
+    const label = document.createElement('div');
+    label.className = 'gallery-thumb-label';
+    label.textContent = img.alt || img.entity || '';
+    thumb.appendChild(label);
+    grid.appendChild(thumb);
+  });
+}
+
+function toggleFavorite(btn, index) {
+  const img = sessionImages[index];
+  if (!img) return;
+  const existing = favoriteImages.findIndex(function(f) { return f.url === img.url; });
+  btn.classList.remove('pop');
+  void btn.offsetWidth; // reflow to restart animation
+  btn.classList.add('pop');
+  if (existing >= 0) {
+    favoriteImages.splice(existing, 1);
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+    btn.classList.remove('saved');
+  } else {
+    favoriteImages.push(Object.assign({}, img));
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="14" height="14" fill="#E05555" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+    btn.classList.add('saved');
+  }
+  localStorage.setItem('tc-favorites', JSON.stringify(favoriteImages));
+}
+
+function openLightbox(url, caption) {
+  const lb = document.getElementById('lightbox');
+  const img = document.getElementById('lightboxImg');
+  img.src = '';
+  img.src = url;
+  document.getElementById('lightboxCaption').textContent = caption || '';
+  lb.classList.add('open');
+}
+function closeLightbox() {
+  const lb = document.getElementById('lightbox');
+  lb.classList.remove('open');
+  document.getElementById('lightboxImg').src = '';
+}
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape') { closeLightbox(); closeGallery(); } });
+
+// =============== CONVERSATION HISTORY ===============
+
+function showHistory() {
+  if (!currentUser) {
+    // Show upsell for anonymous users
+    var list = document.getElementById('convList');
+    list.innerHTML = '<div class="conv-upsell"><p>Sign up for a free account to save and revisit your conversations.</p><button class="header-btn gold" onclick="openAuthModal(\'signup\')">Create Free Account</button></div>';
+    document.getElementById('welcome').style.display = 'none';
+    document.getElementById('messages').style.display = 'none';
+    document.getElementById('convHistory').style.display = 'flex';
+    return;
+  }
+  document.getElementById('welcome').style.display = 'none';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('convHistory').style.display = 'flex';
+  document.getElementById('convSearch').value = '';
+  if (convListStale) fetchConversations();
+  else renderConversationList('');
+}
+
+async function fetchConversations() {
+  var list = document.getElementById('convList');
+  list.innerHTML = '<div class="conv-loading">Loading conversations...</div>';
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/conversations', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Failed to load');
+    var data = await res.json();
+    conversationsList = data.conversations || [];
+    convListStale = false;
+    renderConversationList('');
+  } catch (e) {
+    list.innerHTML = '<div class="conv-empty">Unable to load conversations.</div>';
+  }
+}
+
+function renderConversationList(filter) {
+  var list = document.getElementById('convList');
+  var filtered = conversationsList;
+  if (filter) {
+    var q = filter.toLowerCase();
+    filtered = conversationsList.filter(function(c) { return c.title.toLowerCase().indexOf(q) !== -1; });
+  }
+  if (filtered.length === 0) {
+    list.innerHTML = filter
+      ? '<div class="conv-empty">No conversations matching "' + escapeHTML(filter) + '"</div>'
+      : '<div class="conv-empty">No conversations yet. Start chatting!</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < filtered.length; i++) {
+    var c = filtered[i];
+    var isActive = c.id === currentConversationId;
+    html += '<div class="conv-item' + (isActive ? ' active' : '') + '" data-id="' + c.id + '">'
+      + '<div class="conv-item-body" onclick="loadConversation(\'' + c.id + '\')">'
+      + '<div class="conv-item-title" id="convTitle-' + c.id + '">' + escapeHTML(c.title) + '</div>'
+      + '<div class="conv-item-time">' + relativeTime(c.updated_at) + '</div>'
+      + '</div>'
+      + '<div class="conv-item-actions">'
+      + '<button class="conv-item-action" onclick="event.stopPropagation();shareConversation(\'' + c.id + '\')" title="Share"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg></button>'
+      + '<button class="conv-item-action" onclick="event.stopPropagation();startRename(\'' + c.id + '\')" title="Rename">&#9998;</button>'
+      + '<button class="conv-item-action danger" onclick="event.stopPropagation();deleteConversation(\'' + c.id + '\')" title="Delete">&#10005;</button>'
+      + '</div></div>';
+  }
+  list.innerHTML = html;
+}
+
+function filterConversations(query) {
+  renderConversationList(query);
+}
+
+async function loadConversation(id) {
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/conversations/' + id + '/messages', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Failed to load: HTTP ' + res.status);
+    var data = await res.json();
+    console.log('[ConvHistory] loadConversation response:', JSON.stringify(data).slice(0, 500));
+    console.log('[ConvHistory] messages count:', (data.messages || []).length);
+    // Reset state
+    messages = [];
+    sessionImages = []; updateGalleryBtn();
+    signupPromptShown = true; upgradePromptShown = true; // suppress prompts for loaded convos
+    currentConversationId = id;
+    chatStarted = true;
+    chatIncognito = false; // loaded conversation is already saved
+    // Switch view
+    document.getElementById('convHistory').style.display = 'none';
+    document.getElementById('welcome').style.display = 'none';
+    var container = document.getElementById('messages');
+    container.innerHTML = '';
+    container.style.display = 'block';
+    // Render messages
+    var loadedMessages = data.messages || [];
+    for (var i = 0; i < loadedMessages.length; i++) {
+      var m = loadedMessages[i];
+      messages.push({ role: m.role, content: m.content });
+      var displayRole = (m.role === 'assistant') ? 'ai' : 'user';
+      renderMessage(displayRole, m.content);
+    }
+    scrollToBottom();
+    updateShareBtn();
+  } catch (e) {
+    console.error('[ConvHistory] loadConversation error:', e);
+    alert('Unable to load conversation: ' + e.message);
+  }
+}
+
+async function deleteConversation(id) {
+  if (!confirm('Delete this conversation? This cannot be undone.')) return;
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/conversations/' + id, {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Failed');
+    // Remove from local list
+    conversationsList = conversationsList.filter(function(c) { return c.id !== id; });
+    renderConversationList(document.getElementById('convSearch').value);
+    // If we deleted the active conversation, reset
+    if (currentConversationId === id) currentConversationId = null;
+  } catch (e) {
+    alert('Unable to delete conversation.');
+  }
+}
+
+function startRename(id) {
+  var titleEl = document.getElementById('convTitle-' + id);
+  if (!titleEl) return;
+  var currentTitle = titleEl.textContent;
+  var input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'conv-rename-input';
+  input.value = currentTitle;
+  titleEl.replaceWith(input);
+  input.focus();
+  input.select();
+  function finishRename() {
+    var newTitle = input.value.trim();
+    if (!newTitle || newTitle === currentTitle) {
+      var span = document.createElement('div');
+      span.className = 'conv-item-title';
+      span.id = 'convTitle-' + id;
+      span.textContent = currentTitle;
+      input.replaceWith(span);
+      return;
+    }
+    renameConversation(id, newTitle);
+  }
+  input.addEventListener('blur', finishRename);
+  input.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); input.blur(); }
+    if (e.key === 'Escape') { input.value = currentTitle; input.blur(); }
+  });
+}
+
+async function renameConversation(id, newTitle) {
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/conversations/' + id, {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ title: newTitle })
+    });
+    if (!res.ok) throw new Error('Failed');
+    // Update local list
+    for (var i = 0; i < conversationsList.length; i++) {
+      if (conversationsList[i].id === id) { conversationsList[i].title = newTitle; break; }
+    }
+    renderConversationList(document.getElementById('convSearch').value);
+  } catch (e) {
+    alert('Unable to rename conversation.');
+    renderConversationList(document.getElementById('convSearch').value);
+  }
+}
+
+async function shareConversation(id) {
+  showToast('Creating share link\u2026', 'neutral');
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/conversations/' + id + '/share', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('Failed to share');
+    var data = await res.json();
+    var shareUrl = 'https://truecatholicai.org/shared.html?id=' + data.share_id;
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      await navigator.clipboard.writeText(shareUrl);
+      showToast('Share link copied to clipboard!', 'success');
+    } else {
+      prompt('Copy this share link:', shareUrl);
+    }
+  } catch (e) {
+    showToast('Unable to create share link', '');
+  }
+}
+
+function shareCurrentChat() {
+  if (currentConversationId) shareConversation(currentConversationId);
+}
+
+function updateShareBtn() {
+  var btn = document.getElementById('shareChatBtn');
+  if (btn) btn.style.display = (currentUser && currentConversationId && !chatIncognito) ? 'flex' : 'none';
+}
+
+function relativeTime(dateStr) {
+  var now = Date.now();
+  var then = new Date(dateStr).getTime();
+  var diff = now - then;
+  var mins = Math.floor(diff / 60000);
+  if (mins < 1) return 'Just now';
+  if (mins < 60) return mins + 'm ago';
+  var hrs = Math.floor(mins / 60);
+  if (hrs < 24) return hrs + 'h ago';
+  var days = Math.floor(hrs / 24);
+  if (days === 1) return 'Yesterday';
+  if (days < 7) return days + 'd ago';
+  var d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+// =============== WINDOWS (Immersive Micro-Stories) ===============
+const WINDOW_ICON = '<svg viewBox="0 0 24 32" width="14" height="18" class="window-pill-icon"><defs><clipPath id="_wic"><path d="M12 1.5C7.5 1.5 2.5 5.2 2.5 11v17c0 1.2.8 2.5 2.5 2.5h14c1.7 0 2.5-1.3 2.5-2.5V11c0-5.8-5-9.5-9.5-9.5z"/></clipPath></defs><g clip-path="url(#_wic)"><rect x="0" y="0" width="24" height="11" fill="#3b6db5"/><rect x="0" y="0" width="12" height="11" fill="#2955a0"/><rect x="0" y="11" width="12" height="7.5" fill="#c43c3c"/><rect x="12" y="11" width="12" height="7.5" fill="#D4872A"/><rect x="0" y="18.5" width="12" height="14" fill="#2a8a4e"/><rect x="12" y="18.5" width="12" height="14" fill="#6b3fa0"/></g><path d="M12 1.5C7.5 1.5 2.5 5.2 2.5 11v17c0 1.2.8 2.5 2.5 2.5h14c1.7 0 2.5-1.3 2.5-2.5V11c0-5.8-5-9.5-9.5-9.5z" fill="none" stroke="#C4A24E" stroke-width="1.6"/><line x1="12" y1="1.5" x2="12" y2="30.5" stroke="#C4A24E" stroke-width="1.2"/><line x1="2.5" y1="11" x2="21.5" y2="11" stroke="#C4A24E" stroke-width="1.2"/><line x1="2.5" y1="18.5" x2="21.5" y2="18.5" stroke="#C4A24E" stroke-width="1.2"/></svg>';
+
+const WINDOWS_DATA = [
+  {
+    id: 'window-story-of-salvation',
+    title: 'The Story of Salvation',
+    category: 'Sacred Art',
+    followUp: 'Tell me about the story of salvation through Catholic art',
+    slides: [
+      {
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg/960px-Michelangelo_-_Creation_of_Adam_%28cropped%29.jpg',
+        text: 'In the beginning, God reached out to man',
+        duration: 8
+      },
+      {
+        image: 'https://upload.wikimedia.org/wikipedia/commons/f/fa/Angelico_-_Annunciation_-_San_Marco_north_corridor.jpg',
+        text: 'And when the fullness of time had come, He sent an angel',
+        duration: 8
+      },
+      {
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/6/67/The_Last_Supper_Leonardo_Da_Vinci_-_High_Resolution.jpg/960px-The_Last_Supper_Leonardo_Da_Vinci_-_High_Resolution.jpg',
+        text: '"This is my Body, which is given for you"',
+        duration: 8
+      },
+      {
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Michelangelo%27s_Piet%C3%A0_Saint_Peter%27s_Basilica_Vatican_City.jpg/960px-Michelangelo%27s_Piet%C3%A0_Saint_Peter%27s_Basilica_Vatican_City.jpg',
+        text: 'He gave everything. She held what remained.',
+        duration: 9
+      },
+      {
+        image: 'https://upload.wikimedia.org/wikipedia/commons/thumb/5/51/Transfiguration_Raphael.jpg/960px-Transfiguration_Raphael.jpg',
+        text: 'And His glory was revealed to all who would see',
+        duration: 9
+      }
+    ]
+  }
+];
+
+let windowTimer = null;
+let windowSlideIndex = 0;
+let windowActiveSlot = 0; // alternates 0/1 for crossfade
+let windowStartTime = 0;
+let windowTotalDuration = 0;
+let windowProgressInterval = null;
+let currentWindowData = null;
+const kbDirections = ['kb-tl', 'kb-tr', 'kb-bl', 'kb-br'];
+
+// Persistent Gregorian chant — replace with your R2 URL
+const WINDOW_CHANT_URL = 'https://truecatholicai.org/01.06.%20Introit_%20Resurrexi.mp3';
+
+function playWindow(windowId) {
+  const win = WINDOWS_DATA.find(function(w) { return w.id === windowId; });
+  if (!win) return;
+  currentWindowData = win;
+  windowSlideIndex = 0;
+  windowActiveSlot = 0;
+  windowTotalDuration = win.slides.reduce(function(sum, s) { return sum + s.duration; }, 0) * 1000;
+  windowStartTime = Date.now();
+
+  // Reset slides
+  var slide0 = document.getElementById('windowSlide0');
+  var slide1 = document.getElementById('windowSlide1');
+  slide0.innerHTML = ''; slide0.className = 'window-slide';
+  slide1.innerHTML = ''; slide1.className = 'window-slide';
+  document.getElementById('windowText').classList.remove('visible');
+  document.getElementById('windowProgressBar').style.width = '0%';
+  document.getElementById('windowTitle').textContent = win.title;
+
+  // Open player
+  document.getElementById('windowPlayer').classList.add('open');
+
+  // Persistent audio — start if not playing, fade in if already going
+  var audio = document.getElementById('windowAudio');
+  if (WINDOW_CHANT_URL) {
+    if (!audio.src || audio.src === '') {
+      audio.src = WINDOW_CHANT_URL;
+    }
+    if (audio.paused) {
+      audio.volume = 0;
+      audio.play().then(function() {
+        fadeAudio(audio, 0, 0.35, 2000);
+      }).catch(function() { /* audio blocked — silent is fine */ });
+    } else {
+      // Already playing from a previous Window — just fade volume back up
+      fadeAudio(audio, audio.volume, 0.35, 1000);
+    }
+  }
+
+  // Start progress
+  windowProgressInterval = setInterval(function() {
+    var elapsed = Date.now() - windowStartTime;
+    var pct = Math.min(100, (elapsed / windowTotalDuration) * 100);
+    document.getElementById('windowProgressBar').style.width = pct + '%';
+  }, 100);
+
+  // Show first slide
+  showWindowSlide();
+}
+
+function showWindowSlide() {
+  var win = currentWindowData;
+  if (!win || windowSlideIndex >= win.slides.length) {
+    endWindow();
+    return;
+  }
+
+  var slide = win.slides[windowSlideIndex];
+  var slotId = 'windowSlide' + windowActiveSlot;
+  var otherSlotId = 'windowSlide' + (1 - windowActiveSlot);
+  var slotEl = document.getElementById(slotId);
+  var otherEl = document.getElementById(otherSlotId);
+
+  // Prepare new slide
+  var img = document.createElement('img');
+  img.src = slide.image;
+  img.alt = '';
+  slotEl.innerHTML = '';
+  slotEl.appendChild(img);
+
+  // Random Ken Burns direction
+  var dir = kbDirections[Math.floor(Math.random() * kbDirections.length)];
+  slotEl.className = 'window-slide ' + dir;
+
+  // Crossfade: new slide in, old slide out
+  requestAnimationFrame(function() {
+    slotEl.classList.add('active');
+    otherEl.classList.remove('active');
+  });
+
+  // Show text after a beat
+  var textEl = document.getElementById('windowText');
+  var textMain = document.getElementById('windowTextMain');
+  textEl.classList.remove('visible');
+  setTimeout(function() {
+    textMain.textContent = slide.text;
+    textEl.classList.add('visible');
+  }, 600);
+
+  // Fade out text before next slide
+  setTimeout(function() {
+    textEl.classList.remove('visible');
+  }, (slide.duration - 1.5) * 1000);
+
+  // Schedule next slide
+  windowTimer = setTimeout(function() {
+    windowSlideIndex++;
+    windowActiveSlot = 1 - windowActiveSlot;
+    showWindowSlide();
+  }, slide.duration * 1000);
+}
+
+function endWindow() {
+  // Fade out audio but keep it alive for next Window
+  var audio = document.getElementById('windowAudio');
+  if (audio && !audio.paused) {
+    fadeAudio(audio, audio.volume, 0, 1500);
+  }
+
+  clearInterval(windowProgressInterval);
+  document.getElementById('windowProgressBar').style.width = '100%';
+
+  // Close after a moment
+  setTimeout(function() {
+    document.getElementById('windowPlayer').classList.remove('open');
+    // Offer follow-up chat
+    if (currentWindowData && currentWindowData.followUp) {
+      inputField.value = currentWindowData.followUp;
+      sendBtn.disabled = false;
+      inputField.focus();
+    }
+    currentWindowData = null;
+  }, 1200);
+}
+
+function closeWindow() {
+  clearTimeout(windowTimer);
+  clearInterval(windowProgressInterval);
+  var audio = document.getElementById('windowAudio');
+  if (audio && !audio.paused) {
+    fadeAudio(audio, audio.volume, 0, 800);
+  }
+  document.getElementById('windowPlayer').classList.remove('open');
+  document.getElementById('windowText').classList.remove('visible');
+  currentWindowData = null;
+}
+
+function fadeAudio(audio, from, to, duration, callback) {
+  var steps = 20;
+  var stepTime = duration / steps;
+  var stepSize = (to - from) / steps;
+  var current = from;
+  var interval = setInterval(function() {
+    current += stepSize;
+    if ((stepSize > 0 && current >= to) || (stepSize < 0 && current <= to)) {
+      audio.volume = Math.max(0, Math.min(1, to));
+      clearInterval(interval);
+      if (callback) callback();
+    } else {
+      audio.volume = Math.max(0, Math.min(1, current));
+    }
+  }, stepTime);
+}
+
+// Build Window pills into ticker
+function buildWindowPill(rowEl, win) {
+  var pill = document.createElement('div');
+  pill.className = 'window-pill';
+  pill.innerHTML = WINDOW_ICON + '<span class="window-pill-title">' + win.title + '</span><span class="window-pill-cat">' + win.category + '</span>';
+  pill.addEventListener('click', function() { playWindow(win.id); });
+  // Insert at a random position in the row
+  var children = rowEl.children;
+  if (children.length > 2) {
+    var pos = Math.floor(Math.random() * (children.length - 1)) + 1;
+    rowEl.insertBefore(pill, children[pos]);
+  } else {
+    rowEl.appendChild(pill);
+  }
+}
+// =============== SCROLLING PROMPT TICKER ===============
+const tickerPrompts = [
+  [["What is the Holy Trinity?","Doctrine"],["How is the Eucharist different from a symbol?","Doctrine"],["What happens at Baptism?","Sacraments"],["Can mortal sin be forgiven?","Moral Theology"],["What is sanctifying grace?","Doctrine"],["Why do Catholics have a Pope?","Apologetics"],["What are the seven sacraments?","Sacraments"],["Is Purgatory in the Bible?","Apologetics"],["What is the Immaculate Conception?","Mariology"],["How do I pray the Rosary?","Prayer"],["What does the Church teach about salvation?","Doctrine"],["Can non-Catholics go to heaven?","Doctrine"]],
+  [["What does the Church teach about divorce?","Moral Theology"],["I'm struggling with doubt \u2014 is that a sin?","Pastoral"],["How do I discern my vocation?","Spiritual Life"],["Why is contraception wrong?","Moral Theology"],["What is the Church's teaching on just war?","Moral Theology"],["How do I start a daily prayer life?","Spiritual Life"],["My spouse isn't Catholic \u2014 what do we do?","Pastoral"],["What is an examination of conscience?","Sacraments"],["Can I receive Communion if I'm in mortal sin?","Sacraments"],["What does the Church say about anxiety?","Pastoral"],["How do I offer up suffering?","Spiritual Life"],["What is the difference between a saint and a blessed?","Saints"]],
+  [["Why do Catholics call priests 'Father'?","Apologetics"],["Did the Crusades prove the Church is corrupt?","History"],["How do Catholics interpret the Bible?","Scripture"],["What really happened at the Reformation?","History"],["Where does the Bible mention Confession?","Scripture"],["Why can't women be ordained?","Apologetics"],["What is Apostolic Succession?","Doctrine"],["Did the early Christians believe in the Real Presence?","History"],["What are the Corporal Works of Mercy?","Moral Theology"],["Why do Catholics baptize infants?","Apologetics"],["What is the Shroud of Turin?","Apologetics"],["How should I read the Book of Revelation?","Scripture"]]
+];
+// — Category Icons —
+const ICON_SHIELD = '<svg viewBox="0 0 14 14" width="18" height="18" class="prompt-pill-icon"><path d="M7 1L2 3.5v4c0 3 2.5 5 5 6.5 2.5-1.5 5-3.5 5-6.5v-4L7 1z" fill="currentColor"/><rect x="6.1" y="3.5" width="1.8" height="7.5" rx="0.3" style="fill:var(--bg-card)"/><rect x="4" y="6" width="6" height="1.8" rx="0.3" style="fill:var(--bg-card)"/></svg>';
+const ICON_HALO = '<svg viewBox="0 0 14 14" width="18" height="18" class="prompt-pill-icon"><ellipse cx="7" cy="7" rx="6.5" ry="3" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>';
+const ICON_MONSTRANCE = '<svg viewBox="0 0 14 14" width="18" height="18" class="prompt-pill-icon"><circle cx="7" cy="7" r="6.5" fill="currentColor"/><rect x="4" y="6.4" width="6" height="1.2" rx="0.3" style="fill:var(--bg-card)"/><rect x="6.4" y="4" width="1.2" height="6" rx="0.3" style="fill:var(--bg-card)"/></svg>';
+const CATEGORY_ICONS = {
+  'Spiritual Warfare': ICON_SHIELD,
+  'Saints': ICON_HALO,
+  'Eucharist': ICON_MONSTRANCE,
+  'Sacraments': ICON_MONSTRANCE,
+  'The Mass': ICON_MONSTRANCE
+};
+function buildTickerRow(rowEl, prompts) {
+  const fragment = document.createDocumentFragment();
+  [...prompts, ...prompts].forEach(([q, cat]) => {
+    const pill = document.createElement('div');
+    pill.className = 'prompt-pill';
+    const icon = CATEGORY_ICONS[cat] || null;
+    if (icon) {
+      pill.innerHTML = icon + '<span class="prompt-pill-q">' + q + '</span>';
+    } else {
+      pill.innerHTML = '<span class="prompt-pill-q">' + q + '</span><span class="prompt-pill-cat">' + cat + '</span>';
+    }
+    pill.addEventListener('click', () => { inputField.value = q; sendMessage(); });
+    fragment.appendChild(pill);
+  });
+  rowEl.appendChild(fragment);
+}
+
+// =============== DYNAMIC PROMPT SYSTEM (Admin Only) ===============
+const PROMPT_POOL = [
+  // — Core Doctrine —
+  ["What is the Holy Trinity?","Doctrine"],
+  ["What is sanctifying grace?","Doctrine"],
+  ["What does the Church teach about salvation?","Doctrine"],
+  ["Can non-Catholics go to heaven?","Doctrine"],
+  ["What is Apostolic Succession?","Doctrine"],
+  ["What is the difference between dogma, doctrine, and discipline?","Doctrine"],
+  ["What does 'one, holy, catholic, and apostolic' actually mean?","Doctrine"],
+  ["What is original sin and why does it matter?","Doctrine"],
+  ["What happens to people who never hear the Gospel?","Doctrine"],
+  ["What is the Communion of Saints?","Doctrine"],
+  // — Eucharist & Real Presence —
+  ["How is the Eucharist different from a symbol?","Eucharist"],
+  ["Did the early Christians believe in the Real Presence?","Eucharist"],
+  ["What Eucharistic miracles has the Church approved?","Eucharist"],
+  ["What happened at the Miracle of Lanciano?","Eucharist"],
+  ["What did the lab results show on Eucharistic miracles?","Eucharist"],
+  ["What is Eucharistic Adoration and why does it matter?","Eucharist"],
+  ["What is a Corpus Christi procession?","Eucharist"],
+  ["What is transubstantiation?","Eucharist"],
+  // — Sacraments —
+  ["What happens at Baptism?","Sacraments"],
+  ["What are the seven sacraments?","Sacraments"],
+  ["What is an examination of conscience?","Sacraments"],
+  ["Can I receive Communion if I'm in mortal sin?","Sacraments"],
+  ["What actually happens during Confession?","Sacraments"],
+  ["What is the Anointing of the Sick really for?","Sacraments"],
+  ["What makes a Catholic marriage different from a civil one?","Sacraments"],
+  ["What happens at Confirmation?","Sacraments"],
+  ["Can a mortal sin be committed accidentally?","Sacraments"],
+  ["What is a plenary indulgence?","Sacraments"],
+  // — Mariology & Marian Apparitions —
+  ["What is the Immaculate Conception?","Mariology"],
+  ["What happened at Fatima?","Mariology"],
+  ["What are the three secrets of Fatima?","Mariology"],
+  ["What happened at Guadalupe \u2014 how was the tilma made?","Mariology"],
+  ["What did Mary say at Lourdes?","Mariology"],
+  ["Why do Catholics say Mary is sinless?","Mariology"],
+  ["What is the Assumption and why does it matter?","Mariology"],
+  ["What are the approved Marian apparitions?","Mariology"],
+  ["Why do Protestants think Catholics worship Mary?","Mariology"],
+  ["What is the Miraculous Medal?","Mariology"],
+  ["What happened at Knock, Ireland?","Mariology"],
+  ["What is the Brown Scapular promise?","Mariology"],
+  // — Saints (Specific) —
+  ["What is the difference between a saint and a blessed?","Saints"],
+  ["Who was St. Padre Pio and did he really have the stigmata?","Saints"],
+  ["What miracles did St. Francis of Assisi perform?","Saints"],
+  ["Why is St. Thomas Aquinas called the greatest theologian?","Saints"],
+  ["What did St. Teresa of \u00c1vila teach about prayer?","Saints"],
+  ["Who was St. Maximilian Kolbe?","Saints"],
+  ["What is the 'Little Way' of St. Th\u00e9r\u00e8se of Lisieux?","Saints"],
+  ["How did St. Augustine go from sinner to saint?","Saints"],
+  ["Who was St. Joan of Arc?","Saints"],
+  ["What happened to the early Christian martyrs?","Saints"],
+  ["Who was St. Tarcisius \u2014 the boy martyr of the Eucharist?","Saints"],
+  ["What did St. Faustina see in her visions of Divine Mercy?","Saints"],
+  ["Who was St. Josemar\u00eda Escriv\u00e1?","Saints"],
+  ["Why is St. Joseph called the Terror of Demons?","Saints"],
+  ["What did St. John Vianney say about Confession?","Saints"],
+  ["Who is Blessed Carlo Acutis and why does he matter?","Saints"],
+  // — Spiritual Warfare —
+  ["Is demonic possession real?","Spiritual Warfare"],
+  ["What does the Catholic Church teach about exorcism?","Spiritual Warfare"],
+  ["How do I know if I'm under spiritual attack?","Spiritual Warfare"],
+  ["What is the difference between temptation, oppression, and possession?","Spiritual Warfare"],
+  ["What is the prayer to St. Michael the Archangel for?","Spiritual Warfare"],
+  ["What are the tactics the devil uses according to the saints?","Spiritual Warfare"],
+  ["What did the Church Fathers say about demons?","Spiritual Warfare"],
+  ["How do I protect my home spiritually?","Spiritual Warfare"],
+  ["What is the armor of God and how do Catholics understand it?","Spiritual Warfare"],
+  ["What role do guardian angels play in spiritual combat?","Spiritual Warfare"],
+  ["What are the nine choirs of angels?","Spiritual Warfare"],
+  ["What did St. Ignatius teach about discernment of spirits?","Spiritual Warfare"],
+  ["Can Catholics use sage, crystals, or horoscopes?","Spiritual Warfare"],
+  ["What is the danger of the occult according to Church teaching?","Spiritual Warfare"],
+  ["How does Confession function as spiritual warfare?","Spiritual Warfare"],
+  // — Prayer & Devotions —
+  ["How do I pray the Rosary?","Prayer"],
+  ["How do I start a daily prayer life?","Prayer"],
+  ["What is the Divine Mercy Chaplet?","Prayer"],
+  ["What is Lectio Divina?","Prayer"],
+  ["What is the Liturgy of the Hours?","Prayer"],
+  ["How do I pray before the Blessed Sacrament?","Prayer"],
+  ["What are the Stations of the Cross?","Prayer"],
+  ["What is a novena?","Prayer"],
+  ["What is the Memorare?","Prayer"],
+  ["How do I develop a devotion to the Sacred Heart?","Prayer"],
+  // — The Mass & Liturgy —
+  ["What is actually happening during the Mass?","The Mass"],
+  ["Why do Catholics genuflect?","The Mass"],
+  ["Why is the Mass called a sacrifice and not just a meal?","The Mass"],
+  ["What are the parts of the Mass and what do they mean?","The Mass"],
+  ["What is the difference between the Latin Mass and the Novus Ordo?","The Mass"],
+  ["Why do Catholics kneel during consecration?","The Mass"],
+  ["What is the Tabernacle and why is there a candle by it?","The Mass"],
+  // — Apologetics —
+  ["Why do Catholics have a Pope?","Apologetics"],
+  ["Is Purgatory in the Bible?","Apologetics"],
+  ["Why do Catholics call priests 'Father'?","Apologetics"],
+  ["Why can't women be ordained?","Apologetics"],
+  ["Why do Catholics baptize infants?","Apologetics"],
+  ["Where does the Bible mention Confession?","Apologetics"],
+  ["Why do Catholics have more books in the Bible?","Apologetics"],
+  ["Was Peter really the first Pope?","Apologetics"],
+  ["Why do Catholics pray to saints instead of going straight to God?","Apologetics"],
+  ["Where does the Bible support the papacy?","Apologetics"],
+  ["Why do Catholics have statues \u2014 isn't that idolatry?","Apologetics"],
+  // — Moral Theology —
+  ["Can mortal sin be forgiven?","Moral Theology"],
+  ["What does the Church teach about divorce?","Moral Theology"],
+  ["Why is contraception wrong?","Moral Theology"],
+  ["What is the Church's teaching on just war?","Moral Theology"],
+  ["What are the Corporal Works of Mercy?","Moral Theology"],
+  ["What does the Church really teach about the death penalty?","Moral Theology"],
+  ["Is IVF a sin? Why?","Moral Theology"],
+  ["What does the Church teach about homosexuality \u2014 with charity?","Moral Theology"],
+  ["What does Natural Family Planning actually involve?","Moral Theology"],
+  ["What is the principle of double effect?","Moral Theology"],
+  // — Scripture —
+  ["How do Catholics interpret the Bible?","Scripture"],
+  ["How should I read the Book of Revelation?","Scripture"],
+  ["What is typology and why does it matter for reading Scripture?","Scripture"],
+  ["Did the Catholic Church give us the Bible?","Scripture"],
+  ["What are the Dead Sea Scrolls and do they affect Catholic teaching?","Scripture"],
+  ["What does the Old Testament say about the Eucharist?","Scripture"],
+  // — Church History —
+  ["Did the Crusades prove the Church is corrupt?","History"],
+  ["What really happened at the Reformation?","History"],
+  ["What really happened during the Inquisition?","History"],
+  ["Did the Church persecute Galileo?","History"],
+  ["What were the early Church Fathers like?","History"],
+  ["How did Christianity survive the Roman persecutions?","History"],
+  ["What was the Great Schism of 1054?","History"],
+  ["Has a Pope ever been wrong about something?","History"],
+  // — Shroud, Relics & Sacred Objects —
+  ["What is the Shroud of Turin?","Relics"],
+  ["What does the scientific evidence say about the Shroud?","Relics"],
+  ["Why does the Church venerate relics?","Relics"],
+  ["What are first-class, second-class, and third-class relics?","Relics"],
+  ["What is the Holy Lance? The True Cross?","Relics"],
+  ["Are incorrupt saints' bodies real?","Relics"],
+  ["What is the Sudarium of Oviedo?","Relics"],
+  // — Pastoral / Personal —
+  ["I'm struggling with doubt \u2014 is that a sin?","Pastoral"],
+  ["How do I discern my vocation?","Pastoral"],
+  ["My spouse isn't Catholic \u2014 what do we do?","Pastoral"],
+  ["What does the Church say about anxiety?","Pastoral"],
+  ["How do I offer up suffering?","Pastoral"],
+  ["I left the Church \u2014 can I come back?","Pastoral"],
+  ["How do I forgive someone who hurt me deeply?","Pastoral"],
+  ["I struggle with scrupulosity \u2014 what do I do?","Pastoral"],
+  ["What does the Church say about depression and medication?","Pastoral"],
+  ["How do I talk to my kids about the faith?","Pastoral"],
+  ["I feel nothing at Mass \u2014 does that mean something's wrong?","Pastoral"],
+  // — Homework & General Knowledge —
+  ["Help me explain photosynthesis to a 3rd grader","Homework"],
+  ["What caused the fall of Rome?","Homework"],
+  ["Can you quiz my kid on multiplication tables?","Homework"],
+  ["What's the difference between a simile and a metaphor?","Homework"],
+  ["Explain the water cycle for a 5th grader","Homework"],
+  ["Help me plan a lesson on the American Revolution","Homework"],
+  ["What are the parts of a plant cell?","Homework"],
+  ["How does gravity work?","General Knowledge"],
+  ["What are the three branches of the U.S. government?","Homework"],
+  ["Explain fractions to a 2nd grader","Homework"],
+  ["What is the scientific method?","General Knowledge"],
+  ["Who was Charlemagne and why does he matter?","Homework"],
+  ["What's the difference between weather and climate?","General Knowledge"],
+  ["Help me understand how volcanoes form","General Knowledge"],
+  ["What are the seven continents and their major features?","Homework"],
+  ["How do I help my child with reading comprehension?","Homework"],
+  ["What is the periodic table and how do you read it?","General Knowledge"],
+  ["What started World War I?","General Knowledge"]
+];
+
+// — Feast Day Map (MM-DD → [prompt, category]) —
+const FEAST_DAY_MAP = {
+  "01-01": ["Why does the Church year begin with Mary?","Mariology"],
+  "01-28": ["Why is St. Thomas Aquinas called the greatest theologian?","Saints"],
+  "02-02": ["What is Candlemas and why do we bless candles?","The Mass"],
+  "02-11": ["What did Mary say at Lourdes?","Mariology"],
+  "02-14": ["Who brought Christianity to the Slavic peoples?","History"],
+  "03-19": ["Why is St. Joseph called the Terror of Demons?","Saints"],
+  "03-25": ["What happened at the Annunciation?","Doctrine"],
+  "04-29": ["Who was St. Catherine of Siena?","Saints"],
+  "05-13": ["What are the three secrets of Fatima?","Mariology"],
+  "05-22": ["Who is the patron saint of impossible causes?","Saints"],
+  "06-13": ["Why do people pray to St. Anthony for lost things?","Saints"],
+  "06-22": ["Why did St. Thomas More choose death over compromise?","Saints"],
+  "06-24": ["What was John the Baptist's role in salvation history?","Scripture"],
+  "06-29": ["Was Peter really the first Pope?","Apologetics"],
+  "07-11": ["What is the Rule of St. Benedict?","Saints"],
+  "07-22": ["What does the Church really teach about Mary Magdalene?","Saints"],
+  "07-26": ["Who were Jesus's grandparents?","Scripture"],
+  "08-06": ["What happened at the Transfiguration?","Scripture"],
+  "08-08": ["How did St. Dominic receive the Rosary?","Saints"],
+  "08-11": ["Who was St. Clare and what did she sacrifice?","Saints"],
+  "08-14": ["Who was St. Maximilian Kolbe?","Saints"],
+  "08-15": ["What is the Assumption and why does it matter?","Mariology"],
+  "08-28": ["How did St. Augustine go from sinner to saint?","Saints"],
+  "09-08": ["Why does the Church celebrate Mary's birthday?","Mariology"],
+  "09-14": ["What is the True Cross \u2014 does it still exist?","Relics"],
+  "09-23": ["Who was St. Padre Pio and did he really have the stigmata?","Saints"],
+  "09-29": ["What are the nine choirs of angels?","Spiritual Warfare"],
+  "10-01": ["What is the 'Little Way' of St. Th\u00e9r\u00e8se of Lisieux?","Saints"],
+  "10-04": ["What miracles did St. Francis of Assisi perform?","Saints"],
+  "10-07": ["How do I pray the Rosary?","Prayer"],
+  "10-15": ["What did St. Teresa of \u00c1vila teach about prayer?","Saints"],
+  "11-01": ["What is the Communion of Saints?","Doctrine"],
+  "11-02": ["How can I pray for the souls in Purgatory?","Prayer"],
+  "12-03": ["How did St. Francis Xavier convert thousands in Asia?","Saints"],
+  "12-06": ["Who was the real St. Nicholas?","Saints"],
+  "12-08": ["What is the Immaculate Conception?","Mariology"],
+  "12-12": ["What happened at Guadalupe \u2014 how was the tilma made?","Mariology"],
+  "12-14": ["What is the Dark Night of the Soul?","Saints"],
+  "12-25": ["What really happened at the Nativity?","Scripture"]
+};
+
+// — Liturgical Season Prompts —
+const SEASON_PROMPTS = {
+  advent: [
+    ["What are the O Antiphons?","Advent"],
+    ["Why do we light Advent candles?","Advent"],
+    ["How do I prepare my heart for Christmas?","Advent"]
+  ],
+  christmas: [
+    ["What really happened at the Nativity?","Christmas"],
+    ["Who were the Magi and where did they come from?","Christmas"],
+    ["Why is the Incarnation the most important event in history?","Christmas"]
+  ],
+  lent: [
+    ["What should I give up for Lent \u2014 and why?","Lent"],
+    ["What are the Stations of the Cross?","Lent"],
+    ["How do I make a good Lenten examination of conscience?","Lent"],
+    ["What is the meaning of ashes on Ash Wednesday?","Lent"]
+  ],
+  holyweek: [
+    ["What happened on each day of Holy Week?","Holy Week"],
+    ["Why is Good Friday called 'good'?","Holy Week"],
+    ["What was the Last Supper really like?","Holy Week"]
+  ],
+  easter: [
+    ["What are the historical evidences for the Resurrection?","Easter"],
+    ["What happened during the 40 days after the Resurrection?","Easter"],
+    ["What is Pentecost and why does it matter?","Easter"]
+  ]
+};
+
+// — Computus: Calculate Easter Sunday for a given year —
+function computeEaster(year) {
+  var a = year % 19, b = Math.floor(year / 100), c = year % 100;
+  var d = Math.floor(b / 4), e = b % 4, f = Math.floor((b + 8) / 25);
+  var g = Math.floor((b - f + 1) / 3), h = (19 * a + b - d - g + 15) % 30;
+  var i = Math.floor(c / 4), k = c % 4;
+  var l = (32 + 2 * e + 2 * i - h - k) % 7;
+  var m = Math.floor((a + 11 * h + 22 * l) / 451);
+  var month = Math.floor((h + l - 7 * m + 114) / 31);
+  var day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
+}
+
+// — Determine liturgical season from a date —
+function getLiturgicalSeason(date) {
+  var y = date.getFullYear();
+  var easter = computeEaster(y);
+  var ts = date.getTime();
+  var day = 864e5;
+  var ashWednesday = new Date(easter.getTime() - 46 * day);
+  var holyThursday = new Date(easter.getTime() - 3 * day);
+  var palmSunday = new Date(easter.getTime() - 7 * day);
+  var pentecost = new Date(easter.getTime() + 49 * day);
+  // Advent: 4th Sunday before Dec 25
+  var dec25 = new Date(y, 11, 25);
+  var dec25dow = dec25.getDay();
+  var advent1 = new Date(dec25.getTime() - ((dec25dow + 22) % 7 + 21) * day);
+  // Christmas season: Dec 25 through Baptism of the Lord (~Jan 12 next year)
+  var jan12next = new Date(y + 1, 0, 12);
+  var prevDec25 = new Date(y - 1, 11, 25);
+  var prevJan12 = new Date(y, 0, 12);
+  // Check seasons
+  if (ts >= palmSunday.getTime() && ts < easter.getTime()) return 'holyweek';
+  if (ts >= ashWednesday.getTime() && ts < palmSunday.getTime()) return 'lent';
+  if (ts >= easter.getTime() && ts < pentecost.getTime()) return 'easter';
+  if (ts >= advent1.getTime() && ts < dec25.getTime()) return 'advent';
+  if ((ts >= dec25.getTime()) || (ts >= prevDec25.getTime() && ts <= prevJan12.getTime())) return 'christmas';
+  return 'ordinary';
+}
+
+// — Shuffle array (Fisher-Yates) —
+function shuffleArray(arr) {
+  for (var i = arr.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = arr[i]; arr[i] = arr[j]; arr[j] = tmp;
+  }
+  return arr;
+}
+
+// — Build dynamic ticker rows —
+function buildDynamicRows() {
+  var today = new Date();
+  var mm = String(today.getMonth() + 1).padStart(2, '0');
+  var dd = String(today.getDate()).padStart(2, '0');
+  var key = mm + '-' + dd;
+  var priority = [];
+  // Feast day prompt
+  if (FEAST_DAY_MAP[key]) priority.push(FEAST_DAY_MAP[key]);
+  // Check day before and after for nearby feasts
+  var yesterday = new Date(today.getTime() - 864e5);
+  var yk = String(yesterday.getMonth() + 1).padStart(2, '0') + '-' + String(yesterday.getDate()).padStart(2, '0');
+  if (FEAST_DAY_MAP[yk]) priority.push(FEAST_DAY_MAP[yk]);
+  // Liturgical season prompts
+  var season = getLiturgicalSeason(today);
+  if (SEASON_PROMPTS[season]) priority = priority.concat(SEASON_PROMPTS[season]);
+  // Deduplicate priority by question text
+  var seen = {};
+  priority = priority.filter(function(p) {
+    if (seen[p[0]]) return false;
+    seen[p[0]] = true;
+    return true;
+  });
+  // Build remaining pool (exclude anything already in priority)
+  var remaining = PROMPT_POOL.filter(function(p) { return !seen[p[0]]; });
+  shuffleArray(remaining);
+  // Assemble 36 prompts: priority first, then fill from shuffled pool
+  var all = priority.concat(remaining).slice(0, 36);
+  // Split into 3 rows of 12
+  return [all.slice(0, 12), all.slice(12, 24), all.slice(24, 36)];
+}
+
+// — Build ticker: dynamic shuffled rows for all users —
+var dynRows = buildDynamicRows();
+
+// On mobile, fold the starter-card prompts into the per-row data BEFORE
+// rendering. Previously we appended them with a second buildTickerRow pass
+// per row, which broke the 2x-duplication invariant that tickerScroll's
+// translateX(-50%) loop relies on. On iOS WebKit, mutating an element's
+// children after a transform animation has started against width:max-content
+// leaves the animation in an inconsistent compositor state — the row would
+// freeze, partially render, or disappear until a refresh. Folding everything
+// into the initial build makes the row contents final before any animation
+// starts.
+if (window.innerWidth <= 600) {
+  const mobileStarters = [
+    ["Is the Eucharist really the Body and Blood of Christ?", "Core Doctrine"],
+    ["I\u2019ve been away from the Church for years. Can I come back?", "Pastoral"],
+    ["How do I prepare a good Confession?", "Sacramental"],
+    ["Why do Catholics pray to Mary?", "Apologetics"],
+  ];
+  mobileStarters.forEach(function(prompt, i) { dynRows[i % 3].push(prompt); });
+}
+
+buildTickerRow(document.getElementById('tickerRow1'), dynRows[0]);
+buildTickerRow(document.getElementById('tickerRow2'), dynRows[1]);
+buildTickerRow(document.getElementById('tickerRow3'), dynRows[2]);
+
+// Start animations only after the browser has committed a layout pass for
+// the populated rows. Synchronously reading offsetWidth forces a reflow;
+// the double-rAF then defers the .animating class until after that layout
+// has been painted. Without this, iOS Safari sometimes resolves the
+// translateX(-50%) keyframes against a stale/empty width and the rows
+// appear frozen or invisible on reload.
+(function startTickerAnimations() {
+  var r1 = document.getElementById('tickerRow1');
+  var r2 = document.getElementById('tickerRow2');
+  var r3 = document.getElementById('tickerRow3');
+  // Force synchronous layout so max-content width is resolved now.
+  void r1.offsetWidth; void r2.offsetWidth; void r3.offsetWidth;
+  requestAnimationFrame(function() {
+    requestAnimationFrame(function() {
+      r1.classList.add('animating');
+      r2.classList.add('animating');
+      r3.classList.add('animating');
+    });
+  });
+})();
+
+// Insert Window pills into ticker rows (admin mode only)
+var tickerRows = [document.getElementById('tickerRow1'), document.getElementById('tickerRow2'), document.getElementById('tickerRow3')];
+if (document.body.classList.contains('admin')) {
+  var showcase = document.getElementById('windowsShowcase');
+  showcase.style.display = 'flex';
+  WINDOWS_DATA.forEach(function(win) {
+    var pill = document.createElement('div');
+    pill.className = 'window-pill';
+    pill.style.padding = '14px 24px';
+    pill.innerHTML = WINDOW_ICON + '<span class="window-pill-title">' + win.title + '</span><span class="window-pill-cat">' + win.category + '</span>';
+    pill.addEventListener('click', function() { playWindow(win.id); });
+    showcase.appendChild(pill);
+    // Also add to ticker (admin-only; same caveat as mobile starters applies)
+    buildWindowPill(tickerRows[0], win);
+  });
+}
+</script>
+</body>
+</html>
