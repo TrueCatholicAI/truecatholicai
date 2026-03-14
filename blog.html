@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://truecatholicai.org/" />
+<title>Blog — TrueCatholic AI</title>
+<meta name="description" content="Articles on Catholic AI, doctrine, the Catholic Faithfulness Index, and building technology that serves the faith.">
+<meta property="og:title" content="Blog — TrueCatholic AI">
+<meta property="og:description" content="Articles on Catholic AI, doctrine, and building technology that serves the faith.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://truecatholicai.org/blog.html">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C4A24E'/%3E%3Crect x='46' y='22' width='8' height='56' rx='2' fill='%230B0B10'/%3E%3Crect x='26' y='38' width='48' height='8' rx='2' fill='%230B0B10'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-bright: #EDD68C;
+    --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-elevated: #16161E; --bg-card: #1A1A24; --bg-card-hover: #22222E;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+  }
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5; --gold-bright: #A03535;
+    --bg: #F4F1EB; --bg-elevated: #EDE9E1; --bg-card: #E8E3DA; --bg-card-hover: #E0DAD0;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.15); --border-strong: rgba(139,47,47,0.3);
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+  body.light::before { opacity: 0.01; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    padding: 1.1rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+  .nav-mark {
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .nav-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .nav-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
+  .nav-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .nav-links { display: flex; gap: 2.2rem; align-items: center; }
+  .nav-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--text-dim); text-decoration: none; transition: color 0.25s;
+  }
+  .nav-links a:hover { color: var(--gold); }
+  .nav-links .nav-cta {
+    padding: 0.45em 1.2em; border: 1px solid var(--gold-dim);
+    color: var(--gold) !important; transition: all 0.25s;
+  }
+  .nav-links .nav-cta:hover { background: var(--gold); color: var(--bg) !important; }
+
+  /* Burger */
+  .burger {
+    display: none; flex-direction: column; justify-content: center; gap: 4px;
+    background: none; border: none; cursor: pointer; padding: 0; z-index: 201;
+    width: 28px; height: 28px; align-items: center;
+  }
+  .burger span {
+    display: block; width: 18px; height: 2px; background: var(--text-mid); border-radius: 1px;
+    transition: all 0.3s; transform-origin: center;
+  }
+  .burger.open span:nth-child(1) { transform: translateY(5.5px) rotate(45deg); }
+  .burger.open span:nth-child(2) { opacity: 0; }
+  .burger.open span:nth-child(3) { transform: translateY(-5.5px) rotate(-45deg); }
+  .nav-drawer {
+    position: fixed; top: 0; right: 0; bottom: 0; width: 260px;
+    background: var(--bg-elevated); border-left: 1px solid var(--border);
+    z-index: 200; transform: translateX(100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    display: flex; flex-direction: column; padding: 72px 28px 32px; gap: 4px;
+  }
+  .nav-drawer.open { transform: translateX(0); }
+  .nav-drawer a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-mid); text-decoration: none;
+    padding: 14px 0; border-bottom: 1px solid var(--border); transition: color 0.2s;
+  }
+  .nav-drawer a:hover { color: var(--gold); }
+  .nav-drawer .drawer-cta {
+    margin-top: 20px; border-bottom: none; padding: 14px; text-align: center;
+    border-radius: 6px; border: 1px solid var(--gold-dim); color: var(--gold) !important;
+  }
+  .nav-overlay { display: none; position: fixed; inset: 0; z-index: 199; background: rgba(0,0,0,0.5); }
+  .nav-overlay.open { display: block; }
+  .theme-btn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 1rem;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  }
+  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+  .nav-mobile-actions { display: none; align-items: center; gap: 8px; }
+
+  /* BLOG CONTENT */
+  .blog-hero {
+    padding: 8rem 2rem 3rem; text-align: center; max-width: 700px; margin: 0 auto;
+  }
+  .blog-hero-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; font-weight: 500;
+    letter-spacing: 0.25em; text-transform: uppercase; color: var(--gold); margin-bottom: 1.2rem;
+  }
+  .blog-hero h1 {
+    font-family: 'Playfair Display', serif; font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 400; line-height: 1.2; color: var(--text); margin-bottom: 1rem;
+  }
+  .blog-hero p {
+    font-size: 1.05rem; line-height: 1.65; color: var(--text-mid); max-width: 500px; margin: 0 auto;
+  }
+  .sep {
+    max-width: 700px; margin: 0 auto; height: 1px;
+    background: var(--border-strong);
+  }
+  .blog-list {
+    max-width: 700px; margin: 0 auto; padding: 2rem 2rem 4rem;
+  }
+  .blog-post-card {
+    display: block; text-decoration: none; padding: 2.5rem 0;
+    border-bottom: 1px solid var(--border); transition: all 0.2s;
+  }
+  .blog-post-card:first-child { padding-top: 2rem; }
+  .blog-post-card:last-child { border-bottom: none; }
+  .blog-post-card:hover .blog-card-title { color: var(--gold); }
+  .blog-card-date {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 400;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--text-dim);
+    margin-bottom: 0.6rem;
+  }
+  .blog-card-title {
+    font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 400;
+    line-height: 1.3; color: var(--text); margin-bottom: 0.7rem; transition: color 0.25s;
+  }
+  .blog-card-excerpt {
+    font-size: 0.95rem; line-height: 1.65; color: var(--text-mid);
+  }
+  .blog-card-read {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; letter-spacing: 0.1em;
+    text-transform: uppercase; color: var(--gold); margin-top: 0.8rem; display: inline-block;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center; padding: 3rem 2rem 2.5rem;
+    border-top: 1px solid var(--border);
+  }
+  .footer-mark {
+    width: 36px; height: 36px; background: var(--gold-dim);
+    display: inline-flex; align-items: center; justify-content: center;
+    margin-bottom: 1.2rem; border-radius: 50%; position: relative;
+  }
+  .footer-mark::before { content: ''; position: absolute; width: 12px; height: 1.5px; background: var(--bg); }
+  .footer-mark::after { content: ''; position: absolute; width: 1.5px; height: 12px; background: var(--bg); }
+  .footer-brand {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.25em; text-transform: uppercase;
+    color: var(--text-mid); margin-bottom: 0.4rem;
+  }
+  .footer-latin {
+    font-family: 'Playfair Display', serif; font-style: italic;
+    font-size: 0.95rem; color: var(--gold-dim);
+  }
+  .footer-links {
+    margin-top: 1.5rem; display: flex; gap: 2rem; justify-content: center;
+  }
+  .footer-links a {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none; transition: color 0.2s;
+  }
+  .footer-links a:hover { color: var(--gold); }
+
+  @media (max-width: 900px) {
+    nav { padding: 1rem 1.5rem; }
+    .nav-links { display: none; }
+    .nav-mobile-actions { display: flex; }
+    .nav-mobile-actions .burger { display: flex; }
+    .blog-hero { padding: 6rem 1.5rem 2rem; }
+  }
+  @media (max-width: 600px) {
+    .blog-hero h1 { font-size: 1.6rem; }
+    .blog-card-title { font-size: 1.2rem; }
+    .blog-list { padding: 1.5rem 1.5rem 3rem; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="https://truecatholicai.org" class="nav-brand">
+    <span class="nav-mark"></span>
+    <span class="nav-name">TrueCatholic AI</span>
+  </a>
+  <div class="nav-links">
+    <a href="https://truecatholicai.org">Home</a>
+    <a href="https://truecatholicai.org/charter.html">The Charter</a>
+    <a href="https://truecatholicai.org/pricing.html">Pricing</a>
+    <a href="https://truecatholicai.org/blog.html">Blog</a>
+    <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme">&#9789;</button>
+    <a href="https://truecatholicai.org/app.html" class="nav-cta">Try Free</a>
+  </div>
+  <div class="nav-mobile-actions">
+    <button class="theme-btn" id="themeBtnMobile" title="Toggle theme">&#9789;</button>
+    <button class="burger" id="burgerBtn" aria-label="Open menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</nav>
+
+<div class="nav-overlay" id="navOverlay"></div>
+<div class="nav-drawer" id="navDrawer">
+  <a href="https://truecatholicai.org">Home</a>
+  <a href="https://truecatholicai.org/charter.html">The Charter</a>
+  <a href="https://truecatholicai.org/pricing.html">Pricing</a>
+  <a href="https://truecatholicai.org/blog.html">Blog</a>
+  <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+  <a href="https://truecatholicai.org/app.html" class="drawer-cta">Try Free</a>
+</div>
+
+<div class="blog-hero">
+  <div class="blog-hero-label">Blog</div>
+  <h1>Dispatches from the intersection of faith and technology.</h1>
+  <p>Building Catholic AI, benchmarking the competition, and thinking out loud about what it means to evangelize in the age of machines.</p>
+</div>
+
+<div class="sep"></div>
+
+<div class="blog-list">
+  <a href="blog-we-tested-every-ai.html" class="blog-post-card">
+    <div class="blog-card-date">February 2026</div>
+    <div class="blog-card-title">We Tested Every Major AI on Catholic Teaching. The Best Score Was a C+.</div>
+    <div class="blog-card-excerpt">50 questions. 8 categories. 5 leading AI models. The best score on Catholic faithfulness was a C+. We loaded our 2,700-line doctrinal charter onto the lowest-scoring model and it jumped to an A. Same model. Same knowledge. Different conviction.</div>
+    <span class="blog-card-read">Read &rarr;</span>
+  </a>
+</div>
+
+<footer>
+  <div class="footer-mark"></div>
+  <div class="footer-brand">TrueCatholic AI &middot; Est. MMXXVI</div>
+  <div class="footer-latin">Ad maiorem Dei gloriam</div>
+  <div class="footer-links">
+    <a href="https://truecatholicai.org/charter.html">The Charter</a>
+    <a href="https://catholicfaithindex.com" target="_blank">CFI Benchmark</a>
+    <a href="https://x.com/TrueCatholicAI" target="_blank">@TrueCatholicAI</a>
+    <a href="mailto:truecatholicai@protonmail.com">Contact</a>
+  </div>
+</footer>
+
+<script>
+  const themeBtn = document.getElementById('themeBtn');
+  const themeBtnMobile = document.getElementById('themeBtnMobile');
+  const savedTheme = localStorage.getItem('tc-theme');
+  function setTheme(light) {
+    document.body.classList.toggle('light', light);
+    const icon = light ? '&#9788;' : '&#9789;';
+    themeBtn.innerHTML = icon;
+    themeBtnMobile.innerHTML = icon;
+    localStorage.setItem('tc-theme', light ? 'light' : 'dark');
+  }
+  if (savedTheme === 'light') setTheme(true);
+  themeBtn.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+  themeBtnMobile.addEventListener('click', () => setTheme(!document.body.classList.contains('light')));
+
+  const burger = document.getElementById('burgerBtn');
+  const drawer = document.getElementById('navDrawer');
+  const overlay = document.getElementById('navOverlay');
+  function toggleMenu(open) {
+    burger.classList.toggle('open', open);
+    drawer.classList.toggle('open', open);
+    overlay.classList.toggle('open', open);
+    document.body.style.overflow = open ? 'hidden' : '';
+  }
+  burger.addEventListener('click', () => toggleMenu(!drawer.classList.contains('open')));
+  overlay.addEventListener('click', () => toggleMenu(false));
+  drawer.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+</script>
+</body>
+</html>
