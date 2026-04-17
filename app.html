@@ -779,27 +779,120 @@
     .conv-history-label { display: none; }
     .conv-history { padding: 20px 14px; }
     .conv-item-actions { opacity: 1; }
-    .incognito-label { display: none; }
   }
 
   /* =============== CONVERSATION HISTORY =============== */
   .conv-history-btn { display: none; }
-  .incognito-btn { display: none; }
-  .incognito-btn.active { color: var(--gold); }
-  .incognito-btn.active svg { stroke: var(--gold); }
-  .incognito-banner {
-    display: none; align-items: center; justify-content: center; gap: 12px;
-    background: var(--gold-dim); color: var(--bg);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.56rem;
-    letter-spacing: 0.1em; text-transform: uppercase;
-    padding: 4px 16px; text-align: center;
+
+  /* =============== GHOST MODE =============== */
+  .ghost-btn {
+    display: none; flex-shrink: 0; width: 40px; height: 46px;
+    border-radius: 10px; border: 1px solid var(--border);
+    background: var(--bg-input); color: var(--text-dim);
+    cursor: pointer; align-items: center; justify-content: center;
+    padding: 0; transition: border-color 0.2s, color 0.2s, background 0.2s;
   }
-  .incognito-banner.visible { display: flex; }
-  .incognito-banner-close {
-    background: none; border: none; color: var(--bg); cursor: pointer;
-    font-size: 0.9rem; line-height: 1; padding: 0 2px; opacity: 0.7;
+  .ghost-btn.visible { display: flex; }
+  .ghost-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .ghost-btn.active { color: var(--gold); border-color: var(--gold-dim); background: rgba(196,162,78,0.08); }
+
+  body.ghost-on .input-field {
+    border-style: dashed !important; opacity: 0.82;
+    transition: opacity 0.2s, border-style 0.2s;
   }
-  .incognito-banner-close:hover { opacity: 1; }
+
+  /* Per-message ghost toggle (only visible while ghost mode is on) */
+  .msg-ghost-toggle {
+    position: absolute; top: 10px; right: 14px;
+    width: 24px; height: 24px; border-radius: 50%;
+    border: 1px solid var(--border); background: var(--bg-card);
+    color: var(--text-dim); cursor: pointer; padding: 0;
+    display: none; align-items: center; justify-content: center;
+    opacity: 0; transition: opacity 0.2s, color 0.2s, border-color 0.2s;
+    z-index: 2;
+  }
+  body.ghost-on .msg-ghost-toggle { display: flex; opacity: 0.9; }
+  .msg-ghost-toggle:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .msg-ghost-toggle.is-ghosted { color: var(--gold); border-color: var(--gold-dim); opacity: 1; }
+
+  /* Always-visible corner indicator on ghosted messages */
+  .msg-ghost-indicator {
+    position: absolute; top: 10px; right: 14px;
+    width: 20px; height: 20px; color: var(--gold-dim); opacity: 0.75;
+    pointer-events: none; z-index: 1;
+  }
+  body.ghost-on .msg-ghost-indicator { display: none; }
+
+  .message { position: relative; transition: opacity 0.25s ease; }
+  .message.ghosted { opacity: 0.58; }
+  .message.ghosted .msg-body,
+  .message.ghosted .msg-header { border-color: transparent; }
+  .message.ghosted .msg-body {
+    border: 1px dashed var(--border-strong); border-radius: 8px;
+    padding: 8px 10px; margin-top: 4px;
+  }
+
+  /* =============== MEMORY MODAL =============== */
+  .memory-modal-body {
+    font-family: 'Source Serif 4', Georgia, serif; color: var(--text);
+    font-size: 0.92rem; line-height: 1.55; text-align: left;
+  }
+  .memory-modal-body h2 {
+    font-family: 'Playfair Display', serif; font-size: 1.25rem; font-weight: 400;
+    color: var(--gold-light); margin-bottom: 8px;
+  }
+  .memory-modal-body .memory-intro {
+    color: var(--text-mid); font-size: 0.85rem; margin-bottom: 16px; line-height: 1.55;
+  }
+  .memory-textarea {
+    width: 100%; min-height: 220px; max-height: 420px; resize: vertical;
+    background: var(--bg-input); color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif; font-size: 0.92rem;
+    line-height: 1.6; padding: 12px 14px; border: 1px solid var(--border);
+    border-radius: 6px; outline: none;
+  }
+  .memory-textarea:focus { border-color: var(--gold-dim); }
+  .memory-textarea[readonly] { background: var(--bg-card); cursor: default; }
+  .memory-empty {
+    color: var(--text-dim); font-style: italic;
+    padding: 18px 14px; border: 1px dashed var(--border);
+    border-radius: 6px; text-align: center;
+  }
+  .memory-meta {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase;
+    margin-top: 10px; display: flex; justify-content: space-between; gap: 10px;
+  }
+  .memory-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .memory-btn {
+    background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 9px 14px; border-radius: 4px;
+    cursor: pointer; transition: all 0.2s;
+  }
+  .memory-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .memory-btn.primary { background: var(--gold); border-color: var(--gold); color: var(--bg); }
+  .memory-btn.primary:hover { background: var(--gold-light); color: var(--bg); }
+  .memory-btn.danger { color: var(--danger); }
+  .memory-btn.danger:hover { border-color: var(--danger); color: var(--danger); }
+  .memory-toggle-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-top: 18px; padding-top: 14px; border-top: 1px solid var(--border); gap: 12px;
+  }
+  .memory-toggle-label { font-size: 0.85rem; color: var(--text-mid); flex: 1; line-height: 1.4; }
+  .memory-toggle-label strong { color: var(--text); display: block; font-weight: 500; margin-bottom: 2px; }
+  .memory-toggle-switch {
+    position: relative; width: 42px; height: 22px;
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 12px; cursor: pointer; flex-shrink: 0; transition: background 0.2s, border-color 0.2s;
+  }
+  .memory-toggle-switch::after {
+    content: ''; position: absolute; top: 2px; left: 2px;
+    width: 16px; height: 16px; border-radius: 50%;
+    background: var(--text-dim); transition: transform 0.2s, background 0.2s;
+  }
+  .memory-toggle-switch.on { background: var(--gold-dim); border-color: var(--gold-dim); }
+  .memory-toggle-switch.on::after { transform: translateX(20px); background: var(--bg); }
   .conv-history {
     display: none; flex-direction: column; align-items: center;
     padding: 40px 20px 20px; max-width: 600px; margin: 0 auto; width: 100%;
@@ -887,7 +980,6 @@
     </div>
     <button class="theme-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
     <button class="header-btn conv-history-btn" id="convHistoryBtn" onclick="showHistory()" style="gap:5px" title="Conversation history"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="conv-history-label">History</span></button>
-    <button class="header-btn incognito-btn" id="incognitoBtn" onclick="toggleIncognito()" style="display:none; gap:5px" title="Incognito mode — chat won't be saved"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg><span class="incognito-label">Incognito</span></button>
     <button class="header-btn" id="shareChatBtn" onclick="shareCurrentChat()" style="display:none;gap:5px" title="Share this chat"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span class="new-chat-label">Share</span></button>
     <button class="header-btn" id="newChatBtn" style="gap:5px"><span style="font-size:1rem;line-height:1;position:relative;top:-0.5px">+</span><span class="new-chat-label">New Chat</span></button>
     <button class="header-btn gold" id="signInBtn" onclick="openAuthModal('login')">Sign In</button>
@@ -899,6 +991,7 @@
           <div class="user-dropdown-email" id="dropdownEmail"></div>
           <div class="user-dropdown-plan" id="dropdownPlan"></div>
         </div>
+        <button class="user-dropdown-item" id="memorySettingsBtn" onclick="openMemoryModal()">What I remember about you</button>
         <button class="user-dropdown-item" id="manageSubBtn" onclick="handleManageSubscription()" style="display:none;">Manage Subscription</button>
         <button class="user-dropdown-item" id="manageFamilyBtn" onclick="openFamilyModal()" style="display:none; color:var(--gold);">Manage Family</button>
         <button class="user-dropdown-item" id="joinFamilyBtn" onclick="openJoinFamilyModal()" style="display:none;">Join a Family</button>
@@ -907,10 +1000,6 @@
       </div>
     </div>
   </div>
-</div>
-<div class="incognito-banner" id="incognitoBanner">
-  <span>Incognito mode — chats will not be saved</span>
-  <button class="incognito-banner-close" onclick="toggleIncognito()">&times;</button>
 </div>
 <div class="chat-area" id="chatArea">
   <div class="welcome" id="welcome">
@@ -959,9 +1048,10 @@
   <div class="messages" id="messages"></div>
 </div>
 <div class="input-area">
-  <div class="free-account-hint" id="freeAccountHint">Free account = 15 chats/day &middot; <a onclick="openAuthModal('signup')">Sign up in 10 seconds</a></div>
+  <div class="free-account-hint" id="freeAccountHint">Free account = I remember you across chats &middot; <a onclick="openAuthModal('signup')">Sign up in 10 seconds</a></div>
   <div class="input-row">
     <button class="input-model-btn" id="inputModelBtn" onclick="setFamilyModel(familyModel==='haiku'?'sonnet':'haiku')" title="Fast — tap for Smart"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg></button>
+    <button class="ghost-btn" id="ghostBtn" onclick="toggleGhostMode()" title="Ghost mode — choose messages to forget" aria-label="Ghost mode"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
     <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -988,8 +1078,8 @@
       <div class="form-toggle">Don't have an account? <a onclick="switchAuthView('signup')">Create one</a></div>
     </div>
     <div id="signupView" style="display:none">
-      <div class="modal-title">Create Your Account</div>
-      <div class="modal-subtitle">15 free questions every day. Saved chat history. No credit card.</div>
+      <div class="modal-title">Create your TCAI account</div>
+      <div class="modal-subtitle">So I can be a real companion, not just a chatbot. I remember you across conversations. Your chat history stays with you. You control what I remember. 15 chats per day.</div>
       <div class="form-error" id="signupError"></div>
       <div class="form-success" id="signupSuccess"></div>
       <form onsubmit="handleSignup(event)" id="signupForm">
@@ -1071,6 +1161,38 @@
   </div>
 </div>
 
+<!-- Memory Settings Modal -->
+<div class="family-modal-overlay" id="memoryModal" onclick="if(event.target===this)closeMemoryModal()">
+  <div class="family-modal memory-modal-body" style="max-width:560px; text-align:left;">
+    <button class="family-modal-close" onclick="closeMemoryModal()">&times;</button>
+    <h2>What I remember about you</h2>
+    <p class="memory-intro">This is the summary I use to remember you across conversations. It updates after our chats. You can edit it, clear it, or turn memory off entirely.</p>
+    <div id="memoryContent">
+      <div class="memory-empty" id="memoryLoadingState">Loading&hellip;</div>
+    </div>
+    <div class="memory-toggle-row">
+      <div class="memory-toggle-label">
+        <strong>Memory</strong>
+        <span id="memoryToggleDesc">I'll keep remembering you across conversations.</span>
+      </div>
+      <div class="memory-toggle-switch on" id="memoryToggleSwitch" onclick="toggleMemoryEnabled()" role="switch" aria-label="Toggle memory"></div>
+    </div>
+  </div>
+</div>
+
+<!-- Memory Clear Confirm -->
+<div class="family-modal-overlay" id="memoryClearConfirm" onclick="if(event.target===this)closeMemoryClearConfirm()">
+  <div class="family-modal" style="max-width:460px; text-align:left;">
+    <button class="family-modal-close" onclick="closeMemoryClearConfirm()">&times;</button>
+    <h2 style="font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:400; color:var(--gold-light); margin-bottom:10px;">Clear what I remember about you?</h2>
+    <p style="font-size:0.9rem; color:var(--text-mid); line-height:1.55; margin-bottom:20px;">I'll forget everything from our previous conversations. Your chat history stays, but I won't carry any of it forward. This can't be undone.</p>
+    <div style="display:flex; gap:8px; justify-content:flex-end;">
+      <button class="memory-btn" onclick="closeMemoryClearConfirm()">Cancel</button>
+      <button class="memory-btn danger" onclick="confirmClearMemory()">Clear memory</button>
+    </div>
+  </div>
+</div>
+
 <!-- Windows Player -->
 <div class="window-player" id="windowPlayer">
   <div class="window-canvas">
@@ -1117,8 +1239,13 @@ let familyModel = 'haiku'; // 'haiku' or 'sonnet' — for family plan users
 let currentConversationId = null;
 let conversationsList = [];
 let convListStale = true;
-let incognitoMode = false;
-let chatIncognito = false; // locked per-conversation
+// Ghost mode: per-message control replacing the old incognito feature.
+// `ghostMode` is the UI state; it resets on conversation change.
+// `pendingGhosted` marks the next outgoing user message (and paired reply) as ghosted.
+let ghostMode = false;
+let pendingGhosted = false;
+let memoryExtractionRan = false; // only run once per page load; reset on new chat
+let memoryEnabledCache = true;
 let unauthCount = 0;
 (function() {
   const savedDate = localStorage.getItem('tc-unauth-date');
@@ -1296,7 +1423,7 @@ async function setLoggedIn(user) {
   var staleNudge = document.getElementById('nudgeBanner');
   if (staleNudge) staleNudge.remove();
   signupPromptShown = false;
-  document.getElementById('incognitoBtn').style.display = 'inline-flex';
+  document.getElementById('ghostBtn').classList.add('visible');
   document.getElementById('convHistoryBtn').style.display = 'inline-flex';
   document.getElementById('userAvatarBtn').textContent = initial;
   document.getElementById('dropdownName').textContent = displayName;
@@ -1334,16 +1461,40 @@ async function setLoggedIn(user) {
   updateGalleryBtn();
   // Mark conversation list as stale on login (new session)
   convListStale = true;
+  showMemoryIntroToasts();
+}
+
+// Shown once per account on this device: the new-user welcome (§7.4), plus a
+// one-time migration toast (§7.7) for users who lived through the incognito era.
+function showMemoryIntroToasts() {
+  try {
+    var welcomeKey = 'tc-memory-welcome-seen';
+    var migrationKey = 'tc-ghost-migration-seen';
+    if (!localStorage.getItem(welcomeKey)) {
+      setTimeout(function() {
+        showToast("Welcome. I'll start remembering things about you from our conversations so I can be a better companion. You can see and edit what I remember in your account menu. If something comes up you'd rather I forget, use ghost mode.", 'neutral');
+      }, 800);
+      localStorage.setItem(welcomeKey, '1');
+      localStorage.setItem(migrationKey, '1'); // new users don't need the migration toast
+      return;
+    }
+    if (!localStorage.getItem(migrationKey)) {
+      setTimeout(function() {
+        showToast("Incognito is now ghost mode. Instead of hiding a whole conversation, you can now ghost specific messages you don't want me to remember. Tap the ghost icon next to the input to try it.", 'neutral');
+      }, 800);
+      localStorage.setItem(migrationKey, '1');
+    }
+  } catch (e) { /* ignore — localStorage unavailable */ }
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free'; familyModel = 'haiku';
   document.getElementById('signInBtn').style.display = 'inline-flex';
   document.getElementById('userMenu').style.display = 'none';
-  document.getElementById('incognitoBtn').style.display = 'none';
-  document.getElementById('incognitoBtn').classList.remove('active');
-  document.getElementById('incognitoBanner').classList.remove('visible');
+  document.getElementById('ghostBtn').classList.remove('visible');
+  document.getElementById('ghostBtn').classList.remove('active');
+  document.body.classList.remove('ghost-on');
   document.getElementById('convHistoryBtn').style.display = 'none';
-  incognitoMode = false;
+  ghostMode = false; pendingGhosted = false; memoryExtractionRan = false;
   document.getElementById('manageSubBtn').style.display = 'none';
   document.getElementById('inputModelBtn').classList.remove('visible');
   document.getElementById('remainingStandard').style.display = 'inline';
@@ -1630,23 +1781,31 @@ async function sendMessage() {
   document.getElementById('convHistory').style.display = 'none';
   document.getElementById('messages').style.display = 'block';
   messages.push({ role: 'user', content: text });
-  renderMessage('user', text);
+  var ghostForThisTurn = !!(currentUser && ghostMode);
+  var justSentUserBubble = renderMessage('user', text, { ghosted: ghostForThisTurn });
   inputField.value = ''; inputField.style.height = 'auto';
   sendBtn.disabled = true; isStreaming = true;
   fetchStartedAt = Date.now();
   showTyping(); scrollToBottom();
 
   let apiMessages = messages.map(m => ({ ...m }));
-  if (!chatStarted) chatIncognito = incognitoMode;
   chatStarted = true;
+
+  // Trigger memory extraction lazily: once per fresh conversation/page-load,
+  // only if the user is logged in and hasn't ghosted this turn.
+  maybeRunMemoryExtraction();
 
   const body = { messages: apiMessages };
   const isFamily = userPlan === 'family_owner' || userPlan === 'family_member';
   if (isFamily && familyModel === 'sonnet') body.model = 'anthropic/claude-sonnet-4.5';
-  // Conversation history: tell worker to save this conversation
-  if (currentUser && !chatIncognito) {
+  // Conversation history: logged-in users always get their chats saved.
+  // Ghost mode marks individual turns as excluded from memory extraction
+  // (spec §2.3), but the message rows themselves still persist so the user
+  // can see them in their history.
+  if (currentUser) {
     body.save_conversation = true;
     if (currentConversationId) body.conversation_id = currentConversationId;
+    if (ghostMode) { body.ghosted = true; pendingGhosted = true; } else { pendingGhosted = false; }
   }
 
   const headers = { 'Content-Type': 'application/json' };
@@ -1708,7 +1867,12 @@ async function sendMessage() {
     messages.push({ role: 'assistant', content: data.reply });
     // Capture conversation ID from worker response
     if (data.conversation_id) { currentConversationId = data.conversation_id; convListStale = true; updateShareBtn(); }
-    await renderMessageProgressive('ai', data.reply, data.images);
+    // Attach ghost controls to the just-sent user bubble now that we know its DB id
+    if (justSentUserBubble && data.user_message_id) {
+      attachGhostControls(justSentUserBubble, data.user_message_id, !!data.ghosted);
+    }
+    var aiOpts = { dbId: data.assistant_message_id || null, ghosted: !!data.ghosted };
+    await renderMessageProgressive('ai', data.reply, data.images, aiOpts);
     if (!currentUser) {
       // Trust the server: the worker rate-limits anon by IP+UA fingerprint and
       // is the source of truth across fresh incognito windows / reloads. The
@@ -1745,8 +1909,8 @@ function showNudgeBanner() {
   var div = document.createElement('div');
   div.className = 'nudge-banner show';
   div.id = 'nudgeBanner';
-  div.innerHTML = '<span class="nudge-banner-text">You\u2019re using <strong>5 free questions/day</strong>. Create a free account and get <strong>15</strong>, plus <strong>saved chat history</strong> you can search and revisit. No cost, just an email.</span>'
-    + '<button class="nudge-banner-btn" onclick="dismissNudge();openAuthModal(\'signup\')">Sign Up Free</button>'
+  div.innerHTML = '<span class="nudge-banner-text">Anonymous chats forget you the moment you close the tab. Create a free account and <strong>I\u2019ll remember you</strong> across conversations. You stay in control of what I remember, and you can clear it anytime.</span>'
+    + '<button class="nudge-banner-btn" onclick="dismissNudge();openAuthModal(\'signup\')">Create free account</button>'
     + '<button class="nudge-banner-close" onclick="dismissNudge()" title="Dismiss">&times;</button>';
   container.appendChild(div);
   // No scrollToBottom — let the user finish reading the AI response; the nudge waits at the bottom.
@@ -1768,9 +1932,9 @@ function showSignupPrompt() {
   container.style.display = 'block';
   const div = document.createElement('div');
   div.className = 'signup-prompt';
-  div.innerHTML = '<h3>You\u2019ve used your 5 free questions for today</h3>'
-    + '<p>Create a free account to get <strong>15 questions every day</strong> and <strong>save your chat history</strong> so you can come back and search past conversations. No credit card needed. Takes 30 seconds.</p>'
-    + '<button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create Free Account \u2014 Get 15/day</button>'
+  div.innerHTML = '<h3>Create a free account so I can remember you.</h3>'
+    + '<p>Anonymous chats forget you the moment you close the tab. With a free account, I remember who you are across conversations, your name, your family, what you\u2019re working through. You stay in control of what I remember, and you can clear it anytime.</p>'
+    + '<button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create free account</button>'
     + '<button class="signup-prompt-secondary" onclick="handleUpgrade()">Or become a Patron \u2014 100/day, $5/month</button>';
   container.appendChild(div); scrollToBottom();
 }
@@ -1813,7 +1977,7 @@ function showFamilyLimitPrompt() {
 }
 
 // =============== RENDER ===============
-function renderMessage(role, text) {
+function renderMessage(role, text, opts) {
   const container = document.getElementById('messages');
   const div = document.createElement('div');
   div.className = 'message ' + role;
@@ -1825,13 +1989,17 @@ function renderMessage(role, text) {
     div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">' + escapeHTML(userInitial) + '</div><span class="msg-name user-name">' + escapeHTML(userName) + '</span></div><div class="msg-body">' + escapeHTML(text) + '</div>';
   }
   container.appendChild(div); scrollToBottom();
+  if (opts && opts.dbId) attachGhostControls(div, opts.dbId, !!opts.ghosted);
+  else if (opts && opts.ghosted) applyGhostStateToBubble(div, true);
+  return div;
 }
-async function renderMessageProgressive(role, text, images) {
+async function renderMessageProgressive(role, text, images, opts) {
   const container = document.getElementById('messages');
   const chatArea = document.getElementById('chatArea');
 
   const div = document.createElement('div');
   div.className = 'message ' + role;
+  if (opts && opts.ghosted) div.classList.add('ghosted');
 
   const header = document.createElement('div');
   header.className = 'msg-header';
@@ -1911,6 +2079,8 @@ async function renderMessageProgressive(role, text, images) {
       body.appendChild(elements[i]);
     }
   }
+  if (opts && opts.dbId) attachGhostControls(div, opts.dbId, !!opts.ghosted);
+  else if (opts && opts.ghosted) applyGhostStateToBubble(div, true);
 }
 
 function renderMarkdown(text) {
@@ -1973,59 +2143,303 @@ function showToast(msg, type) {
   t.className = 'toast show' + cls;
   setTimeout(() => { t.style.opacity = '0'; setTimeout(() => { t.className = 'toast'; t.style.opacity = ''; }, 300); }, 5000);
 }
-const ICON_EYE_OPEN = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>';
-const ICON_EYE_OFF = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><path d="M14.12 14.12a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>';
-function toggleIncognito() {
-  incognitoMode = !incognitoMode;
-  var btn = document.getElementById('incognitoBtn');
-  btn.classList.toggle('active', incognitoMode);
-  btn.querySelector('svg').outerHTML = incognitoMode ? ICON_EYE_OFF : ICON_EYE_OPEN;
-  btn.title = incognitoMode ? 'Incognito ON \u2014 chats won\u2019t be saved' : 'Incognito mode \u2014 chat won\u2019t be saved';
-  var banner = document.getElementById('incognitoBanner');
-  var bannerText = banner.querySelector('span');
-  if (chatIncognito && chatStarted) {
-    // Current chat is locked as incognito regardless of toggle
-    banner.classList.add('visible');
-    bannerText.textContent = incognitoMode
-      ? 'Incognito mode \u2014 chats will not be saved'
-      : 'This chat won\u2019t be saved \u2014 start a new chat to save again';
-  } else {
-    banner.classList.toggle('visible', incognitoMode);
-    bannerText.textContent = 'Incognito mode \u2014 chats will not be saved';
-  }
+function resetConversationUI() {
+  messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
+  currentConversationId = null;
+  exitGhostMode();
+  memoryExtractionRan = false; // extraction re-runs when the next conversation starts
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('convHistory').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  inputField.value = ''; inputField.focus();
+  updateShareBtn();
 }
 function handleBrandClick(e) {
   e.preventDefault();
   var historyVisible = document.getElementById('convHistory').style.display === 'flex';
   if (chatStarted || historyVisible) {
-    // Reset to welcome screen (same as New Chat)
-    messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
-    currentConversationId = null; chatIncognito = false;
-    document.getElementById('messages').innerHTML = '';
-    document.getElementById('messages').style.display = 'none';
-    document.getElementById('convHistory').style.display = 'none';
-    document.getElementById('welcome').style.display = 'flex';
-    document.getElementById('incognitoBanner').classList.toggle('visible', incognitoMode);
-    document.getElementById('incognitoBanner').querySelector('span').textContent = 'Incognito mode \u2014 chats will not be saved';
-    inputField.value = ''; inputField.focus();
-    updateShareBtn();
+    resetConversationUI();
   } else {
     window.location.href = 'https://truecatholicai.org';
   }
 }
-document.getElementById('newChatBtn').addEventListener('click', () => {
-  messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false; sessionImages = []; updateGalleryBtn();
-  currentConversationId = null; chatIncognito = false;
-  document.getElementById('messages').innerHTML = '';
-  document.getElementById('messages').style.display = 'none';
-  document.getElementById('convHistory').style.display = 'none';
-  document.getElementById('welcome').style.display = 'flex';
-  document.getElementById('incognitoBanner').classList.toggle('visible', incognitoMode);
-  document.getElementById('incognitoBanner').querySelector('span').textContent = 'Incognito mode \u2014 chats will not be saved';
+document.getElementById('newChatBtn').addEventListener('click', resetConversationUI);
 
-  inputField.value = ''; inputField.focus();
-  updateShareBtn();
-});
+// =============== GHOST MODE ===============
+// Ghost mode lets the user mark specific messages as excluded from memory
+// extraction. Per spec §2.3: ghost mode resets on conversation change; per-
+// message ghosting is paired (user turn + paired AI reply flip together).
+
+const GHOST_FIRST_TIME_KEY = 'tc-ghost-seen';
+
+function toggleGhostMode() {
+  if (!currentUser) { openAuthModal('signup'); return; }
+  ghostMode ? exitGhostMode() : enterGhostMode();
+}
+function enterGhostMode() {
+  ghostMode = true;
+  document.body.classList.add('ghost-on');
+  document.getElementById('ghostBtn').classList.add('active');
+  document.getElementById('ghostBtn').setAttribute('title', 'Exit ghost mode');
+  // First-time tooltip (dismissable one-liner via toast)
+  try {
+    if (!localStorage.getItem(GHOST_FIRST_TIME_KEY)) {
+      showToast("Ghost mode lets you keep certain messages out of my memory. Tap any message to ghost it.", 'neutral');
+      localStorage.setItem(GHOST_FIRST_TIME_KEY, '1');
+    }
+  } catch (e) {}
+}
+function exitGhostMode() {
+  ghostMode = false;
+  document.body.classList.remove('ghost-on');
+  var btn = document.getElementById('ghostBtn');
+  if (btn) {
+    btn.classList.remove('active');
+    btn.setAttribute('title', 'Ghost mode — choose messages to forget');
+  }
+}
+
+// Paint a message bubble's ghost state (opacity, toggle button, indicator icon)
+function applyGhostStateToBubble(div, isGhosted) {
+  div.classList.toggle('ghosted', !!isGhosted);
+  var toggleBtn = div.querySelector('.msg-ghost-toggle');
+  if (toggleBtn) toggleBtn.classList.toggle('is-ghosted', !!isGhosted);
+  var indicator = div.querySelector('.msg-ghost-indicator');
+  if (indicator) indicator.style.display = isGhosted ? 'block' : 'none';
+}
+
+// Retroactive ghosting — called by per-message icon tap. Talks to the worker
+// which handles paired-ghost + ownership checks; we reflect the server's
+// response back into the DOM (worker returns the ids that flipped).
+async function toggleMessageGhost(messageDomId, messageDbId) {
+  if (!currentUser || !messageDbId) return;
+  var bubble = document.getElementById(messageDomId);
+  if (!bubble) return;
+  var currentlyGhosted = bubble.classList.contains('ghosted');
+  var targetState = !currentlyGhosted;
+  // Optimistic: flip the tapped bubble + its immediate sibling (paired pair)
+  applyGhostStateToBubble(bubble, targetState);
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/messages/' + messageDbId + '/ghost', {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ghosted: targetState })
+    });
+    if (!res.ok) throw new Error('ghost toggle failed');
+    var data = await res.json();
+    // Reflect paired ids back into the DOM for correctness
+    if (Array.isArray(data.ids)) {
+      for (var i = 0; i < data.ids.length; i++) {
+        var el = document.querySelector('[data-msg-id="' + data.ids[i] + '"]');
+        if (el) applyGhostStateToBubble(el, data.ghosted);
+      }
+    }
+  } catch (e) {
+    // Revert on failure
+    applyGhostStateToBubble(bubble, currentlyGhosted);
+    showToast('Could not update ghost state. Try again.', 'error');
+  }
+}
+
+// Ghost SVG — same shape used in the input button; reused for indicator + toggle
+const GHOST_SVG = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/></svg>';
+const GHOST_SVG_LARGE = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/></svg>';
+
+// Attach the ghost toggle + always-on indicator to any rendered message bubble
+function attachGhostControls(div, dbId, isGhosted) {
+  if (!currentUser || !dbId) return;
+  div.setAttribute('data-msg-id', dbId);
+  var domId = div.id || ('msg-' + dbId);
+  div.id = domId;
+  if (!div.querySelector('.msg-ghost-toggle')) {
+    var toggle = document.createElement('button');
+    toggle.className = 'msg-ghost-toggle';
+    toggle.innerHTML = GHOST_SVG;
+    toggle.setAttribute('aria-label', 'Toggle ghost on this message');
+    toggle.onclick = function(ev) { ev.stopPropagation(); toggleMessageGhost(domId, dbId); };
+    div.appendChild(toggle);
+  }
+  if (!div.querySelector('.msg-ghost-indicator')) {
+    var indicator = document.createElement('span');
+    indicator.className = 'msg-ghost-indicator';
+    indicator.innerHTML = GHOST_SVG_LARGE;
+    indicator.style.display = isGhosted ? 'block' : 'none';
+    div.appendChild(indicator);
+  }
+  applyGhostStateToBubble(div, isGhosted);
+}
+
+// =============== MEMORY SETTINGS MODAL ===============
+
+let memoryEditing = false;
+let memoryCurrent = { memory_text: '', memory_enabled: true, last_updated: null, version: 0 };
+
+function openMemoryModal() {
+  closeUserDropdown();
+  if (!currentUser) { openAuthModal('login'); return; }
+  var modal = document.getElementById('memoryModal');
+  modal.classList.add('open');
+  requestAnimationFrame(function() { requestAnimationFrame(function() { modal.classList.add('visible'); }); });
+  loadMemory();
+}
+function closeMemoryModal() {
+  var modal = document.getElementById('memoryModal');
+  modal.classList.remove('visible');
+  setTimeout(function() { modal.classList.remove('open'); memoryEditing = false; }, 300);
+}
+function openMemoryClearConfirm() {
+  var modal = document.getElementById('memoryClearConfirm');
+  modal.classList.add('open');
+  requestAnimationFrame(function() { requestAnimationFrame(function() { modal.classList.add('visible'); }); });
+}
+function closeMemoryClearConfirm() {
+  var modal = document.getElementById('memoryClearConfirm');
+  modal.classList.remove('visible');
+  setTimeout(function() { modal.classList.remove('open'); }, 300);
+}
+
+async function loadMemory() {
+  var el = document.getElementById('memoryContent');
+  el.innerHTML = '<div class="memory-empty" id="memoryLoadingState">Loading&hellip;</div>';
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/memory', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('load failed');
+    var data = await res.json();
+    memoryCurrent = data;
+    memoryEnabledCache = !!data.memory_enabled;
+    renderMemoryContent();
+    updateMemoryToggleUI();
+  } catch (e) {
+    el.innerHTML = '<div class="memory-empty">Could not load your memory. Try again in a moment.</div>';
+  }
+}
+
+function renderMemoryContent() {
+  var el = document.getElementById('memoryContent');
+  var text = memoryCurrent.memory_text || '';
+  if (!text.trim()) {
+    el.innerHTML = '<div class="memory-empty">I haven\u2019t learned anything about you yet. After a few conversations, this is where you\u2019ll see what I remember.</div>'
+      + '<div class="memory-meta"><span>Memory version: ' + (memoryCurrent.version || 0) + '</span><span>Never updated</span></div>';
+    return;
+  }
+  var html = '';
+  if (memoryEditing) {
+    html += '<textarea class="memory-textarea" id="memoryTextarea">' + escapeHTML(text) + '</textarea>';
+    html += '<div class="memory-actions">'
+      + '<button class="memory-btn primary" onclick="saveMemoryEdit()">Save</button>'
+      + '<button class="memory-btn" onclick="cancelMemoryEdit()">Cancel</button>'
+      + '<button class="memory-btn danger" style="margin-left:auto;" onclick="openMemoryClearConfirm()">Clear memory</button>'
+      + '</div>';
+  } else {
+    html += '<textarea class="memory-textarea" readonly>' + escapeHTML(text) + '</textarea>';
+    html += '<div class="memory-actions">'
+      + '<button class="memory-btn primary" onclick="startMemoryEdit()">Edit</button>'
+      + '<button class="memory-btn danger" style="margin-left:auto;" onclick="openMemoryClearConfirm()">Clear memory</button>'
+      + '</div>';
+  }
+  var updated = memoryCurrent.last_updated ? new Date(memoryCurrent.last_updated).toLocaleString() : 'Never updated';
+  html += '<div class="memory-meta"><span>Memory version: ' + (memoryCurrent.version || 0) + '</span><span>Last updated: ' + escapeHTML(updated) + '</span></div>';
+  el.innerHTML = html;
+}
+
+function startMemoryEdit() { memoryEditing = true; renderMemoryContent(); var ta = document.getElementById('memoryTextarea'); if (ta) ta.focus(); }
+function cancelMemoryEdit() { memoryEditing = false; renderMemoryContent(); }
+
+async function saveMemoryEdit() {
+  var ta = document.getElementById('memoryTextarea');
+  if (!ta) return;
+  var newText = ta.value;
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/memory', {
+      method: 'PATCH',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memory_text: newText })
+    });
+    if (!res.ok) throw new Error('save failed');
+    var data = await res.json();
+    memoryCurrent.memory_text = newText;
+    memoryCurrent.version = data.version;
+    memoryCurrent.last_updated = new Date().toISOString();
+    memoryEditing = false;
+    renderMemoryContent();
+    showToast('Memory updated.', 'success');
+  } catch (e) {
+    showToast('Could not save memory. Try again.', 'error');
+  }
+}
+
+async function confirmClearMemory() {
+  try {
+    var token = await getAccessToken();
+    var res = await fetch(API_URL.replace('/chat', '') + '/memory', {
+      method: 'DELETE',
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) throw new Error('clear failed');
+    var data = await res.json();
+    memoryCurrent.memory_text = '';
+    memoryCurrent.version = data.version;
+    memoryCurrent.last_updated = new Date().toISOString();
+    memoryEditing = false;
+    closeMemoryClearConfirm();
+    renderMemoryContent();
+    showToast('Memory cleared.', 'success');
+  } catch (e) {
+    showToast('Could not clear memory. Try again.', 'error');
+  }
+}
+
+function updateMemoryToggleUI() {
+  var sw = document.getElementById('memoryToggleSwitch');
+  var desc = document.getElementById('memoryToggleDesc');
+  if (memoryEnabledCache) {
+    sw.classList.add('on'); desc.textContent = "I'll keep remembering you across conversations.";
+  } else {
+    sw.classList.remove('on'); desc.textContent = "I'll stop remembering you across conversations. Your saved memory stays in case you turn it back on.";
+  }
+}
+
+async function toggleMemoryEnabled() {
+  var next = !memoryEnabledCache;
+  memoryEnabledCache = next;
+  updateMemoryToggleUI();
+  try {
+    var token = await getAccessToken();
+    await fetch(API_URL.replace('/chat', '') + '/memory/toggle', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ memory_enabled: next })
+    });
+    memoryCurrent.memory_enabled = next;
+  } catch (e) {
+    memoryEnabledCache = !next;
+    updateMemoryToggleUI();
+    showToast('Could not update memory setting.', 'error');
+  }
+}
+
+// Fire-and-forget: kick off memory extraction for the previous conversation.
+// Safe to call on every send — it short-circuits after the first run per page,
+// and the worker short-circuits when there's nothing new to extract.
+async function maybeRunMemoryExtraction() {
+  if (!currentUser || memoryExtractionRan) return;
+  memoryExtractionRan = true;
+  try {
+    var token = await getAccessToken();
+    if (!token) return;
+    fetch(API_URL.replace('/chat', '') + '/memory/extract', {
+      method: 'POST',
+      headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
+      body: JSON.stringify({ exclude_conversation_id: currentConversationId || null })
+    }).catch(function() { /* fail-soft — never block the user */ });
+  } catch (e) { /* ignore */ }
+}
 
 // =============== INLINE IMAGES & GALLERY ===============
 let sessionImages = [];
@@ -2203,7 +2617,8 @@ async function loadConversation(id) {
     signupPromptShown = true; upgradePromptShown = true; // suppress prompts for loaded convos
     currentConversationId = id;
     chatStarted = true;
-    chatIncognito = false; // loaded conversation is already saved
+    exitGhostMode(); // ghost mode resets on conversation change (spec §2.3)
+    memoryExtractionRan = false; // loading a prior conversation is a new context
     // Switch view
     document.getElementById('convHistory').style.display = 'none';
     document.getElementById('welcome').style.display = 'none';
@@ -2216,7 +2631,7 @@ async function loadConversation(id) {
       var m = loadedMessages[i];
       messages.push({ role: m.role, content: m.content });
       var displayRole = (m.role === 'assistant') ? 'ai' : 'user';
-      renderMessage(displayRole, m.content);
+      renderMessage(displayRole, m.content, { dbId: m.id, ghosted: !!m.ghosted });
     }
     scrollToBottom();
     updateShareBtn();
@@ -2323,7 +2738,7 @@ function shareCurrentChat() {
 
 function updateShareBtn() {
   var btn = document.getElementById('shareChatBtn');
-  if (btn) btn.style.display = (currentUser && currentConversationId && !chatIncognito) ? 'flex' : 'none';
+  if (btn) btn.style.display = (currentUser && currentConversationId) ? 'flex' : 'none';
 }
 
 function relativeTime(dateStr) {
