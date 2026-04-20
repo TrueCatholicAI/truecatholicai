@@ -997,7 +997,7 @@
           <div class="user-dropdown-email" id="dropdownEmail"></div>
           <div class="user-dropdown-plan" id="dropdownPlan"></div>
         </div>
-        <button class="user-dropdown-item" id="memorySettingsBtn" onclick="openMemoryModal()">What I remember about you</button>
+        <button class="user-dropdown-item" id="memorySettingsBtn" onclick="openMemoryModal()">What TCAI remembers about you</button>
         <button class="user-dropdown-item" id="manageSubBtn" onclick="handleManageSubscription()" style="display:none;">Manage Subscription</button>
         <button class="user-dropdown-item" id="manageFamilyBtn" onclick="openFamilyModal()" style="display:none; color:var(--gold);">Manage Family</button>
         <button class="user-dropdown-item" id="joinFamilyBtn" onclick="openJoinFamilyModal()" style="display:none;">Join a Family</button>
@@ -1171,7 +1171,7 @@
 <div class="family-modal-overlay" id="memoryModal" onclick="if(event.target===this)closeMemoryModal()">
   <div class="family-modal memory-modal-body" style="max-width:560px; text-align:left;">
     <button class="family-modal-close" onclick="closeMemoryModal()">&times;</button>
-    <h2>What I remember about you</h2>
+    <h2>What TCAI remembers about you</h2>
     <p class="memory-intro">This is the summary I use to remember you across conversations. It updates after our chats. You can edit it, clear it, or turn memory off entirely.</p>
     <div id="memoryContent">
       <div class="memory-empty" id="memoryLoadingState">Loading&hellip;</div>
@@ -1190,7 +1190,7 @@
 <div class="family-modal-overlay" id="memoryClearConfirm" onclick="if(event.target===this)closeMemoryClearConfirm()">
   <div class="family-modal" style="max-width:460px; text-align:left;">
     <button class="family-modal-close" onclick="closeMemoryClearConfirm()">&times;</button>
-    <h2 style="font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:400; color:var(--gold-light); margin-bottom:10px;">Clear what I remember about you?</h2>
+    <h2 style="font-family:'Playfair Display', serif; font-size:1.2rem; font-weight:400; color:var(--gold-light); margin-bottom:10px;">Clear what TCAI remembers about you?</h2>
     <p style="font-size:0.9rem; color:var(--text-mid); line-height:1.55; margin-bottom:20px;">I'll forget everything from our previous conversations. Your chat history stays, but I won't carry any of it forward. This can't be undone.</p>
     <div style="display:flex; gap:8px; justify-content:flex-end;">
       <button class="memory-btn" onclick="closeMemoryClearConfirm()">Cancel</button>
