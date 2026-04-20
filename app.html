@@ -547,14 +547,15 @@
   }
   .free-hint-break { display: none; }
   @media (max-width: 600px) {
-    .free-account-hint { text-align: left; padding-left: 3px; }
+    .free-account-hint { text-align: left; padding-left: 3px; line-height: 1.6; }
     .free-hint-sep { display: none; }
     .free-hint-break { display: inline; }
+    .free-account-hint a { display: inline-block; margin-top: 6px; }
   }
   .free-account-hint a {
-    color: var(--gold); text-decoration: none; cursor: pointer; border-bottom: 1px dotted var(--gold-dim);
+    color: var(--gold); text-decoration: none; cursor: pointer;
   }
-  .free-account-hint a:hover { color: var(--gold-light); border-bottom-color: var(--gold); }
+  .free-account-hint a:hover { color: var(--gold-light); }
   .toast {
     position: fixed; bottom: 120px; left: 50%; transform: translateX(-50%);
     background: var(--danger); color: white; padding: 12px 24px; border-radius: 8px;
