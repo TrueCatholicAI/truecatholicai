@@ -1461,7 +1461,72 @@ async function setLoggedIn(user) {
   updateGalleryBtn();
   // Mark conversation list as stale on login (new session)
   convListStale = true;
+  userFirstName = extractFirstName(user, profile);
+  prefetchMemoryForWelcome();
   showMemoryIntroToasts();
+}
+
+// =============== PERSONALIZED WELCOME ===============
+// Returning users (logged in + memory blob has content) see a warm greeting
+// instead of the generic "Ask anything about the faith" pitch. New users and
+// anons still see the full intro.
+let userFirstName = null;
+let originalWelcomeH2 = null;
+let originalWelcomeSub = null;
+
+function extractFirstName(user, profile) {
+  var full = (profile && profile.display_name)
+    || (user && user.user_metadata && (user.user_metadata.full_name || user.user_metadata.name))
+    || '';
+  if (!full) return null;
+  return String(full).trim().split(/\s+/)[0];
+}
+
+async function prefetchMemoryForWelcome() {
+  try {
+    var token = await getAccessToken();
+    if (!token) return;
+    var res = await fetch(API_URL.replace('/chat','') + '/memory', {
+      headers: { 'Authorization': 'Bearer ' + token }
+    });
+    if (!res.ok) return;
+    var data = await res.json();
+    memoryCurrent = data;
+    memoryEnabledCache = !!data.memory_enabled;
+    if (data.memory_text && data.memory_text.trim()) applyPersonalizedWelcome();
+    else revertWelcome();
+  } catch (e) { /* non-fatal */ }
+}
+
+function captureOriginalWelcome() {
+  var h2 = document.querySelector('#welcome h2');
+  var sub = document.querySelector('#welcome .welcome-sub');
+  if (h2 && originalWelcomeH2 === null) originalWelcomeH2 = h2.innerHTML;
+  if (sub && originalWelcomeSub === null) originalWelcomeSub = sub.innerHTML;
+}
+
+function applyPersonalizedWelcome() {
+  captureOriginalWelcome();
+  if (!userFirstName) return;
+  var h2 = document.querySelector('#welcome h2');
+  var sub = document.querySelector('#welcome .welcome-sub');
+  if (!h2 || !sub) return;
+  var safeName = escapeHTML(userFirstName);
+  var variants = [
+    { h2: 'Welcome back, <em>' + safeName + '</em>.',     sub: "What\u2019s on your mind?" },
+    { h2: 'Peace be with you, <em>' + safeName + '</em>.', sub: "What\u2019s on your mind?" },
+    { h2: 'Good to see you, <em>' + safeName + '</em>.',   sub: "How can I help today?" }
+  ];
+  var pick = variants[Math.floor(Math.random() * variants.length)];
+  h2.innerHTML = pick.h2;
+  sub.textContent = pick.sub;
+}
+
+function revertWelcome() {
+  var h2 = document.querySelector('#welcome h2');
+  var sub = document.querySelector('#welcome .welcome-sub');
+  if (h2 && originalWelcomeH2 !== null) h2.innerHTML = originalWelcomeH2;
+  if (sub && originalWelcomeSub !== null) sub.innerHTML = originalWelcomeSub;
 }
 
 // Shown once per account on this device: the new-user welcome (§7.4), plus a
@@ -1495,6 +1560,8 @@ function setLoggedOut() {
   document.body.classList.remove('ghost-on');
   document.getElementById('convHistoryBtn').style.display = 'none';
   ghostMode = false; pendingGhosted = false; memoryExtractionRan = false;
+  userFirstName = null;
+  revertWelcome();
   document.getElementById('manageSubBtn').style.display = 'none';
   document.getElementById('inputModelBtn').classList.remove('visible');
   document.getElementById('remainingStandard').style.display = 'inline';
