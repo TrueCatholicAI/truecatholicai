@@ -2209,17 +2209,53 @@ function applyGhostStateToBubble(div, isGhosted) {
   if (indicator) indicator.style.display = isGhosted ? 'block' : 'none';
 }
 
+// Find the paired bubble for a given message bubble. Pairing rule (spec §2.3):
+// a USER message and the AI reply that directly followed it flip together.
+// Client-side, those bubbles are adjacent siblings in the .messages container.
+function findPairedBubble(bubble) {
+  if (!bubble) return null;
+  if (bubble.classList.contains('user')) {
+    var next = bubble.nextElementSibling;
+    return (next && next.classList.contains('message') && next.classList.contains('ai')) ? next : null;
+  }
+  if (bubble.classList.contains('ai')) {
+    var prev = bubble.previousElementSibling;
+    return (prev && prev.classList.contains('message') && prev.classList.contains('user')) ? prev : null;
+  }
+  return null;
+}
+
 // Retroactive ghosting — called by per-message icon tap. Talks to the worker
 // which handles paired-ghost + ownership checks; we reflect the server's
 // response back into the DOM (worker returns the ids that flipped).
+// Locks the button while in-flight so fast double-taps on a pair don't race.
+const inFlightGhostToggles = new Set();
 async function toggleMessageGhost(messageDomId, messageDbId) {
   if (!currentUser || !messageDbId) return;
+  if (inFlightGhostToggles.has(messageDbId)) return; // already in-flight
   var bubble = document.getElementById(messageDomId);
   if (!bubble) return;
+  var pairBubble = findPairedBubble(bubble);
+
   var currentlyGhosted = bubble.classList.contains('ghosted');
   var targetState = !currentlyGhosted;
-  // Optimistic: flip the tapped bubble + its immediate sibling (paired pair)
+
+  // Optimistic: flip BOTH the tapped bubble and its pair right away. Without
+  // this, the pair's icon still shows "not ghosted" until the server responds,
+  // and a second click on the pair reads that stale state and toggles the
+  // whole pair back off.
   applyGhostStateToBubble(bubble, targetState);
+  if (pairBubble) applyGhostStateToBubble(pairBubble, targetState);
+
+  // Lock both the clicked message and its pair while the PATCH is in flight
+  var pairDbId = pairBubble ? pairBubble.getAttribute('data-msg-id') : null;
+  inFlightGhostToggles.add(messageDbId);
+  if (pairDbId) inFlightGhostToggles.add(pairDbId);
+  var thisToggle = bubble.querySelector('.msg-ghost-toggle');
+  var pairToggle = pairBubble ? pairBubble.querySelector('.msg-ghost-toggle') : null;
+  if (thisToggle) thisToggle.disabled = true;
+  if (pairToggle) pairToggle.disabled = true;
+
   try {
     var token = await getAccessToken();
     var res = await fetch(API_URL.replace('/chat', '') + '/messages/' + messageDbId + '/ghost', {
@@ -2229,7 +2265,7 @@ async function toggleMessageGhost(messageDomId, messageDbId) {
     });
     if (!res.ok) throw new Error('ghost toggle failed');
     var data = await res.json();
-    // Reflect paired ids back into the DOM for correctness
+    // Reflect the server's authoritative list back into the DOM
     if (Array.isArray(data.ids)) {
       for (var i = 0; i < data.ids.length; i++) {
         var el = document.querySelector('[data-msg-id="' + data.ids[i] + '"]');
@@ -2239,7 +2275,13 @@ async function toggleMessageGhost(messageDomId, messageDbId) {
   } catch (e) {
     // Revert on failure
     applyGhostStateToBubble(bubble, currentlyGhosted);
+    if (pairBubble) applyGhostStateToBubble(pairBubble, currentlyGhosted);
     showToast('Could not update ghost state. Try again.', 'error');
+  } finally {
+    inFlightGhostToggles.delete(messageDbId);
+    if (pairDbId) inFlightGhostToggles.delete(pairDbId);
+    if (thisToggle) thisToggle.disabled = false;
+    if (pairToggle) pairToggle.disabled = false;
   }
 }
 
