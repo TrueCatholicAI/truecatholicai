@@ -893,6 +893,12 @@
   }
   .memory-toggle-switch.on { background: var(--gold-dim); border-color: var(--gold-dim); }
   .memory-toggle-switch.on::after { transform: translateX(20px); background: var(--bg); }
+
+  /* Logged-in users get a personalized welcome — the starter cards +
+     "Or explore" label become noise, so we hide them. The starter prompts
+     are already folded into the scrolling ticker below. */
+  body.logged-in .starters,
+  body.logged-in #orExploreLabel { display: none; }
   .conv-history {
     display: none; flex-direction: column; align-items: center;
     padding: 40px 20px 20px; max-width: 600px; margin: 0 auto; width: 100%;
@@ -1024,7 +1030,7 @@
         <span class="starter-cat">Apologetics</span>
       </div>
     </div>
-    <div style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
+    <div id="orExploreLabel" style="font-family:'IBM Plex Mono',monospace; font-size:0.52rem; color:var(--text-dim); letter-spacing:0.12em; text-transform:uppercase; margin-top:28px; margin-bottom:4px; opacity:0.6;">Or explore</div>
     <div class="windows-showcase" id="windowsShowcase" style="display:none; margin-bottom:16px; justify-content:center; flex-wrap:wrap; gap:10px;">
       <div style="width:100%; text-align:center; font-family:'IBM Plex Mono',monospace; font-size:0.48rem; color:var(--gold-dim); letter-spacing:0.15em; text-transform:uppercase; margin-bottom:4px;">&#10022; Windows</div>
     </div>
@@ -1423,6 +1429,7 @@ async function setLoggedIn(user) {
   var staleNudge = document.getElementById('nudgeBanner');
   if (staleNudge) staleNudge.remove();
   signupPromptShown = false;
+  document.body.classList.add('logged-in');
   document.getElementById('ghostBtn').classList.add('visible');
   document.getElementById('convHistoryBtn').style.display = 'inline-flex';
   document.getElementById('userAvatarBtn').textContent = initial;
@@ -1553,6 +1560,7 @@ function showMemoryIntroToasts() {
 }
 function setLoggedOut() {
   currentUser = null; userPlan = 'free'; familyModel = 'haiku';
+  document.body.classList.remove('logged-in');
   document.getElementById('signInBtn').style.display = 'inline-flex';
   document.getElementById('userMenu').style.display = 'none';
   document.getElementById('ghostBtn').classList.remove('visible');
@@ -3454,24 +3462,19 @@ function buildDynamicRows() {
 // — Build ticker: dynamic shuffled rows for all users —
 var dynRows = buildDynamicRows();
 
-// On mobile, fold the starter-card prompts into the per-row data BEFORE
-// rendering. Previously we appended them with a second buildTickerRow pass
-// per row, which broke the 2x-duplication invariant that tickerScroll's
-// translateX(-50%) loop relies on. On iOS WebKit, mutating an element's
-// children after a transform animation has started against width:max-content
-// leaves the animation in an inconsistent compositor state — the row would
-// freeze, partially render, or disappear until a refresh. Folding everything
-// into the initial build makes the row contents final before any animation
-// starts.
-if (window.innerWidth <= 600) {
-  const mobileStarters = [
-    ["Is the Eucharist really the Body and Blood of Christ?", "Core Doctrine"],
-    ["I\u2019ve been away from the Church for years. Can I come back?", "Pastoral"],
-    ["How do I prepare a good Confession?", "Sacramental"],
-    ["Why do Catholics pray to Mary?", "Apologetics"],
-  ];
-  mobileStarters.forEach(function(prompt, i) { dynRows[i % 3].push(prompt); });
-}
+// Fold the starter-card prompts into the per-row ticker data BEFORE rendering.
+// Previously this only happened on mobile; now it happens for everyone, since
+// logged-in users don't see the starter cards (CSS hides them) and the only
+// remaining home for those prompts is the ticker. Appending after rendering
+// breaks the 2x-duplication invariant that tickerScroll's translateX(-50%)
+// loop relies on (iOS WebKit freezes), so we fold into the initial build.
+const FOLDED_STARTERS = [
+  ["Is the Eucharist really the Body and Blood of Christ?", "Core Doctrine"],
+  ["I\u2019ve been away from the Church for years. Can I come back?", "Pastoral"],
+  ["How do I prepare a good Confession?", "Sacramental"],
+  ["Why do Catholics pray to Mary?", "Apologetics"],
+];
+FOLDED_STARTERS.forEach(function(prompt, i) { dynRows[i % 3].push(prompt); });
 
 buildTickerRow(document.getElementById('tickerRow1'), dynRows[0]);
 buildTickerRow(document.getElementById('tickerRow2'), dynRows[1]);
