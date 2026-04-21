@@ -1064,7 +1064,7 @@
   <div class="free-account-hint" id="freeAccountHint">I forget anonymous chats <span class="free-hint-sep">&middot;</span><br class="free-hint-break"><a onclick="openAuthModal('signup')">Sign up free and I'll be able to remember you</a></div>
   <div class="input-row">
     <button class="input-model-btn" id="inputModelBtn" onclick="setFamilyModel(familyModel==='haiku'?'sonnet':'haiku')" title="Fast — tap for Smart"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg></button>
-    <button class="ghost-btn" id="ghostBtn" onclick="toggleGhostMode()" title="Ghost mode — choose messages to forget" aria-label="Ghost mode"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
+    <button class="ghost-btn" id="ghostBtn" type="button" title="Ghost mode — choose messages to forget" aria-label="Ghost mode"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
     <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -2255,15 +2255,26 @@ document.getElementById('newChatBtn').addEventListener('click', resetConversatio
 
 const GHOST_FIRST_TIME_KEY = 'tc-ghost-seen';
 
-function toggleGhostMode() {
+// Derive the canonical state from the body class so the variable and DOM
+// can't drift out of sync (which would otherwise make the toggle look stuck).
+function isGhostOn() { return document.body.classList.contains('ghost-on'); }
+
+function toggleGhostMode(ev) {
+  if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch (e) {} }
+  console.log('[ghost] toggle click; state before =', isGhostOn());
   if (!currentUser) { openAuthModal('signup'); return; }
-  ghostMode ? exitGhostMode() : enterGhostMode();
+  if (isGhostOn()) exitGhostMode();
+  else enterGhostMode();
+  console.log('[ghost] state after =', isGhostOn());
 }
 function enterGhostMode() {
   ghostMode = true;
   document.body.classList.add('ghost-on');
-  document.getElementById('ghostBtn').classList.add('active');
-  document.getElementById('ghostBtn').setAttribute('title', 'Exit ghost mode');
+  var btn = document.getElementById('ghostBtn');
+  if (btn) {
+    btn.classList.add('active');
+    btn.setAttribute('title', 'Exit ghost mode');
+  }
   // First-time tooltip (dismissable one-liner via toast)
   try {
     if (!localStorage.getItem(GHOST_FIRST_TIME_KEY)) {
@@ -2281,6 +2292,16 @@ function exitGhostMode() {
     btn.setAttribute('title', 'Ghost mode — choose messages to forget');
   }
 }
+
+// Belt-and-suspenders: also bind via addEventListener in case the inline
+// onclick is being swallowed by something upstream.
+(function bindGhostBtn() {
+  var btn = document.getElementById('ghostBtn');
+  if (btn && !btn.dataset.bound) {
+    btn.dataset.bound = '1';
+    btn.addEventListener('click', toggleGhostMode);
+  }
+})();
 
 // Paint a message bubble's ghost state (opacity, toggle button, indicator icon)
 function applyGhostStateToBubble(div, isGhosted) {
