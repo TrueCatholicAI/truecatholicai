@@ -805,8 +805,11 @@
   .ghost-btn.active:hover { background: var(--gold-light); border-color: var(--gold-light); color: var(--bg); }
 
   body.ghost-on .input-field {
-    border-style: dashed !important; opacity: 0.82;
-    transition: opacity 0.2s, border-style 0.2s;
+    border-color: transparent;
+    outline: 2px dashed var(--gold-dim);
+    outline-offset: 3px;
+    opacity: 0.9;
+    transition: opacity 0.2s;
   }
 
   /* Per-message ghost toggle (only visible while ghost mode is on) */
