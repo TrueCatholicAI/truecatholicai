@@ -800,8 +800,9 @@
     padding: 0; transition: border-color 0.2s, color 0.2s, background 0.2s;
   }
   .ghost-btn.visible { display: flex; }
-  .ghost-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
-  .ghost-btn.active { color: var(--gold); border-color: var(--gold-dim); background: rgba(196,162,78,0.08); }
+  .ghost-btn:hover { border-color: var(--border-strong); color: var(--text); background: var(--bg-card); }
+  .ghost-btn.active { color: var(--bg); border-color: var(--gold); background: var(--gold); }
+  .ghost-btn.active:hover { background: var(--gold-light); border-color: var(--gold-light); color: var(--bg); }
 
   body.ghost-on .input-field {
     border-style: dashed !important; opacity: 0.82;
@@ -2261,11 +2262,9 @@ function isGhostOn() { return document.body.classList.contains('ghost-on'); }
 
 function toggleGhostMode(ev) {
   if (ev) { try { ev.preventDefault(); ev.stopPropagation(); } catch (e) {} }
-  console.log('[ghost] toggle click; state before =', isGhostOn());
   if (!currentUser) { openAuthModal('signup'); return; }
   if (isGhostOn()) exitGhostMode();
   else enterGhostMode();
-  console.log('[ghost] state after =', isGhostOn());
 }
 function enterGhostMode() {
   ghostMode = true;
