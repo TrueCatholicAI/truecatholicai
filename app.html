@@ -1846,7 +1846,16 @@ document.addEventListener('visibilitychange', async () => {
 
 // =============== INPUT ===============
 inputField.addEventListener('input', () => { sendBtn.disabled = !inputField.value.trim() || isStreaming; });
-function autoResize(el) { el.style.height = 'auto'; el.style.height = Math.min(el.scrollHeight, 160) + 'px'; }
+function autoResize(el) {
+  el.style.height = 'auto';
+  // scrollHeight is content+padding only; include border so the outer height
+  // matches what the content needs under box-sizing: border-box (otherwise the
+  // input visibly shrinks by the border width as soon as the user types).
+  var cs = getComputedStyle(el);
+  var bt = parseFloat(cs.borderTopWidth) || 0;
+  var bb = parseFloat(cs.borderBottomWidth) || 0;
+  el.style.height = Math.min(el.scrollHeight + bt + bb, 160) + 'px';
+}
 function handleKey(e) { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); if (inputField.value.trim() && !isStreaming) sendMessage(); } }
 function sendStarter(el) {
   const q = el.querySelector('.starter-q').textContent.replace(/^[\u201c\u201d"]/g, '').replace(/[\u201c\u201d"]$/g, '');
