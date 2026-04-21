@@ -821,8 +821,9 @@
     z-index: 2;
   }
   body.ghost-on .msg-ghost-toggle { display: flex; opacity: 0.9; }
-  .msg-ghost-toggle:hover { color: var(--gold); border-color: var(--gold-dim); }
-  .msg-ghost-toggle.is-ghosted { color: var(--gold); border-color: var(--gold-dim); opacity: 1; }
+  .msg-ghost-toggle:hover { color: var(--text); border-color: var(--border-strong); background: var(--bg-input); }
+  .msg-ghost-toggle.is-ghosted { color: var(--bg); background: var(--gold); border-color: var(--gold); opacity: 1; }
+  .msg-ghost-toggle.is-ghosted:hover { background: var(--gold-light); border-color: var(--gold-light); color: var(--bg); }
 
   /* Always-visible corner indicator on ghosted messages */
   .msg-ghost-indicator {
