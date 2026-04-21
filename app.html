@@ -1551,7 +1551,7 @@ function showMemoryIntroToasts() {
     var migrationKey = 'tc-ghost-migration-seen';
     if (!localStorage.getItem(welcomeKey)) {
       setTimeout(function() {
-        showToast("Welcome. I'll start remembering things about you from our conversations so I can be a better companion. You can see and edit what I remember in your account menu. If something comes up you'd rather I forget, use incognito.", 'neutral');
+        showToast("Welcome. I'll remember you across our chats. Edit or clear what I remember from your account menu.", 'neutral');
       }, 800);
       localStorage.setItem(welcomeKey, '1');
       localStorage.setItem(migrationKey, '1'); // new users don't need the migration toast
