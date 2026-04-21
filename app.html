@@ -833,13 +833,10 @@
   }
   body.ghost-on .msg-ghost-indicator { display: none; }
 
-  .message { position: relative; transition: opacity 0.25s ease; }
-  .message.ghosted { opacity: 0.58; }
-  .message.ghosted .msg-body,
-  .message.ghosted .msg-header { border-color: transparent; }
+  .message { position: relative; }
   .message.ghosted .msg-body {
-    border: 1px dashed var(--border-strong); border-radius: 8px;
-    padding: 8px 10px; margin-top: 4px;
+    border: 2px dashed var(--gold-dim); border-radius: 10px;
+    padding: 10px 12px; margin-top: 4px;
   }
 
   /* =============== MEMORY MODAL =============== */
@@ -2399,8 +2396,8 @@ async function toggleMessageGhost(messageDomId, messageDbId) {
 }
 
 // Ghost SVG — same shape used in the input button; reused for indicator + toggle
-const GHOST_SVG = '<svg viewBox="0 0 24 24" width="11" height="11" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/></svg>';
-const GHOST_SVG_LARGE = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/></svg>';
+const GHOST_SVG = '<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg>';
+const GHOST_SVG_LARGE = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="1.1" fill="currentColor" stroke="none"/><circle cx="14.5" cy="10" r="1.1" fill="currentColor" stroke="none"/></svg>';
 
 // Attach the ghost toggle + always-on indicator to any rendered message bubble
 function attachGhostControls(div, dbId, isGhosted) {
