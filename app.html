@@ -1064,7 +1064,7 @@
   <div class="free-account-hint" id="freeAccountHint">I forget anonymous chats <span class="free-hint-sep">&middot;</span><br class="free-hint-break"><a onclick="openAuthModal('signup')">Sign up free and I'll be able to remember you</a></div>
   <div class="input-row">
     <button class="input-model-btn" id="inputModelBtn" onclick="setFamilyModel(familyModel==='haiku'?'sonnet':'haiku')" title="Fast — tap for Smart"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg></button>
-    <button class="ghost-btn" id="ghostBtn" type="button" title="Ghost mode — choose messages to forget" aria-label="Ghost mode"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
+    <button class="ghost-btn" id="ghostBtn" type="button" title="Incognito — keep messages out of memory" aria-label="Incognito"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
     <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
     <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
@@ -1551,7 +1551,7 @@ function showMemoryIntroToasts() {
     var migrationKey = 'tc-ghost-migration-seen';
     if (!localStorage.getItem(welcomeKey)) {
       setTimeout(function() {
-        showToast("Welcome. I'll start remembering things about you from our conversations so I can be a better companion. You can see and edit what I remember in your account menu. If something comes up you'd rather I forget, use ghost mode.", 'neutral');
+        showToast("Welcome. I'll start remembering things about you from our conversations so I can be a better companion. You can see and edit what I remember in your account menu. If something comes up you'd rather I forget, use incognito.", 'neutral');
       }, 800);
       localStorage.setItem(welcomeKey, '1');
       localStorage.setItem(migrationKey, '1'); // new users don't need the migration toast
@@ -1559,7 +1559,7 @@ function showMemoryIntroToasts() {
     }
     if (!localStorage.getItem(migrationKey)) {
       setTimeout(function() {
-        showToast("Incognito is now ghost mode. Instead of hiding a whole conversation, you can now ghost specific messages you don't want me to remember. Tap the ghost icon next to the input to try it.", 'neutral');
+        showToast("Incognito now works per message. Tap the incognito icon next to the input, then tap any message you want me to forget.", 'neutral');
       }, 800);
       localStorage.setItem(migrationKey, '1');
     }
@@ -2280,12 +2280,12 @@ function enterGhostMode() {
   var btn = document.getElementById('ghostBtn');
   if (btn) {
     btn.classList.add('active');
-    btn.setAttribute('title', 'Exit ghost mode');
+    btn.setAttribute('title', 'Exit incognito');
   }
   // First-time tooltip (dismissable one-liner via toast)
   try {
     if (!localStorage.getItem(GHOST_FIRST_TIME_KEY)) {
-      showToast("Ghost mode lets you keep certain messages out of my memory. Tap any message to ghost it.", 'neutral');
+      showToast("Incognito lets you keep specific messages out of my memory. Tap any message to hide it.", 'neutral');
       localStorage.setItem(GHOST_FIRST_TIME_KEY, '1');
     }
   } catch (e) {}
@@ -2296,7 +2296,7 @@ function exitGhostMode() {
   var btn = document.getElementById('ghostBtn');
   if (btn) {
     btn.classList.remove('active');
-    btn.setAttribute('title', 'Ghost mode — choose messages to forget');
+    btn.setAttribute('title', 'Incognito — keep messages out of memory');
   }
 }
 
@@ -2386,7 +2386,7 @@ async function toggleMessageGhost(messageDomId, messageDbId) {
     // Revert on failure
     applyGhostStateToBubble(bubble, currentlyGhosted);
     if (pairBubble) applyGhostStateToBubble(pairBubble, currentlyGhosted);
-    showToast('Could not update ghost state. Try again.', 'error');
+    showToast('Could not update. Try again.', 'error');
   } finally {
     inFlightGhostToggles.delete(messageDbId);
     if (pairDbId) inFlightGhostToggles.delete(pairDbId);
@@ -2409,7 +2409,7 @@ function attachGhostControls(div, dbId, isGhosted) {
     var toggle = document.createElement('button');
     toggle.className = 'msg-ghost-toggle';
     toggle.innerHTML = GHOST_SVG;
-    toggle.setAttribute('aria-label', 'Toggle ghost on this message');
+    toggle.setAttribute('aria-label', 'Keep this message out of memory');
     toggle.onclick = function(ev) { ev.stopPropagation(); toggleMessageGhost(domId, dbId); };
     div.appendChild(toggle);
   }
