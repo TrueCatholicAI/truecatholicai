@@ -1626,10 +1626,16 @@ async function handleManageSubscription() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else showToast('Unable to open subscription portal', 'error');
-  } catch (e) { showToast('Error opening subscription portal', 'error'); }
+    const data = await res.json().catch(function() { return {}; });
+    if (data.url) { window.location.href = data.url; return; }
+    // Surface the real reason so users aren't stuck guessing why it failed.
+    var reason = data.error || ('Portal request failed (HTTP ' + res.status + ')');
+    console.error('[manage-subscription]', res.status, data);
+    showToast(reason, 'error');
+  } catch (e) {
+    console.error('[manage-subscription] network error', e);
+    showToast('Network error opening subscription portal', 'error');
+  }
 }
 async function handleUpgrade(plan) {
   closeUserDropdown();
