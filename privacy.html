@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="canonical" href="https://truecatholicai.org/privacy.html" />
+<title>Privacy Policy — TrueCatholic AI</title>
+<meta name="description" content="How TrueCatholic AI handles your email, conversations, and payments. Short, honest, no tracking.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ccircle cx='50' cy='50' r='45' fill='%23C4A24E'/%3E%3Crect x='46' y='22' width='8' height='56' rx='2' fill='%230B0B10'/%3E%3Crect x='26' y='38' width='48' height='8' rx='2' fill='%230B0B10'/%3E%3C/svg%3E">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-elevated: #111117; --bg-card: #16161E;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+  }
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5;
+    --bg: #F4F1EB; --bg-elevated: #EDE9E1; --bg-card: #E8E3DA;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.15); --border-strong: rgba(139,47,47,0.3);
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+  }
+  body::before {
+    content: ''; position: fixed; inset: 0; opacity: 0.02; pointer-events: none; z-index: 9999;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px;
+  }
+  body.light::before { opacity: 0.01; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; width: 100%; z-index: 100;
+    padding: 1.1rem 3rem;
+    display: flex; align-items: center; justify-content: space-between;
+    background: color-mix(in srgb, var(--bg) 92%, transparent);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-brand { display: flex; align-items: center; gap: 0.7rem; text-decoration: none; }
+  .nav-mark {
+    width: 28px; height: 28px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .nav-mark::before { content: ''; position: absolute; width: 10px; height: 1.5px; background: var(--bg); }
+  .nav-mark::after { content: ''; position: absolute; width: 1.5px; height: 10px; background: var(--bg); }
+  .nav-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .nav-actions { display: flex; align-items: center; gap: 1.2rem; }
+  .nav-back {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem;
+    letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--text-dim); text-decoration: none; transition: color 0.25s;
+  }
+  .nav-back:hover { color: var(--gold); }
+  .theme-btn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 0.85rem;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.25s;
+  }
+  .theme-btn:hover { border-color: var(--gold); color: var(--gold); }
+
+  /* CONTENT */
+  main {
+    max-width: 720px; margin: 0 auto;
+    padding: 9rem 2rem 6rem;
+  }
+  .eyebrow {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem;
+    letter-spacing: 0.24em; text-transform: uppercase;
+    color: var(--gold); margin-bottom: 1.4rem;
+  }
+  h1 {
+    font-family: 'Playfair Display', serif; font-weight: 400;
+    font-size: clamp(2rem, 5vw, 2.8rem); line-height: 1.15;
+    color: var(--text); margin-bottom: 0.6rem;
+  }
+  h1 em { font-style: italic; color: var(--gold); }
+  .updated {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 3rem;
+  }
+  .lede {
+    font-size: 1.05rem; line-height: 1.7; color: var(--text-mid);
+    margin-bottom: 2.8rem;
+    padding-bottom: 2.2rem; border-bottom: 1px solid var(--border);
+  }
+  h2 {
+    font-family: 'Playfair Display', serif; font-weight: 500;
+    font-size: 1.45rem; color: var(--text);
+    margin-top: 2.6rem; margin-bottom: 0.9rem; line-height: 1.25;
+  }
+  p, li {
+    font-size: 1rem; line-height: 1.75; color: var(--text-mid);
+    margin-bottom: 1rem;
+  }
+  p strong, li strong { color: var(--text); font-weight: 500; }
+  a {
+    color: var(--gold); text-decoration: none;
+    border-bottom: 1px solid var(--border-strong); transition: border-color 0.2s, color 0.2s;
+  }
+  a:hover { color: var(--gold-light); border-bottom-color: var(--gold); }
+  ul { padding-left: 1.25rem; margin-bottom: 1rem; }
+  li { margin-bottom: 0.4rem; }
+  li::marker { color: var(--gold-dim); }
+  .contact-card {
+    margin-top: 3rem; padding: 1.6rem 1.8rem;
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-radius: 10px;
+  }
+  .contact-card .label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--text-dim); margin-bottom: 0.5rem;
+  }
+  .contact-card p { margin-bottom: 0; }
+
+  @media (max-width: 700px) {
+    nav { padding: 0.9rem 1.2rem; }
+    main { padding: 7rem 1.4rem 4rem; }
+    h1 { font-size: 1.9rem; }
+    h2 { font-size: 1.2rem; margin-top: 2rem; }
+    .lede { font-size: 1rem; }
+    p, li { font-size: 0.96rem; }
+  }
+</style>
+</head>
+<body>
+<nav>
+  <a class="nav-brand" href="/">
+    <span class="nav-mark"></span>
+    <span class="nav-name">TrueCatholic AI</span>
+  </a>
+  <div class="nav-actions">
+    <a class="nav-back" href="/">Back to home</a>
+    <button class="theme-btn" id="themeBtn" title="Toggle theme" aria-label="Toggle theme"></button>
+  </div>
+</nav>
+
+<main>
+  <div class="eyebrow">Policy</div>
+  <h1>Privacy <em>Policy</em></h1>
+  <div class="updated">Last updated: April 22, 2026</div>
+
+  <p class="lede">
+    TrueCatholic AI is built to be useful without being creepy. We don't sell your data, we don't run analytics or ad trackers, and we collect the minimum we need to let you sign in, talk to the AI, and pay your subscription. This page explains what that looks like in plain terms.
+  </p>
+
+  <h2>What we collect</h2>
+  <p>
+    If you <strong>don't create an account</strong>, we collect nothing that identifies you personally. Each anonymous question is sent to the AI for a response and then forgotten. We rate-limit anonymous use by a short-lived fingerprint of your IP and browser headers so the free tier isn't abused; that fingerprint is not linked to any identity.
+  </p>
+  <p>
+    If you <strong>create an account</strong>, we store:
+  </p>
+  <ul>
+    <li>Your <strong>email address</strong> and a <strong>salted, hashed password</strong>, held by our auth provider <a href="https://supabase.com/privacy" target="_blank">Supabase</a>. We never see your raw password.</li>
+    <li>Your <strong>display name</strong>, if you provide one.</li>
+    <li>The <strong>conversations you have with the AI</strong>, so you can revisit them later. You can rename, delete, or share individual conversations. You can delete them all at once from your account menu.</li>
+    <li>An optional <strong>memory summary</strong> — a short blob of text I update after our chats so I can remember you across sessions. You can read it, edit it, clear it, or turn memory off entirely from the "What I remember about you" setting in your account menu. Anything marked incognito before you send it is excluded from memory.</li>
+  </ul>
+
+  <h2>How your messages are processed</h2>
+  <p>
+    When you send a message, it's routed through our server to <a href="https://openrouter.ai/" target="_blank">OpenRouter</a>, which forwards it to the AI model (currently Anthropic's Claude) that generates the reply. Per their respective data policies, neither OpenRouter nor Anthropic trains their models on your conversations, and the content is retained only as long as required to generate and return the response.
+  </p>
+  <p>
+    The reply is sent back to you and — if you're signed in — saved to your conversation history in our database. Anonymous conversations are never written to our database.
+  </p>
+
+  <h2>Payments</h2>
+  <p>
+    If you choose to support TrueCatholic AI with a paid plan, the subscription is managed by <a href="https://stripe.com/privacy" target="_blank">Stripe</a> on our website. We never see your card number or full payment details — Stripe hands us a customer identifier so we know you're subscribed, and that's all we store. Billing, receipts, and cancellation all happen through Stripe's interface. <strong>Subscriptions are only available on the website; the mobile app is free and does not sell subscriptions in-app.</strong>
+  </p>
+
+  <h2>Tracking and analytics</h2>
+  <p>
+    We don't run any. No Google Analytics, no Facebook pixel, no Segment, no Mixpanel, no session recording, no ad tech. The only cookies on this site are the ones Supabase uses to keep you signed in. Our server keeps short-lived logs of request metadata (status codes, rate-limit counters) so we can operate the service and diagnose issues, but those logs don't contain your chat content and are rotated out on Cloudflare's schedule.
+  </p>
+
+  <h2>Who we share data with</h2>
+  <p>
+    We never sell your data and we never share it for advertising. We use a handful of service providers to run the product, and only the information each of them needs to do their job:
+  </p>
+  <ul>
+    <li><strong>Supabase</strong> — account database and authentication</li>
+    <li><strong>Cloudflare</strong> — hosts the website, app, and API worker</li>
+    <li><strong>OpenRouter</strong> and <strong>Anthropic</strong> — process chat messages to generate AI replies (not used for training)</li>
+    <li><strong>Stripe</strong> — processes subscription payments (web only)</li>
+    <li><strong>Resend</strong> — sends transactional email (sign-up confirmations, password resets, the drip welcome series if you opt in)</li>
+  </ul>
+  <p>
+    Each of these providers has their own privacy policy, linked or discoverable above. We'll disclose data to law enforcement only if compelled by a valid legal process.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>
+    From inside the app you can:
+  </p>
+  <ul>
+    <li>Read and edit anything I've remembered about you</li>
+    <li>Clear my memory of you at any time</li>
+    <li>Turn memory off so future conversations don't update it</li>
+    <li>Rename or delete any individual conversation</li>
+    <li>Sign out on any device</li>
+  </ul>
+  <p>
+    To delete your account entirely — including all conversations, memory, and profile data — email us (see below) and we'll take care of it within a few days. You can also cancel a paid subscription anytime through the Stripe-hosted customer portal on the web.
+  </p>
+
+  <h2>Children</h2>
+  <p>
+    TrueCatholic AI is intended for a general audience. We don't knowingly collect personal information from children under 13. If you're a parent and believe your child has created an account without your consent, please contact us and we'll remove it.
+  </p>
+
+  <h2>Changes to this policy</h2>
+  <p>
+    If we change how we handle your data, we'll update this page and bump the "last updated" date at the top. Material changes (e.g. adding a new category of data we collect) will also be surfaced in the app so you see them before the change takes effect.
+  </p>
+
+  <div class="contact-card">
+    <div class="label">Contact</div>
+    <p>Questions, data requests, or account deletion: <a href="mailto:support@truecatholicai.org">support@truecatholicai.org</a>.</p>
+  </div>
+</main>
+
+<script>
+  var themeBtn = document.getElementById('themeBtn');
+  var moonSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
+  var sunSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
+  function applyTheme(isLight) {
+    document.body.classList.toggle('light', isLight);
+    themeBtn.innerHTML = isLight ? sunSVG : moonSVG;
+  }
+  var saved = localStorage.getItem('tc-theme');
+  if (saved === 'light') applyTheme(true);
+  else if (!saved && window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches) applyTheme(true);
+  else applyTheme(false);
+  themeBtn.addEventListener('click', function() {
+    var isLight = !document.body.classList.contains('light');
+    applyTheme(isLight);
+    localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
+  });
+</script>
+</body>
+</html>
