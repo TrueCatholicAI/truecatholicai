@@ -110,7 +110,7 @@ async function callModel(system, user) {
       "Content-Type": "application/json",
       Authorization: "Bearer " + process.env.OPENROUTER_API_KEY,
       "HTTP-Referer": "https://truecatholicai.org",
-      "X-Title": "TrueCatholic AI — knowledge library",
+      "X-Title": "TrueCatholic AI knowledge library",
     },
     body: JSON.stringify({
       model: MODEL,

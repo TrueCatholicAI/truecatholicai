@@ -109,6 +109,17 @@ function dedupe(entries) {
     seen.add(key);
     out.push(e);
   }
+  // Disambiguate slug collisions (same slug, different miracle) by appending
+  // the first 4-digit year from the date field. Two Turin miracles from 1453
+  // and 1640 is the real case that motivated this.
+  const slugCount = {};
+  for (const e of out) slugCount[e.slug] = (slugCount[e.slug] || 0) + 1;
+  for (const e of out) {
+    if (slugCount[e.slug] > 1) {
+      const yearMatch = (e.date || "").match(/\d{4}/);
+      if (yearMatch) e.slug = `${e.slug}-${yearMatch[0]}`;
+    }
+  }
   return out;
 }
 
