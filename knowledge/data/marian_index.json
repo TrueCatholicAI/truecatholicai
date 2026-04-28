@@ -1,0 +1,137 @@
+[
+  {
+    "name": "Our Lady of Guadalupe",
+    "country": "Mexico",
+    "city": "Tepeyac (Mexico City)",
+    "date": "1531",
+    "approval_status": "approved",
+    "approving_authority": "Holy See / Mexican bishops",
+    "slug": "our-lady-of-guadalupe"
+  },
+  {
+    "name": "Our Lady of the Miraculous Medal",
+    "country": "France",
+    "city": "Paris (Rue du Bac)",
+    "date": "1830",
+    "approval_status": "approved",
+    "approving_authority": "Archbishop of Paris",
+    "slug": "our-lady-of-the-miraculous-medal"
+  },
+  {
+    "name": "Our Lady of La Salette",
+    "country": "France",
+    "city": "La Salette",
+    "date": "1846",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Grenoble",
+    "slug": "our-lady-of-la-salette"
+  },
+  {
+    "name": "Our Lady of Lourdes",
+    "country": "France",
+    "city": "Lourdes",
+    "date": "1858",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Tarbes",
+    "slug": "our-lady-of-lourdes"
+  },
+  {
+    "name": "Our Lady of Knock",
+    "country": "Ireland",
+    "city": "Knock",
+    "date": "1879",
+    "approval_status": "approved",
+    "approving_authority": "Archbishop of Tuam",
+    "slug": "our-lady-of-knock"
+  },
+  {
+    "name": "Our Lady of Fatima",
+    "country": "Portugal",
+    "city": "Fatima",
+    "date": "1917",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Leiria",
+    "slug": "our-lady-of-fatima"
+  },
+  {
+    "name": "Our Lady of Beauraing",
+    "country": "Belgium",
+    "city": "Beauraing",
+    "date": "1932-1933",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Namur",
+    "slug": "our-lady-of-beauraing"
+  },
+  {
+    "name": "Our Lady of Banneux",
+    "country": "Belgium",
+    "city": "Banneux",
+    "date": "1933",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Liège",
+    "slug": "our-lady-of-banneux"
+  },
+  {
+    "name": "Our Lady of Akita",
+    "country": "Japan",
+    "city": "Akita",
+    "date": "1973",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Niigata",
+    "slug": "our-lady-of-akita"
+  },
+  {
+    "name": "Our Lady of Betania",
+    "country": "Venezuela",
+    "city": "Betania (Cúa)",
+    "date": "1976-1984",
+    "approval_status": "approved",
+    "approving_authority": "Archbishop of Los Teques",
+    "slug": "our-lady-of-betania"
+  },
+  {
+    "name": "Our Lady of Kibeho",
+    "country": "Rwanda",
+    "city": "Kibeho",
+    "date": "1981-1989",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Gikongoro",
+    "slug": "our-lady-of-kibeho"
+  },
+  {
+    "name": "Our Lady of San Nicolás",
+    "country": "Argentina",
+    "city": "San Nicolás de los Arroyos",
+    "date": "1983-1990",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of San Nicolás",
+    "slug": "our-lady-of-san-nicolas"
+  },
+  {
+    "name": "Our Lady of Laus",
+    "country": "France",
+    "city": "Saint-Étienne-le-Laus",
+    "date": "1664-1718",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Gap",
+    "slug": "our-lady-of-laus"
+  },
+  {
+    "name": "Our Lady of Champion",
+    "country": "United States",
+    "city": "Champion, Wisconsin",
+    "date": "1859",
+    "approval_status": "approved",
+    "approving_authority": "Bishop of Green Bay",
+    "slug": "our-lady-of-champion"
+  },
+  {
+    "name": "Our Lady of Zeitoun",
+    "country": "Egypt",
+    "city": "Zeitoun (Cairo)",
+    "date": "1968-1971",
+    "approval_status": "approved",
+    "approving_authority": "Coptic Orthodox Patriarchate (recognized by Catholic hierarchy)",
+    "slug": "our-lady-of-zeitoun"
+  }
+]

@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Catholic Knowledge — Review Dashboard</title>
+<style>
+  :root {
+    --bg: #0f0f0f;
+    --panel: #1a1a1a;
+    --panel-2: #222;
+    --ink: #e7e7e4;
+    --ink-dim: #9a9a94;
+    --accent: #c9a227;
+    --ok: #2e7d32;
+    --warn: #b26a00;
+    --err: #b00020;
+    --border: #2a2a2a;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  }
+  header {
+    position: sticky; top: 0; z-index: 10;
+    background: var(--panel); border-bottom: 1px solid var(--border);
+    padding: 12px 20px; display: flex; align-items: center; gap: 16px;
+  }
+  header h1 { margin: 0; font-size: 16px; font-weight: 600; letter-spacing: .02em; }
+  header .stats { color: var(--ink-dim); font-size: 13px; }
+  header .spacer { flex: 1; }
+  button {
+    background: var(--panel-2); color: var(--ink); border: 1px solid var(--border);
+    padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 13px;
+  }
+  button:hover { background: #2a2a2a; }
+  button.primary { background: var(--accent); color: #111; border-color: var(--accent); }
+  button.ok { background: var(--ok); color: white; border-color: var(--ok); }
+  button.err { background: var(--err); color: white; border-color: var(--err); }
+  .filter-bar {
+    padding: 10px 20px; background: var(--panel); border-bottom: 1px solid var(--border);
+    display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  }
+  .filter-bar input { background: #111; color: var(--ink); border: 1px solid var(--border); padding: 6px 10px; border-radius: 4px; min-width: 220px; }
+  .filter-bar label { color: var(--ink-dim); font-size: 13px; }
+
+  main { max-width: 1200px; margin: 0 auto; padding: 20px; }
+  .entry {
+    background: var(--panel); border: 1px solid var(--border);
+    border-radius: 8px; margin-bottom: 16px; overflow: hidden;
+  }
+  .entry-head {
+    padding: 14px 18px; display: flex; align-items: center; gap: 12px;
+    border-bottom: 1px solid var(--border); cursor: pointer;
+  }
+  .entry-head h2 { margin: 0; font-size: 16px; }
+  .entry-head .meta { color: var(--ink-dim); font-size: 13px; }
+  .entry-head .status { margin-left: auto; font-size: 12px; font-weight: 600; padding: 3px 8px; border-radius: 3px; }
+  .status.pending  { background: #3a3a2a; color: var(--accent); }
+  .status.approved { background: #1e3a1f; color: #8ed88a; }
+  .status.rejected { background: #3a1e1e; color: #ff8a8a; }
+
+  .entry-body { padding: 16px 18px; display: none; }
+  .entry.open .entry-body { display: block; }
+  .two-col { display: grid; grid-template-columns: 1.3fr 1fr; gap: 20px; }
+  @media (max-width: 900px) { .two-col { grid-template-columns: 1fr; } }
+
+  textarea.md {
+    width: 100%; min-height: 420px; background: #111; color: var(--ink);
+    border: 1px solid var(--border); border-radius: 4px; padding: 12px;
+    font: 13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+    resize: vertical;
+  }
+
+  .image-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .img-card {
+    background: var(--panel-2); border: 2px solid transparent; border-radius: 6px;
+    padding: 8px; font-size: 12px; color: var(--ink-dim); position: relative;
+  }
+  .img-card.approved { border-color: var(--ok); }
+  .img-card.rejected { opacity: .35; }
+  .img-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 4px; display: block; margin-bottom: 6px; }
+  .img-card .lic { display: inline-block; padding: 1px 6px; border-radius: 3px; background: #333; color: var(--ink); font-size: 10px; margin-right: 4px; }
+  .img-card .actions { display: flex; gap: 6px; margin-top: 6px; }
+  .img-card .actions button { flex: 1; padding: 4px 8px; font-size: 11px; }
+
+  .entry-actions { margin-top: 16px; display: flex; gap: 8px; align-items: center; }
+  .frontmatter { font-size: 12px; color: var(--ink-dim); margin-bottom: 8px; }
+  .frontmatter code { background: #111; padding: 1px 5px; border-radius: 3px; color: var(--ink); }
+
+  .empty { text-align: center; color: var(--ink-dim); padding: 60px; }
+  .hint { color: var(--ink-dim); font-size: 12px; margin-top: 4px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Catholic Knowledge — Review</h1>
+  <div class="stats" id="stats">Loading…</div>
+  <div class="spacer"></div>
+  <button id="importBtn">Import state</button>
+  <input type="file" id="importFile" accept="application/json" style="display:none" />
+  <button class="primary" id="exportBtn">Export review_state.json</button>
+</header>
+<div class="filter-bar">
+  <input id="search" placeholder="Search name, country, slug…" />
+  <label><input type="checkbox" id="onlyPending" /> only pending</label>
+  <label><input type="checkbox" id="onlyWithImages" /> only with images</label>
+  <select id="typeFilter">
+    <option value="">all types</option>
+    <option value="eucharistic">eucharistic</option>
+    <option value="marian">marian</option>
+  </select>
+</div>
+<main id="list"><div class="empty">Loading review_data.json …</div></main>
+
+<script>
+const STATE_KEY = "catholic-knowledge-review-v1";
+let bundle = null;
+let state = loadState();
+
+function loadState() {
+  try { return JSON.parse(localStorage.getItem(STATE_KEY) || "{}"); }
+  catch (_) { return {}; }
+}
+function saveState() {
+  localStorage.setItem(STATE_KEY, JSON.stringify(state));
+  renderStats();
+}
+
+function ensureEntryState(slug) {
+  if (!state[slug]) {
+    state[slug] = {
+      status: "pending",     // pending | approved | rejected
+      editedMarkdown: null,  // null until user edits
+      images: {},            // imageUrl → "approved" | "rejected"
+    };
+  }
+  return state[slug];
+}
+
+function renderStats() {
+  if (!bundle) return;
+  const total = bundle.entries.length;
+  let approved = 0, rejected = 0, pending = 0, images = 0;
+  for (const e of bundle.entries) {
+    const s = state[e.slug] && state[e.slug].status;
+    if (s === "approved") approved++;
+    else if (s === "rejected") rejected++;
+    else pending++;
+    const imgs = (state[e.slug] && state[e.slug].images) || {};
+    for (const v of Object.values(imgs)) if (v === "approved") images++;
+  }
+  document.getElementById("stats").textContent =
+    `${total} entries · ${approved} approved · ${rejected} rejected · ${pending} pending · ${images} images approved`;
+}
+
+function entryMatchesFilter(e) {
+  const q = document.getElementById("search").value.trim().toLowerCase();
+  if (q) {
+    const hay = [
+      e.slug,
+      e.frontmatter.entity_name,
+      e.frontmatter.location_country,
+      e.frontmatter.location_city,
+    ].filter(Boolean).join(" ").toLowerCase();
+    if (!hay.includes(q)) return false;
+  }
+  if (document.getElementById("onlyPending").checked) {
+    const s = state[e.slug] && state[e.slug].status;
+    if (s && s !== "pending") return false;
+  }
+  if (document.getElementById("onlyWithImages").checked) {
+    if (!e.imageCandidates || e.imageCandidates.length === 0) return false;
+  }
+  const t = document.getElementById("typeFilter").value;
+  if (t && e.type !== t) return false;
+  return true;
+}
+
+function render() {
+  const list = document.getElementById("list");
+  if (!bundle) return;
+  const filtered = bundle.entries.filter(entryMatchesFilter);
+  if (!filtered.length) {
+    list.innerHTML = '<div class="empty">No entries match.</div>';
+    return;
+  }
+  list.innerHTML = "";
+  for (const e of filtered) list.appendChild(renderEntry(e));
+  renderStats();
+}
+
+function renderEntry(e) {
+  const es = ensureEntryState(e.slug);
+  const wrap = document.createElement("section");
+  wrap.className = "entry";
+  wrap.dataset.slug = e.slug;
+
+  const head = document.createElement("div");
+  head.className = "entry-head";
+  head.innerHTML = `
+    <h2>${escapeHtml(e.frontmatter.entity_name || e.slug)}</h2>
+    <span class="meta">${escapeHtml([e.frontmatter.location_city, e.frontmatter.location_country, e.frontmatter.date_occurred].filter(Boolean).join(" · "))} · <code>${e.type}</code></span>
+    <span class="status ${es.status}">${es.status}</span>
+  `;
+  head.addEventListener("click", () => wrap.classList.toggle("open"));
+  wrap.appendChild(head);
+
+  const body = document.createElement("div");
+  body.className = "entry-body";
+
+  const cols = document.createElement("div");
+  cols.className = "two-col";
+
+  // Left: markdown editor
+  const left = document.createElement("div");
+  const fm = document.createElement("div");
+  fm.className = "frontmatter";
+  fm.innerHTML = `slug: <code>${escapeHtml(e.slug)}</code> · type: <code>${escapeHtml(e.type)}</code>`;
+  left.appendChild(fm);
+
+  const ta = document.createElement("textarea");
+  ta.className = "md";
+  ta.value = es.editedMarkdown != null ? es.editedMarkdown : e.markdown;
+  ta.addEventListener("input", () => {
+    es.editedMarkdown = ta.value;
+    saveState();
+  });
+  left.appendChild(ta);
+  cols.appendChild(left);
+
+  // Right: images
+  const right = document.createElement("div");
+  if (!e.imageCandidates || !e.imageCandidates.length) {
+    right.innerHTML = '<div class="hint">No image candidates. Run the Wikimedia scraper.</div>';
+  } else {
+    const grid = document.createElement("div");
+    grid.className = "image-grid";
+    for (const img of e.imageCandidates) {
+      grid.appendChild(renderImageCard(e.slug, img, es));
+    }
+    right.appendChild(grid);
+  }
+  cols.appendChild(right);
+  body.appendChild(cols);
+
+  // Entry-level actions
+  const actions = document.createElement("div");
+  actions.className = "entry-actions";
+  const approveBtn = document.createElement("button");
+  approveBtn.className = "ok";
+  approveBtn.textContent = "Approve entry";
+  approveBtn.addEventListener("click", () => {
+    es.status = "approved";
+    saveState();
+    head.querySelector(".status").className = "status approved";
+    head.querySelector(".status").textContent = "approved";
+  });
+  const rejectBtn = document.createElement("button");
+  rejectBtn.className = "err";
+  rejectBtn.textContent = "Reject entry";
+  rejectBtn.addEventListener("click", () => {
+    es.status = "rejected";
+    saveState();
+    head.querySelector(".status").className = "status rejected";
+    head.querySelector(".status").textContent = "rejected";
+  });
+  const resetBtn = document.createElement("button");
+  resetBtn.textContent = "Reset to pending";
+  resetBtn.addEventListener("click", () => {
+    es.status = "pending";
+    saveState();
+    head.querySelector(".status").className = "status pending";
+    head.querySelector(".status").textContent = "pending";
+  });
+  const revertBtn = document.createElement("button");
+  revertBtn.textContent = "Revert edits";
+  revertBtn.addEventListener("click", () => {
+    es.editedMarkdown = null;
+    ta.value = e.markdown;
+    saveState();
+  });
+  actions.append(approveBtn, rejectBtn, resetBtn, revertBtn);
+  body.appendChild(actions);
+
+  wrap.appendChild(body);
+  return wrap;
+}
+
+function renderImageCard(slug, img, es) {
+  const card = document.createElement("div");
+  card.className = "img-card";
+  const v = es.images[img.imageUrl];
+  if (v === "approved") card.classList.add("approved");
+  if (v === "rejected") card.classList.add("rejected");
+
+  const thumbSrc = img.localThumb || img.thumbnailUrl;
+  card.innerHTML = `
+    <a href="${img.pageUrl}" target="_blank" rel="noopener">
+      <img src="${thumbSrc}" alt="${escapeHtml(img.title || "")}" loading="lazy" />
+    </a>
+    <div><span class="lic">${escapeHtml(img.license || "?")}</span> ${escapeHtml(img.artist || img.credit || "")}</div>
+    <div class="hint">${escapeHtml((img.description || img.title || "").slice(0, 140))}</div>
+    <div class="actions">
+      <button class="ok" data-a="approve">Approve</button>
+      <button class="err" data-a="reject">Reject</button>
+      <button data-a="clear">—</button>
+    </div>
+  `;
+  card.querySelectorAll("button").forEach((b) => {
+    b.addEventListener("click", (ev) => {
+      ev.stopPropagation();
+      const action = b.dataset.a;
+      if (action === "approve") es.images[img.imageUrl] = "approved";
+      else if (action === "reject") es.images[img.imageUrl] = "rejected";
+      else delete es.images[img.imageUrl];
+      saveState();
+      card.classList.toggle("approved", es.images[img.imageUrl] === "approved");
+      card.classList.toggle("rejected", es.images[img.imageUrl] === "rejected");
+    });
+  });
+  return card;
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, (c) =>
+    ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+function exportState() {
+  const payload = {
+    exportedAt: new Date().toISOString(),
+    bundleGeneratedAt: bundle && bundle.generatedAt,
+    entries: bundle.entries.map((e) => ({
+      slug: e.slug,
+      type: e.type,
+      status: (state[e.slug] && state[e.slug].status) || "pending",
+      finalMarkdown:
+        (state[e.slug] && state[e.slug].editedMarkdown != null)
+          ? state[e.slug].editedMarkdown
+          : e.markdown,
+      frontmatter: e.frontmatter,
+      approvedImages: (e.imageCandidates || []).filter(
+        (img) => state[e.slug] && state[e.slug].images[img.imageUrl] === "approved"
+      ),
+    })),
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "review_state.json";
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+function importState(file) {
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const data = JSON.parse(reader.result);
+      if (!data.entries) throw new Error("missing entries");
+      const next = {};
+      for (const entry of data.entries) {
+        next[entry.slug] = {
+          status: entry.status || "pending",
+          editedMarkdown: entry.finalMarkdown || null,
+          images: {},
+        };
+        for (const img of entry.approvedImages || []) {
+          next[entry.slug].images[img.imageUrl] = "approved";
+        }
+      }
+      state = next;
+      saveState();
+      render();
+    } catch (err) {
+      alert("Import failed: " + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+document.getElementById("exportBtn").addEventListener("click", exportState);
+document.getElementById("importBtn").addEventListener("click", () =>
+  document.getElementById("importFile").click()
+);
+document.getElementById("importFile").addEventListener("change", (e) => {
+  if (e.target.files[0]) importState(e.target.files[0]);
+});
+for (const id of ["search", "onlyPending", "onlyWithImages", "typeFilter"]) {
+  document.getElementById(id).addEventListener("input", render);
+  document.getElementById(id).addEventListener("change", render);
+}
+
+fetch("review_data.json")
+  .then((r) => {
+    if (!r.ok) throw new Error("review_data.json not found. Run `node scripts/build-review-data.js` first.");
+    return r.json();
+  })
+  .then((data) => {
+    bundle = data;
+    render();
+  })
+  .catch((err) => {
+    document.getElementById("list").innerHTML =
+      `<div class="empty">${escapeHtml(err.message)}</div>`;
+  });
+</script>
+</body>
+</html>
