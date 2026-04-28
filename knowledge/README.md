@@ -119,9 +119,16 @@ SUPABASE_URL=...  SUPABASE_SERVICE_ROLE_KEY=... \
 
 By default, approved images are stored as direct Wikimedia Commons URLs (legal with attribution for PD / CC-BY / CC-BY-SA). `--r2` would copy each file to Cloudflare R2 — stub only; wire up when R2 bucket is provisioned.
 
-## Shroud of Turin
+## Hand-authored entries (`manual/`)
 
-The Shroud is handled manually, not through this pipeline. Michael already has 21 pages of reconstruction findings live at `truecatholicai.github.io/shroud-reconstruction`. One knowledge entry will be authored by hand and inserted directly.
+Some entries don't come out of the scraper — they're written by hand and inserted directly. Source markdown lives in `manual/` (committed; not gitignored, unlike `drafts/`).
+
+Currently:
+- `manual/saint-carlo-acutis.md` — Saint Carlo Acutis and the Eucharistic Miracles Exhibition catalog (the catalog is the research index for this whole library).
+
+Planned:
+- Shroud of Turin entry (Michael has 21 pages of reconstruction findings live at `truecatholicai.github.io/shroud-reconstruction`).
+- Martyrs of Gorkum.
 
 ## What NOT to automate
 
