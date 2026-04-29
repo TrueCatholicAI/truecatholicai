@@ -1626,10 +1626,16 @@ async function handleManageSubscription() {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token }
     });
-    const data = await res.json();
-    if (data.url) window.location.href = data.url;
-    else showToast('Unable to open subscription portal', 'error');
-  } catch (e) { showToast('Error opening subscription portal', 'error'); }
+    const data = await res.json().catch(function() { return {}; });
+    if (data.url) { window.location.href = data.url; return; }
+    // Surface the real reason so users aren't stuck guessing why it failed.
+    var reason = data.error || ('Portal request failed (HTTP ' + res.status + ')');
+    console.error('[manage-subscription]', res.status, data);
+    showToast(reason, 'error');
+  } catch (e) {
+    console.error('[manage-subscription] network error', e);
+    showToast('Network error opening subscription portal', 'error');
+  }
 }
 async function handleUpgrade(plan) {
   closeUserDropdown();
@@ -1864,10 +1870,9 @@ function sendStarter(el) {
 async function sendMessage() {
   const text = inputField.value.trim();
   if (!text || isStreaming) return;
-  if (!currentUser && unauthCount >= LIMITS.unauth) {
-    if (!signupPromptShown) showSignupPrompt();
-    return;
-  }
+  // Quota gating is the worker's job. Always make the call; if the user is
+  // actually out of messages, the worker returns 429 and the handler below
+  // shows the prompt. Local unauthCount is display-only.
   document.getElementById('welcome').style.display = 'none';
   document.getElementById('convHistory').style.display = 'none';
   document.getElementById('messages').style.display = 'block';
@@ -1945,13 +1950,23 @@ async function sendMessage() {
     }
     if (!response.ok) { const err = await response.json().catch(() => ({})); throw new Error(err.error || 'Server returned ' + response.status); }
     const data = await response.json();
-    // Update remaining counts
-    if (isFamily && data.haiku_remaining !== undefined) {
-      document.getElementById('remainingHaiku').textContent = data.haiku_remaining;
-      document.getElementById('remainingSonnet').textContent = data.sonnet_remaining;
+    // Update remaining counts. Don't gate on `isFamily` — userPlan can be
+    // briefly stale, but the worker tells us exactly which counters changed.
+    // Update whatever counters the response actually carries; the worker
+    // sends haiku_remaining/sonnet_remaining for family plans, and `remaining`
+    // for the single-counter plans (free/patron/anon).
+    if (data.haiku_remaining !== undefined) {
+      const haikuEl = document.getElementById('remainingHaiku');
+      if (haikuEl) haikuEl.textContent = data.haiku_remaining;
       remaining = data.haiku_remaining;
-    } else if (data.remaining !== undefined) {
-      remaining = data.remaining; remainingNum.textContent = remaining;
+    }
+    if (data.sonnet_remaining !== undefined) {
+      const sonnetEl = document.getElementById('remainingSonnet');
+      if (sonnetEl) sonnetEl.textContent = data.sonnet_remaining;
+    }
+    if (data.haiku_remaining === undefined && data.remaining !== undefined) {
+      remaining = data.remaining;
+      if (remainingNum) remainingNum.textContent = remaining;
     }
     // Sonnet exhausted fallback
     if (data.sonnet_exhausted) handleSonnetExhausted();
@@ -1978,7 +1993,9 @@ async function sendMessage() {
       remainingNum.textContent = remaining;
       sessionMsgCount++;
       if (sessionMsgCount >= 1 && !nudgeDismissed && !signupPromptShown) showNudgeBanner();
-      if (unauthCount >= LIMITS.unauth && !signupPromptShown) showSignupPrompt();
+      // Don't fire the signup wall off a successful response — the user just
+      // got a reply. If they're truly out, the next call will 429 and the
+      // handler above will show the prompt.
     }
   } catch (err) {
     hideTyping();
