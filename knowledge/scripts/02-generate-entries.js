@@ -29,11 +29,22 @@ const TYPES = {
     indexFile: "acutis_index.json",
     draftsDir: "eucharistic-miracles",
     label: "Eucharistic Miracle",
+    entityType: "eucharistic_miracle",
+    promptKind: "miracle",
   },
   marian: {
     indexFile: "marian_index.json",
     draftsDir: "marian-apparitions",
     label: "Marian Apparition",
+    entityType: "marian_apparition",
+    promptKind: "miracle",
+  },
+  incorruptible: {
+    indexFile: "incorruptible_saints_index.json",
+    draftsDir: "incorruptible-saints",
+    label: "Incorruptible Saint",
+    entityType: "saint",
+    promptKind: "saint",
   },
 };
 
@@ -59,7 +70,6 @@ function parseArgs(argv) {
 function buildPrompt(entry, typeCfg) {
   const label = typeCfg.label;
   const location = [entry.city, entry.country].filter(Boolean).join(", ") || entry.country || "unknown location";
-  const date = entry.date || "unknown date";
 
   const system =
     "You are a Catholic historian writing reference-library entries. Use only well-documented historical facts. " +
@@ -68,6 +78,59 @@ function buildPrompt(entry, typeCfg) {
     "Do not fabricate. Do not speculate. Do not editorialize. Neutral, factual, reverent tone. " +
     "Output raw markdown only — no preamble, no closing remarks, no code fences.";
 
+  if (typeCfg.promptKind === "saint") {
+    const dateDied = entry.date_died || "unknown date";
+    const approval = entry.approval_status || "documented veneration";
+    const user = [
+      `Write a knowledge-library entry for the incorruptible saint **${entry.name}**.`,
+      `Resting place / region: ${location}. Date of death: ${dateDied}. Status: ${approval}.`,
+      "",
+      "This entry belongs to the 'Incorruptible Saints' collection — saints whose bodies have been documented",
+      "as resisting natural decay after death. Be specific and honest about the present state of the body:",
+      "fully incorrupt, partially preserved, dressed in wax mask over preserved bone, etc. If the historical",
+      "record disputes incorruptibility, say so plainly.",
+      "",
+      "Use exactly these sections, in this order, as H2 headings:",
+      "",
+      "## Summary",
+      "Two or three sentences capturing who the saint was and the documented condition of their body.",
+      "",
+      "## Life",
+      "Birth, religious vocation, principal works, spiritual gifts attributed to them during life.",
+      "",
+      "## Death and Burial",
+      "When, where, and how they died. Initial place of burial. Any contemporary accounts of unusual signs.",
+      "",
+      "## Discovery of Incorruptibility",
+      "When the body was first exhumed or examined and found to be preserved. Who performed the examination",
+      "and what they recorded.",
+      "",
+      "## Subsequent Examinations",
+      "Later canonical recognitions, medical or scientific examinations, transfers of the body. Note any",
+      "deterioration, restoration, or use of wax masks or coverings.",
+      "",
+      "## Current Status",
+      "Where the body rests today. Whether it is publicly visible and how it can be venerated.",
+      "",
+      "## Beatification and Canonization",
+      "Dates of beatification and canonization, the pope responsible, and the approved miracles cited.",
+      "",
+      "## Key Facts",
+      "Bulleted list of the most important, verifiable details.",
+      "",
+      "## Sources",
+      "Bulleted list of primary and secondary sources referenced (author + work, or institution + report).",
+      "",
+      "Rules:",
+      "- Omit any detail you are not confident about.",
+      "- Do not invent dates, examination findings, or medical conclusions.",
+      "- If the saint's body is not actually incorrupt (only relics survive, or it has fully decayed), say so",
+      "  honestly in the Current Status section rather than overstating preservation.",
+    ].join("\n");
+    return { system, user };
+  }
+
+  const date = entry.date || "unknown date";
   const user = [
     `Write a knowledge-library entry for the ${label} of ${entry.name}, ${location}, ${date}.`,
     "",
@@ -143,11 +206,12 @@ async function callModel(system, user) {
 function buildFrontmatter(entry, typeCfg) {
   const fm = {
     entity_name: entry.name,
-    entity_type: typeCfg.draftsDir === "eucharistic-miracles" ? "eucharistic_miracle" : "marian_apparition",
+    entity_type: typeCfg.entityType,
     slug: entry.slug,
     location_city: entry.city || null,
     location_country: entry.country || null,
-    date_occurred: entry.date || null,
+    date_occurred: entry.date || entry.date_died || null,
+    date_approved: entry.date_approved || null,
     approval_status: entry.approval_status || null,
     approving_authority: entry.approving_authority || null,
     acutis_source_url: entry.source_url || null,

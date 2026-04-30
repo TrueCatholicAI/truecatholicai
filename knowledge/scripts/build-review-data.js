@@ -13,8 +13,9 @@ const DATA_DIR = path.join(ROOT, "data");
 const OUT_FILE = path.join(ROOT, "review", "review_data.json");
 
 const TYPES = [
-  { key: "eucharistic", draftsDir: "eucharistic-miracles", candidatesFile: "image_candidates_eucharistic.json" },
-  { key: "marian",      draftsDir: "marian-apparitions",   candidatesFile: "image_candidates_marian.json" },
+  { key: "eucharistic",   draftsDir: "eucharistic-miracles", candidatesFile: "image_candidates_eucharistic.json" },
+  { key: "marian",        draftsDir: "marian-apparitions",   candidatesFile: "image_candidates_marian.json" },
+  { key: "incorruptible", draftsDir: "incorruptible-saints", candidatesFile: "image_candidates_incorruptible.json" },
 ];
 
 function parseFrontmatter(raw) {
@@ -65,7 +66,11 @@ function loadCandidates(candidatesFile) {
 function main() {
   const bundle = { generatedAt: new Date().toISOString(), entries: [] };
 
-  for (const t of TYPES) {
+  const typesArgIdx = process.argv.indexOf("--types");
+  const typesFilter = typesArgIdx !== -1 ? process.argv[typesArgIdx + 1].split(",").map((s) => s.trim()) : null;
+  const activeTypes = typesFilter ? TYPES.filter((t) => typesFilter.includes(t.key)) : TYPES;
+
+  for (const t of activeTypes) {
     const drafts = loadDrafts(path.join(DRAFTS_ROOT, t.draftsDir));
     const candidates = loadCandidates(t.candidatesFile);
     for (const d of drafts) {

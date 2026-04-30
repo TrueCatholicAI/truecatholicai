@@ -110,6 +110,7 @@
     <option value="">all types</option>
     <option value="eucharistic">eucharistic</option>
     <option value="marian">marian</option>
+    <option value="incorruptible">incorruptible</option>
   </select>
 </div>
 <main id="list"><div class="empty">Loading review_data.json …</div></main>
@@ -394,7 +395,7 @@ for (const id of ["search", "onlyPending", "onlyWithImages", "typeFilter"]) {
   document.getElementById(id).addEventListener("change", render);
 }
 
-fetch("review_data.json")
+fetch("review_data.json?t=" + Date.now(), { cache: "no-store" })
   .then((r) => {
     if (!r.ok) throw new Error("review_data.json not found. Run `node scripts/build-review-data.js` first.");
     return r.json();

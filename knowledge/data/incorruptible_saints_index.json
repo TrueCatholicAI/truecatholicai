@@ -1,0 +1,622 @@
+[
+  {
+    "name": "Saint Bernadette Soubirous",
+    "country": "France",
+    "city": "Nevers",
+    "date_died": "1879",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1933",
+    "slug": "saint-bernadette-soubirous"
+  },
+{
+    "name": "Saint John Vianney (Curé of Ars)",
+    "country": "France",
+    "city": "Ars-sur-Formans",
+    "date_died": "1859",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1925",
+    "slug": "saint-john-vianney"
+  },
+  {
+    "name": "Saint Catherine of Siena",
+    "country": "Italy",
+    "city": "Rome",
+    "date_died": "1380",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius II",
+    "date_approved": "1461",
+    "slug": "saint-catherine-of-siena"
+  },
+  {
+    "name": "Saint Catherine Labouré",
+    "country": "France",
+    "city": "Paris (Rue du Bac)",
+    "date_died": "1876",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1947",
+    "slug": "saint-catherine-laboure"
+  },
+  {
+    "name": "Saint Vincent de Paul",
+    "country": "France",
+    "city": "Paris",
+    "date_died": "1660",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XII",
+    "date_approved": "1737",
+    "slug": "saint-vincent-de-paul"
+  },
+  {
+    "name": "Saint Teresa of Ávila",
+    "country": "Spain",
+    "city": "Alba de Tormes",
+    "date_died": "1582",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Gregory XV",
+    "date_approved": "1622",
+    "slug": "saint-teresa-of-avila"
+  },
+  {
+    "name": "Saint Francis Xavier",
+    "country": "China",
+    "city": "Shangchuan Island (relics now in Goa, India — Basilica of Bom Jesus)",
+    "date_died": "1552",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Gregory XV",
+    "date_approved": "1622",
+    "slug": "saint-francis-xavier"
+  },
+  {
+    "name": "Saint Rita of Cascia",
+    "country": "Italy",
+    "city": "Cascia",
+    "date_died": "1457",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Leo XIII",
+    "date_approved": "1900",
+    "slug": "saint-rita-of-cascia"
+  },
+  {
+    "name": "Saint Clare of Assisi",
+    "country": "Italy",
+    "city": "Assisi",
+    "date_died": "1253",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Alexander IV",
+    "date_approved": "1255",
+    "slug": "saint-clare-of-assisi"
+  },
+  {
+    "name": "Saint Catherine of Bologna",
+    "country": "Italy",
+    "city": "Bologna",
+    "date_died": "1463",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XI",
+    "date_approved": "1712",
+    "slug": "saint-catherine-of-bologna"
+  },
+  {
+    "name": "Saint Catherine de' Ricci",
+    "country": "Italy",
+    "city": "Prato",
+    "date_died": "1590",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XIV",
+    "date_approved": "1746",
+    "slug": "saint-catherine-de-ricci"
+  },
+  {
+    "name": "Blessed Imelda Lambertini",
+    "country": "Italy",
+    "city": "Bologna",
+    "date_died": "1333",
+    "approval_status": "beatified",
+    "approving_authority": "Pope Leo XII",
+    "date_approved": "1826",
+    "slug": "blessed-imelda-lambertini"
+  },
+  {
+    "name": "Saint Charbel Makhlouf",
+    "country": "Lebanon",
+    "city": "Beka'akafra (shrine and hermitage at Annaya)",
+    "date_died": "1898",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Paul VI",
+    "date_approved": "1977",
+    "slug": "saint-charbel-makhlouf"
+  },
+  {
+    "name": "Pope Saint Pius X",
+    "country": "Vatican City",
+    "city": "Rome (St. Peter's Basilica)",
+    "date_died": "1914",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1954",
+    "slug": "pope-saint-pius-x"
+  },
+  {
+    "name": "Saint Bernardine of Siena",
+    "country": "Italy",
+    "city": "L'Aquila",
+    "date_died": "1444",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Nicholas V",
+    "date_approved": "1450",
+    "slug": "saint-bernardine-of-siena"
+  },
+  {
+    "name": "Saint Zita of Lucca",
+    "country": "Italy",
+    "city": "Lucca",
+    "date_died": "1272",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Innocent XII",
+    "date_approved": "1696",
+    "slug": "saint-zita-of-lucca"
+  },
+  {
+    "name": "Saint Andrew Bobola",
+    "country": "Belarus",
+    "city": "Janów Poleski (relics now in Warsaw)",
+    "date_died": "1657",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1938",
+    "slug": "saint-andrew-bobola"
+  },
+  {
+    "name": "Saint Veronica Giuliani",
+    "country": "Italy",
+    "city": "Città di Castello",
+    "date_died": "1727",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Gregory XVI",
+    "date_approved": "1839",
+    "slug": "saint-veronica-giuliani"
+  },
+  {
+    "name": "Saint Pacificus of San Severino",
+    "country": "Italy",
+    "city": "San Severino Marche",
+    "date_died": "1721",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Gregory XVI",
+    "date_approved": "1839",
+    "slug": "saint-pacificus-of-san-severino"
+  },
+  {
+    "name": "Saint Margaret of Cortona",
+    "country": "Italy",
+    "city": "Cortona",
+    "date_died": "1297",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XIII",
+    "date_approved": "1728",
+    "slug": "saint-margaret-of-cortona"
+  },
+  {
+    "name": "Saint Catherine of Genoa",
+    "country": "Italy",
+    "city": "Genoa",
+    "date_died": "1510",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XII",
+    "date_approved": "1737",
+    "slug": "saint-catherine-of-genoa"
+  },
+  {
+    "name": "Saint John Bosco (Don Bosco)",
+    "country": "Italy",
+    "city": "Turin",
+    "date_died": "1888",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1934",
+    "slug": "saint-john-bosco"
+  },
+  {
+    "name": "Saint Maria Goretti",
+    "country": "Italy",
+    "city": "Nettuno",
+    "date_died": "1902",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1950",
+    "slug": "saint-maria-goretti"
+  },
+  {
+    "name": "Saint Margaret of Castello",
+    "country": "Italy",
+    "city": "Città di Castello",
+    "date_died": "1320",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Francis",
+    "date_approved": "2021",
+    "slug": "saint-margaret-of-castello"
+  },
+  {
+    "name": "Saint Hyacintha Mariscotti",
+    "country": "Italy",
+    "city": "Viterbo",
+    "date_died": "1640",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius VII",
+    "date_approved": "1807",
+    "slug": "saint-hyacintha-mariscotti"
+  },
+  {
+    "name": "Saint Rose of Viterbo",
+    "country": "Italy",
+    "city": "Viterbo",
+    "date_died": "1251",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Callixtus III",
+    "date_approved": "1457",
+    "slug": "saint-rose-of-viterbo"
+  },
+  {
+    "name": "Saint Agnes of Montepulciano",
+    "country": "Italy",
+    "city": "Montepulciano",
+    "date_died": "1317",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XIII",
+    "date_approved": "1726",
+    "slug": "saint-agnes-of-montepulciano"
+  },
+  {
+    "name": "Saint Lucy Filippini",
+    "country": "Italy",
+    "city": "Montefiascone",
+    "date_died": "1732",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1930",
+    "slug": "saint-lucy-filippini"
+  },
+  {
+    "name": "Saint Juliana Falconieri",
+    "country": "Italy",
+    "city": "Florence",
+    "date_died": "1341",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XII",
+    "date_approved": "1737",
+    "slug": "saint-juliana-falconieri"
+  },
+  {
+    "name": "Saint Germaine Cousin",
+    "country": "France",
+    "city": "Pibrac",
+    "date_died": "1601",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius IX",
+    "date_approved": "1867",
+    "slug": "saint-germaine-cousin"
+  },
+  {
+    "name": "Blessed Anna Maria Taigi",
+    "country": "Italy",
+    "city": "Rome",
+    "date_died": "1837",
+    "approval_status": "beatified",
+    "approving_authority": "Pope Benedict XV",
+    "date_approved": "1920",
+    "slug": "blessed-anna-maria-taigi"
+  },
+  {
+    "name": "Saint Margaret Mary Alacoque",
+    "country": "France",
+    "city": "Paray-le-Monial",
+    "date_died": "1690",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XV",
+    "date_approved": "1920",
+    "slug": "saint-margaret-mary-alacoque"
+  },
+  {
+    "name": "Saint Vincent Pallotti",
+    "country": "Italy",
+    "city": "Rome",
+    "date_died": "1850",
+    "approval_status": "canonized",
+    "approving_authority": "Pope John XXIII",
+    "date_approved": "1963",
+    "slug": "saint-vincent-pallotti"
+  },
+  {
+    "name": "Saint Madeleine Sophie Barat",
+    "country": "France",
+    "city": "Paris (later Jette, Belgium)",
+    "date_died": "1865",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1925",
+    "slug": "saint-madeleine-sophie-barat"
+  },
+  {
+    "name": "Blessed Lucy of Narni",
+    "country": "Italy",
+    "city": "Narni",
+    "date_died": "1544",
+    "approval_status": "beatified",
+    "approving_authority": "Pope Clement XI (cult confirmed)",
+    "date_approved": "1710",
+    "slug": "blessed-lucy-of-narni"
+  },
+  {
+    "name": "Saint Catherine of Sweden",
+    "country": "Sweden",
+    "city": "Vadstena",
+    "date_died": "1381",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Innocent VIII (cult confirmed)",
+    "date_approved": "1484",
+    "slug": "saint-catherine-of-sweden"
+  },
+  {
+    "name": "Saint Charles Borromeo",
+    "country": "Italy",
+    "city": "Milan",
+    "date_died": "1584",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Paul V",
+    "date_approved": "1610",
+    "slug": "saint-charles-borromeo"
+  },
+  {
+    "name": "Saint Vincent Ferrer",
+    "country": "France",
+    "city": "Vannes",
+    "date_died": "1419",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Callixtus III",
+    "date_approved": "1455",
+    "slug": "saint-vincent-ferrer"
+  },
+  {
+    "name": "Pope Saint Pius V",
+    "country": "Vatican City",
+    "city": "Rome (Basilica of Santa Maria Maggiore)",
+    "date_died": "1572",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XI",
+    "date_approved": "1712",
+    "slug": "pope-saint-pius-v"
+  },
+  {
+    "name": "Saint Cecilia",
+    "country": "Italy",
+    "city": "Rome (Basilica of Santa Cecilia in Trastevere)",
+    "date_died": "circa 230",
+    "approval_status": "canonized",
+    "approving_authority": "ancient cult (martyr)",
+    "date_approved": "early Church",
+    "slug": "saint-cecilia"
+  },
+  {
+    "name": "Saint Mary Magdalene de' Pazzi",
+    "country": "Italy",
+    "city": "Florence",
+    "date_died": "1607",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement IX",
+    "date_approved": "1669",
+    "slug": "saint-mary-magdalene-de-pazzi"
+  },
+  {
+    "name": "Saint Joseph of Cupertino",
+    "country": "Italy",
+    "city": "Osimo",
+    "date_died": "1663",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XIII",
+    "date_approved": "1767",
+    "slug": "saint-joseph-of-cupertino"
+  },
+  {
+    "name": "Saint Camillus de Lellis",
+    "country": "Italy",
+    "city": "Rome",
+    "date_died": "1614",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XIV",
+    "date_approved": "1746",
+    "slug": "saint-camillus-de-lellis"
+  },
+  {
+    "name": "Saint Joan of Valois (Joan of France)",
+    "country": "France",
+    "city": "Bourges",
+    "date_died": "1505",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1950",
+    "slug": "saint-joan-of-valois"
+  },
+  {
+    "name": "Saint Eustochia Smeralda Calafato",
+    "country": "Italy",
+    "city": "Messina",
+    "date_died": "1485",
+    "approval_status": "canonized",
+    "approving_authority": "Pope John Paul II",
+    "date_approved": "1988",
+    "slug": "saint-eustochia-smeralda-calafato"
+  },
+  {
+    "name": "Saint Maria Bertilla Boscardin",
+    "country": "Italy",
+    "city": "Treviso",
+    "date_died": "1922",
+    "approval_status": "canonized",
+    "approving_authority": "Pope John XXIII",
+    "date_approved": "1961",
+    "slug": "saint-maria-bertilla-boscardin"
+  },
+  {
+    "name": "Saint Joaquina de Vedruna",
+    "country": "Spain",
+    "city": "Barcelona",
+    "date_died": "1854",
+    "approval_status": "canonized",
+    "approving_authority": "Pope John XXIII",
+    "date_approved": "1959",
+    "slug": "saint-joaquina-de-vedruna"
+  },
+  {
+    "name": "Saint Frances Xavier Cabrini (Mother Cabrini)",
+    "country": "United States",
+    "city": "Chicago",
+    "date_died": "1917",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1946",
+    "slug": "saint-frances-xavier-cabrini"
+  },
+  {
+    "name": "Saint Cuthbert of Lindisfarne",
+    "country": "England",
+    "city": "Durham",
+    "date_died": "687",
+    "approval_status": "canonized",
+    "approving_authority": "ancient cult",
+    "date_approved": "early medieval",
+    "slug": "saint-cuthbert-of-lindisfarne"
+  },
+  {
+    "name": "Saint Etheldreda (Audrey) of Ely",
+    "country": "England",
+    "city": "Ely",
+    "date_died": "679",
+    "approval_status": "canonized",
+    "approving_authority": "ancient cult",
+    "date_approved": "early medieval",
+    "slug": "saint-etheldreda-of-ely"
+  },
+  {
+    "name": "Saint Edward the Confessor",
+    "country": "England",
+    "city": "London (Westminster Abbey)",
+    "date_died": "1066",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Alexander III",
+    "date_approved": "1161",
+    "slug": "saint-edward-the-confessor"
+  },
+  {
+    "name": "Blessed Maria Cristina of Savoy",
+    "country": "Italy",
+    "city": "Naples",
+    "date_died": "1836",
+    "approval_status": "beatified",
+    "approving_authority": "Pope Francis",
+    "date_approved": "2014",
+    "slug": "blessed-maria-cristina-of-savoy"
+  },
+  {
+    "name": "Saint Catalina Tomás",
+    "country": "Spain",
+    "city": "Palma de Mallorca",
+    "date_died": "1574",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XI",
+    "date_approved": "1930",
+    "slug": "saint-catalina-tomas"
+  },
+  {
+    "name": "Saint Camilla Battista da Varano",
+    "country": "Italy",
+    "city": "Camerino",
+    "date_died": "1524",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XVI",
+    "date_approved": "2010",
+    "slug": "saint-camilla-battista-da-varano"
+  },
+  {
+    "name": "Saint Mariana de Jesús de Paredes",
+    "country": "Ecuador",
+    "city": "Quito",
+    "date_died": "1645",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius XII",
+    "date_approved": "1950",
+    "slug": "saint-mariana-de-jesus-de-paredes"
+  },
+  {
+    "name": "Saint Sperandia",
+    "country": "Italy",
+    "city": "Cingoli",
+    "date_died": "1276",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Pius VII (cult confirmed)",
+    "date_approved": "1834",
+    "slug": "saint-sperandia"
+  },
+  {
+    "name": "Saint Veronica de Binasco",
+    "country": "Italy",
+    "city": "Milan",
+    "date_died": "1497",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Leo XIII",
+    "date_approved": "1517",
+    "slug": "saint-veronica-de-binasco"
+  },
+  {
+    "name": "Pope Saint John XXIII",
+    "country": "Vatican City",
+    "city": "Rome (St. Peter's Basilica)",
+    "date_died": "1963",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Francis",
+    "date_approved": "2014",
+    "slug": "pope-saint-john-xxiii"
+  },
+  {
+    "name": "Saint Francis de Sales",
+    "country": "France",
+    "city": "Lyon (relics) / Annecy",
+    "date_died": "1622",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Alexander VII",
+    "date_approved": "1665",
+    "slug": "saint-francis-de-sales"
+  },
+  {
+    "name": "Saint Jane Frances de Chantal",
+    "country": "France",
+    "city": "Annecy",
+    "date_died": "1641",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Clement XIII",
+    "date_approved": "1767",
+    "slug": "saint-jane-frances-de-chantal"
+  },
+  {
+    "name": "Saint Paschal Baylón",
+    "country": "Spain",
+    "city": "Villarreal",
+    "date_died": "1592",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Alexander VIII",
+    "date_approved": "1690",
+    "slug": "saint-paschal-baylon"
+  },
+  {
+    "name": "Saint John Nepomucene",
+    "country": "Czech Republic",
+    "city": "Prague",
+    "date_died": "1393",
+    "approval_status": "canonized",
+    "approving_authority": "Pope Benedict XIII",
+    "date_approved": "1729",
+    "slug": "saint-john-nepomucene"
+  }
+]
