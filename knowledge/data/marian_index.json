@@ -57,7 +57,7 @@
     "name": "Our Lady of Beauraing",
     "country": "Belgium",
     "city": "Beauraing",
-    "date": "1932-1933",
+    "date": "1932–1933",
     "approval_status": "approved",
     "approving_authority": "Bishop of Namur",
     "slug": "our-lady-of-beauraing"
@@ -84,7 +84,7 @@
     "name": "Our Lady of Betania",
     "country": "Venezuela",
     "city": "Betania (Cúa)",
-    "date": "1976-1984",
+    "date": "1976–1984",
     "approval_status": "approved",
     "approving_authority": "Archbishop of Los Teques",
     "slug": "our-lady-of-betania"
@@ -93,7 +93,7 @@
     "name": "Our Lady of Kibeho",
     "country": "Rwanda",
     "city": "Kibeho",
-    "date": "1981-1989",
+    "date": "1981–1989",
     "approval_status": "approved",
     "approving_authority": "Bishop of Gikongoro",
     "slug": "our-lady-of-kibeho"
@@ -102,7 +102,7 @@
     "name": "Our Lady of San Nicolás",
     "country": "Argentina",
     "city": "San Nicolás de los Arroyos",
-    "date": "1983-1990",
+    "date": "1983–1990",
     "approval_status": "approved",
     "approving_authority": "Bishop of San Nicolás",
     "slug": "our-lady-of-san-nicolas"
@@ -111,7 +111,7 @@
     "name": "Our Lady of Laus",
     "country": "France",
     "city": "Saint-Étienne-le-Laus",
-    "date": "1664-1718",
+    "date": "1664–1718",
     "approval_status": "approved",
     "approving_authority": "Bishop of Gap",
     "slug": "our-lady-of-laus"
@@ -129,7 +129,7 @@
     "name": "Our Lady of Zeitoun",
     "country": "Egypt",
     "city": "Zeitoun (Cairo)",
-    "date": "1968-1971",
+    "date": "1968–1971",
     "approval_status": "approved",
     "approving_authority": "Coptic Orthodox Patriarchate (recognized by Catholic hierarchy)",
     "slug": "our-lady-of-zeitoun"

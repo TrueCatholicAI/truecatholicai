@@ -9,7 +9,7 @@
     "date_approved": "1933",
     "slug": "saint-bernadette-soubirous"
   },
-{
+  {
     "name": "Saint John Vianney (Curé of Ars)",
     "country": "France",
     "city": "Ars-sur-Formans",
@@ -58,16 +58,6 @@
     "approving_authority": "Pope Gregory XV",
     "date_approved": "1622",
     "slug": "saint-teresa-of-avila"
-  },
-  {
-    "name": "Saint Francis Xavier",
-    "country": "China",
-    "city": "Shangchuan Island (relics now in Goa, India — Basilica of Bom Jesus)",
-    "date_died": "1552",
-    "approval_status": "canonized",
-    "approving_authority": "Pope Gregory XV",
-    "date_approved": "1622",
-    "slug": "saint-francis-xavier"
   },
   {
     "name": "Saint Rita of Cascia",
@@ -122,7 +112,7 @@
   {
     "name": "Saint Charbel Makhlouf",
     "country": "Lebanon",
-    "city": "Beka'akafra (shrine and hermitage at Annaya)",
+    "city": "Annaya, Lebanon (Saint Maron Monastery shrine and hermitage); born Beka'akafra",
     "date_died": "1898",
     "approval_status": "canonized",
     "approving_authority": "Pope Paul VI",
@@ -161,8 +151,8 @@
   },
   {
     "name": "Saint Andrew Bobola",
-    "country": "Belarus",
-    "city": "Janów Poleski (relics now in Warsaw)",
+    "country": "Poland (relics in Warsaw); died in present-day Belarus",
+    "city": "Warsaw (Shrine of Saint Andrew Bobola); martyred at Janów Poleski",
     "date_died": "1657",
     "approval_status": "canonized",
     "approving_authority": "Pope Pius XI",
@@ -198,16 +188,6 @@
     "approving_authority": "Pope Benedict XIII",
     "date_approved": "1728",
     "slug": "saint-margaret-of-cortona"
-  },
-  {
-    "name": "Saint Catherine of Genoa",
-    "country": "Italy",
-    "city": "Genoa",
-    "date_died": "1510",
-    "approval_status": "canonized",
-    "approving_authority": "Pope Clement XII",
-    "date_approved": "1737",
-    "slug": "saint-catherine-of-genoa"
   },
   {
     "name": "Saint John Bosco (Don Bosco)",
@@ -360,16 +340,6 @@
     "slug": "saint-catherine-of-sweden"
   },
   {
-    "name": "Saint Charles Borromeo",
-    "country": "Italy",
-    "city": "Milan",
-    "date_died": "1584",
-    "approval_status": "canonized",
-    "approving_authority": "Pope Paul V",
-    "date_approved": "1610",
-    "slug": "saint-charles-borromeo"
-  },
-  {
     "name": "Saint Vincent Ferrer",
     "country": "France",
     "city": "Vannes",
@@ -393,7 +363,7 @@
     "name": "Saint Cecilia",
     "country": "Italy",
     "city": "Rome (Basilica of Santa Cecilia in Trastevere)",
-    "date_died": "circa 230",
+    "date_died": "c. 230",
     "approval_status": "canonized",
     "approving_authority": "ancient cult (martyr)",
     "date_approved": "early Church",
@@ -430,16 +400,6 @@
     "slug": "saint-camillus-de-lellis"
   },
   {
-    "name": "Saint Joan of Valois (Joan of France)",
-    "country": "France",
-    "city": "Bourges",
-    "date_died": "1505",
-    "approval_status": "canonized",
-    "approving_authority": "Pope Pius XII",
-    "date_approved": "1950",
-    "slug": "saint-joan-of-valois"
-  },
-  {
     "name": "Saint Eustochia Smeralda Calafato",
     "country": "Italy",
     "city": "Messina",
@@ -472,7 +432,7 @@
   {
     "name": "Saint Frances Xavier Cabrini (Mother Cabrini)",
     "country": "United States",
-    "city": "Chicago",
+    "city": "New York City (Mother Cabrini Shrine, Washington Heights — body); head preserved in Rome at the Mother House of the Missionary Sisters",
     "date_died": "1917",
     "approval_status": "canonized",
     "approving_authority": "Pope Pius XII",
