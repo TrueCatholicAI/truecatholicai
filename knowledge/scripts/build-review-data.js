@@ -16,6 +16,7 @@ const TYPES = [
   { key: "eucharistic",   draftsDir: "eucharistic-miracles", candidatesFile: "image_candidates_eucharistic.json" },
   { key: "marian",        draftsDir: "marian-apparitions",   candidatesFile: "image_candidates_marian.json" },
   { key: "incorruptible", draftsDir: "incorruptible-saints", candidatesFile: "image_candidates_incorruptible.json" },
+  { key: "essential",     draftsDir: "essential-saints",     candidatesFile: "image_candidates_essential.json" },
 ];
 
 function parseFrontmatter(raw) {

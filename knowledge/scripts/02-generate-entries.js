@@ -46,6 +46,13 @@ const TYPES = {
     entityType: "saint",
     promptKind: "saint",
   },
+  essential: {
+    indexFile: "essential_saints_index.json",
+    draftsDir: "essential-saints",
+    label: "Essential Saint",
+    entityType: "saint",
+    promptKind: "essential",
+  },
 };
 
 const DATA_DIR = path.join(__dirname, "..", "data");
@@ -77,6 +84,81 @@ function buildPrompt(entry, typeCfg) {
     "If you are unsure about a specific detail — a date, a name, a measurement — OMIT it rather than guessing. " +
     "Do not fabricate. Do not speculate. Do not editorialize. Neutral, factual, reverent tone. " +
     "Output raw markdown only — no preamble, no closing remarks, no code fences.";
+
+  if (typeCfg.promptKind === "essential") {
+    const dateDied = entry.date_died || "unknown";
+    const feast = entry.feast_day ? `\nFeast day: ${entry.feast_day}.` : "";
+    const patronage = entry.patronage ? `\nPatronage: ${entry.patronage}.` : "";
+    const approval = entry.approval_status || "venerated";
+    const user = [
+      `Write a knowledge-library entry for **${entry.name}** — one of the essential saints (or holy figures) of the Catholic tradition.`,
+      `Place / region: ${location}. Date of death: ${dateDied}. Status: ${approval}.${feast}${patronage}`,
+      "",
+      "This entry belongs to the 'Essential Saints' collection — the saints Catholics most often turn to and",
+      "ask about. The reader may be Catholic or non-Catholic, religiously serious or curious. Write so that",
+      "someone who has heard the saint's name but does not know the story can come away with a clear,",
+      "accurate picture of who the saint was, what they taught or did, and why Catholics still pray to them.",
+      "",
+      "Use exactly these sections, in this order, as H2 headings:",
+      "",
+      "## Summary",
+      "Two or three sentences capturing who this saint is, the principal reason they are venerated, and",
+      "the era in which they lived (or, for the archangels and biblical figures, their role in salvation history).",
+      "",
+      "## Life",
+      "Biography: birth, conversion or vocation, principal works or events, death. For biblical figures,",
+      "use the New Testament account; for the archangels, use the canonical scriptural references and",
+      "summarize the role each plays in Catholic theology and tradition.",
+      "",
+      "## Teaching, Mission, or Charism",
+      "What did this saint teach, found, or live out? Doctors of the Church get their principal doctrinal",
+      "contributions; founders get their order and rule; mystics get their spiritual gifts; martyrs get the",
+      "circumstances of their witness; the archangels get their distinct biblical missions.",
+      "",
+      "## Notable Miracles or Spiritual Gifts",
+      "Concrete miracles, mystical phenomena, or supernatural gifts traditionally associated with this",
+      "saint. For example: stigmata, levitation, bilocation, intercessory healings, prophecy, visions,",
+      "incorrupt body. Where the historical record is uncertain, say so. Omit if there are none well",
+      "documented (e.g. for some scholar-saints).",
+      "",
+      "## Death and Veneration",
+      "How they died, where their remains rest (if known), and the principal shrine or church associated",
+      "with their cult.",
+      "",
+      "## Patronage",
+      "List the principal patronages of the saint — countries, professions, conditions, causes — as",
+      "officially designated or traditionally invoked.",
+      "",
+      "## Feast Day",
+      "The principal feast day in the Roman Calendar (or the Roman Martyrology if not in the General",
+      "Calendar). Note any major secondary feasts (e.g. Conversion of Saint Paul, Chair of Saint Peter).",
+      "",
+      "## Beatification and Canonization",
+      "For canonized saints: dates of beatification and canonization, the popes responsible. For ancient",
+      "saints venerated by *cultus immemorabilis* before formal canonization processes, say so. For the",
+      "archangels, note that they are not canonized in the modern sense but venerated by ancient liturgical tradition.",
+      "",
+      "## Why This Saint Matters Today",
+      "Two to four sentences on the saint's living relevance: what struggle, vocation, or longing in",
+      "contemporary Catholic life their witness speaks to. Be specific and substantive, not pious",
+      "generalities. (For the archangels, address why Catholics still invoke them.)",
+      "",
+      "## Key Facts",
+      "Bulleted list of the most important, verifiable details — dates, locations, titles, distinctive marks.",
+      "",
+      "## Sources",
+      "Bulleted list of primary and secondary sources (author + work, or institution + record).",
+      "",
+      "Rules:",
+      "- Omit any specific detail (date, name, miracle) you are not confident about. Better to say less honestly than more falsely.",
+      "- Do not invent miracle accounts, canonization dates, or papal acts.",
+      "- For Saint Christopher specifically: be honest that the historicity of the legend is debated and that the saint was reduced in the universal calendar reform of 1969 while remaining in the Roman Martyrology.",
+      "- For the archangels: do not invent post-biblical narratives. Stick to scripture, liturgical tradition, and well-documented private revelation if relevant.",
+      "- For biblical apostles and martyrs: distinguish between New Testament account and later tradition.",
+      "- Neutral, factual, reverent tone. No editorializing.",
+    ].join("\n");
+    return { system, user };
+  }
 
   if (typeCfg.promptKind === "saint") {
     const dateDied = entry.date_died || "unknown date";
@@ -183,6 +265,7 @@ async function callModel(system, user) {
       ],
       max_tokens: 2048,
       temperature: 0.3,
+      user: "knowledge-pipeline",
     }),
   });
 
