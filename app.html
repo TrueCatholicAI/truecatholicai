@@ -2289,12 +2289,186 @@ async function copyAiReply(rawText, btn) {
     showToast('Unable to copy', '');
   }
 }
+
+// ---- Share-as-image (Canvas, no deps) ----
+const SHARE_CARD_SIZE = 1080;
+function wrapTextLines(ctx, text, maxWidth) {
+  const words = (text || '').split(/\s+/).filter(Boolean);
+  const lines = [];
+  let cur = '';
+  for (var i = 0; i < words.length; i++) {
+    const w = words[i];
+    const test = cur ? cur + ' ' + w : w;
+    if (ctx.measureText(test).width > maxWidth && cur) {
+      lines.push(cur);
+      cur = w;
+    } else {
+      cur = test;
+    }
+  }
+  if (cur) lines.push(cur);
+  return lines;
+}
+function drawTrackedText(ctx, str, centerX, y, extraGap) {
+  const chars = str.split('');
+  const widths = chars.map(function(c) { return ctx.measureText(c).width; });
+  let total = 0;
+  for (var i = 0; i < widths.length; i++) total += widths[i];
+  total += (chars.length - 1) * extraGap;
+  const prevAlign = ctx.textAlign;
+  ctx.textAlign = 'left';
+  let x = centerX - total / 2;
+  for (var j = 0; j < chars.length; j++) {
+    ctx.fillText(chars[j], x, y);
+    x += widths[j] + extraGap;
+  }
+  ctx.textAlign = prevAlign;
+}
+async function generateShareCard(rawText) {
+  const styles = getComputedStyle(document.body);
+  const cssVar = function(name, fallback) {
+    const v = styles.getPropertyValue(name).trim();
+    return v || fallback;
+  };
+  const bg = cssVar('--bg', '#0B0B10');
+  const gold = cssVar('--gold', '#C4A24E');
+  const goldLight = cssVar('--gold-light', '#DABE6A');
+  const text = cssVar('--text', '#E4E0D8');
+  const textDim = cssVar('--text-dim', '#6B6760');
+  const border = gold;
+
+  const stripped = stripMarkdownForCopy(rawText).replace(/\s+/g, ' ').trim();
+  const MAX = 220;
+  let quote = stripped;
+  if (quote.length > MAX) {
+    quote = quote.slice(0, MAX);
+    const lastSpace = quote.lastIndexOf(' ');
+    if (lastSpace > 120) quote = quote.slice(0, lastSpace);
+    quote = quote.replace(/[,;:.!?\-—]+\s*$/, '').trim() + '…';
+  }
+
+  try {
+    if (document.fonts && document.fonts.load) {
+      await Promise.all([
+        document.fonts.load('500 44px "Playfair Display"'),
+        document.fonts.load('400 44px "Playfair Display"'),
+        document.fonts.load('500 32px "IBM Plex Mono"'),
+        document.fonts.load('400 22px "IBM Plex Mono"')
+      ]);
+    }
+  } catch (e) { /* non-fatal — fall back to system serifs */ }
+
+  const S = SHARE_CARD_SIZE;
+  const canvas = document.createElement('canvas');
+  canvas.width = S; canvas.height = S;
+  const ctx = canvas.getContext('2d');
+
+  ctx.fillStyle = bg;
+  ctx.fillRect(0, 0, S, S);
+
+  ctx.save();
+  ctx.globalAlpha = 0.28;
+  ctx.strokeStyle = border;
+  ctx.lineWidth = 2;
+  ctx.strokeRect(48, 48, S - 96, S - 96);
+  ctx.restore();
+
+  const cx = S / 2;
+  const crossY = 215;
+  const r = 54;
+  ctx.fillStyle = gold;
+  ctx.beginPath();
+  ctx.arc(cx, crossY, r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = bg;
+  ctx.fillRect(cx - 5, crossY - 32, 10, 64);
+  ctx.fillRect(cx - 24, crossY - 5, 48, 10);
+
+  ctx.fillStyle = text;
+  ctx.font = '400 44px "Playfair Display", Georgia, serif';
+  ctx.textAlign = 'center';
+  ctx.textBaseline = 'alphabetic';
+  const maxQuoteWidth = 860;
+  const lineHeight = 62;
+  const lines = wrapTextLines(ctx, quote, maxQuoteWidth);
+  const maxLines = 10;
+  const drawn = lines.slice(0, maxLines);
+  if (lines.length > maxLines) {
+    drawn[drawn.length - 1] = drawn[drawn.length - 1].replace(/[…\s]*$/, '') + '…';
+  }
+  const blockHeight = drawn.length * lineHeight;
+  const quoteTop = crossY + r + 80;
+  const quoteBottom = S - 220;
+  const available = quoteBottom - quoteTop;
+  const startY = quoteTop + Math.max(0, (available - blockHeight) / 2) + lineHeight * 0.78;
+  for (var li = 0; li < drawn.length; li++) {
+    ctx.fillText(drawn[li], cx, startY + li * lineHeight);
+  }
+
+  ctx.fillStyle = goldLight;
+  ctx.font = '500 32px "IBM Plex Mono", monospace';
+  drawTrackedText(ctx, 'TRUECATHOLIC AI', cx, S - 140, 5);
+
+  ctx.fillStyle = textDim;
+  ctx.font = '400 22px "IBM Plex Mono", monospace';
+  drawTrackedText(ctx, 'truecatholicai.org', cx, S - 92, 2);
+
+  return canvas;
+}
+async function shareAsImage(rawText, btn) {
+  const label = btn ? btn.querySelector('.msg-action-label') : null;
+  const originalLabel = label ? label.textContent : '';
+  if (btn) {
+    btn.disabled = true;
+    if (label) label.textContent = '…';
+  }
+  try {
+    const canvas = await generateShareCard(rawText);
+    const blob = await new Promise(function(resolve) { canvas.toBlob(resolve, 'image/png'); });
+    if (!blob) throw new Error('toBlob returned null');
+    const filename = 'truecatholic-ai-' + Date.now() + '.png';
+    const file = new File([blob], filename, { type: 'image/png' });
+    let shared = false;
+    if (navigator.canShare && navigator.canShare({ files: [file] }) && navigator.share) {
+      try {
+        await navigator.share({
+          files: [file],
+          title: 'TrueCatholic AI',
+          text: 'truecatholicai.org'
+        });
+        shared = true;
+      } catch (shareErr) {
+        if (shareErr && shareErr.name === 'AbortError') {
+          shared = true;
+        }
+      }
+    }
+    if (!shared) {
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url; a.download = filename;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function() { URL.revokeObjectURL(url); }, 1500);
+      showToast('Image downloaded', 'success');
+    }
+  } catch (e) {
+    console.error('[shareAsImage]', e);
+    showToast('Unable to generate image', '');
+  } finally {
+    if (btn) {
+      btn.disabled = false;
+      if (label) label.textContent = originalLabel || 'Share image';
+    }
+  }
+}
+
 function attachMsgActions(messageDiv, rawText) {
   if (!messageDiv || !rawText) return;
   if (messageDiv.querySelector(':scope > .msg-actions')) return;
   messageDiv.dataset.rawText = rawText;
   const row = document.createElement('div');
   row.className = 'msg-actions';
+
   const copyBtn = document.createElement('button');
   copyBtn.type = 'button';
   copyBtn.className = 'msg-action-btn msg-copy-btn';
@@ -2304,6 +2478,17 @@ function attachMsgActions(messageDiv, rawText) {
     copyAiReply(messageDiv.dataset.rawText || rawText, copyBtn);
   });
   row.appendChild(copyBtn);
+
+  const shareBtn = document.createElement('button');
+  shareBtn.type = 'button';
+  shareBtn.className = 'msg-action-btn msg-share-img-btn';
+  shareBtn.setAttribute('aria-label', 'Share this reply as an image');
+  shareBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg><span class="msg-action-label">Share image</span>';
+  shareBtn.addEventListener('click', function() {
+    shareAsImage(messageDiv.dataset.rawText || rawText, shareBtn);
+  });
+  row.appendChild(shareBtn);
+
   messageDiv.appendChild(row);
 }
 
