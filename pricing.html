@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="canonical" href="https://truecatholicai.org/" />
-<title>TrueCatholic AI — Pricing</title>
+<title>TrueCatholic AI — Support the Mission</title>
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;0,700;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
 
@@ -206,10 +206,30 @@
     background: var(--gold); color: var(--bg);
   }
   .cta-primary:hover { background: var(--gold-light); transform: translateY(-1px); }
-  .cta-patron {
+  .cta-patron, .cta-donor {
     background: transparent; border: 1px solid var(--gold-dim); color: var(--gold);
   }
-  .cta-patron:hover { background: rgba(196,162,78,0.1); }
+  .cta-patron:hover, .cta-donor:hover { background: rgba(196,162,78,0.1); }
+
+  /* DONATION AMOUNT PICKER */
+  .amount-picker { display: flex; gap: 6px; margin-bottom: 4px; }
+  .amount-chip {
+    flex: 1; padding: 11px 4px; cursor: pointer;
+    background: transparent; border: 1px solid var(--border-strong);
+    border-radius: 8px; color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    font-weight: 500; letter-spacing: 0.04em; transition: all 0.2s;
+  }
+  .amount-chip:hover { border-color: var(--gold-dim); color: var(--gold); }
+  .amount-chip.selected {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(196,162,78,0.08);
+  }
+  .amount-note {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    color: var(--text-dim); letter-spacing: 0.05em;
+    text-align: center; margin-top: 10px;
+  }
 
   /* MODEL BADGES */
   .model-badge {
@@ -486,11 +506,11 @@
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-tag">Pricing</div>
-  <h1>Catholic AI for <em>the whole family.</em></h1>
+  <div class="hero-tag">Support</div>
+  <h1>TrueCatholic AI is <em>free for everyone.</em></h1>
   <p class="hero-sub">
-    Every plan runs the full 2,700-line doctrinal charter. Free gives you faithful answers 
-    with no account needed. Paid gives your family the smartest AI on the market — Catholic-safe.
+    It costs a little to run. If it's valuable to you, help keep it running — 
+    from $2 a month. Nothing here is behind a paywall, and nothing ever will be.
   </p>
 </section>
 
@@ -500,96 +520,94 @@
   <!-- Mobile tab switcher (hidden on desktop) -->
   <div class="plan-tabs">
     <button class="plan-tab active" data-plan="free">Free</button>
-    <button class="plan-tab" data-plan="patron">Patron</button>
+    <button class="plan-tab" data-plan="donor">Donate</button>
     <button class="plan-tab" data-plan="family">Family</button>
   </div>
 
   <div class="pricing-grid">
 
+    <!-- FREE -->
     <div class="plan tab-active" data-plan="free">
       <div class="plan-name">Free</div>
       <div class="plan-desc">Faithful answers to any question about the faith. No account needed.</div>
       <div class="plan-price">
         <div class="price-free">$0</div>
-        <div class="price-period">forever · no account required</div>
+        <div class="price-period">forever &middot; no account required</div>
       </div>
       <div style="margin-bottom: 16px;">
         <div class="model-badge">
           <span class="model-name">Claude Haiku</span>
           <span class="score-before">F</span>
-          <span class="arrow">→</span>
+          <span class="arrow">&rarr;</span>
           <span class="score-after">A</span>
         </div>
       </div>
       <ul class="plan-features">
-        <li><strong>Full doctrinal charter</strong> — same teaching, same truth</li>
+        <li><strong>Full doctrinal charter</strong> &mdash; same teaching, same truth</li>
         <li><strong>5 questions/day</strong> without an account</li>
         <li><strong>15 questions/day</strong> with a free account</li>
         <li>Fast responses (under 3 seconds)</li>
         <li>Core doctrine, moral teaching, apologetics, pastoral care</li>
       </ul>
-      <a class="plan-cta cta-free" href="https://truecatholicai.org/app.html">Start Asking — Free</a>
+      <a class="plan-cta cta-free" href="https://truecatholicai.org/app.html">Start Asking &mdash; Free</a>
+    </div>
+
+    <!-- DONOR -->
+    <div class="plan featured" data-plan="donor">
+      <div class="plan-name">Donor</div>
+      <div class="plan-desc">Help cover what it costs to run. Give what it&rsquo;s worth to you.</div>
+      <div class="plan-price">
+        <div class="price-amount"><span class="dollar">$</span><span id="donorAmount">5</span></div>
+        <div class="price-period">per month &middot; cancel anytime</div>
+        <div class="amount-picker" style="margin-top:18px;">
+          <button type="button" class="amount-chip" data-amount="2">$2</button>
+          <button type="button" class="amount-chip selected" data-amount="5">$5</button>
+          <button type="button" class="amount-chip" data-amount="10">$10</button>
+        </div>
+        <div class="amount-note">Suggested amounts &middot; $2/month minimum</div>
+      </div>
+      <ul class="plan-features">
+        <li><strong>Everything the free experience gives</strong> &mdash; nothing is taken away from it</li>
+        <li>As a thank-you: <strong>100 questions a day</strong> instead of 15</li>
+        <li>Priority during high traffic</li>
+        <li>First look at new features as they launch</li>
+        <li>Your support is what keeps it free for everyone else</li>
+      </ul>
+      <button class="plan-cta cta-primary" id="donorCta" onclick="goDonate()">Become a Donor</button>
     </div>
 
     <!-- FAMILY -->
-    <div class="plan featured" data-plan="family">
-      <div class="plan-badge">Most Popular</div>
+    <div class="plan" data-plan="family">
       <div class="plan-name">Family</div>
-      <div class="plan-desc">The smartest AI available — Catholic-safe for your whole family.</div>
+      <div class="plan-desc">Support at the household level &mdash; six seats and deeper reasoning for the whole family.</div>
       <div class="plan-price">
         <div class="price-amount"><span class="dollar">$</span>25</div>
-        <div class="price-period">per month · up to 6 family members</div>
+        <div class="price-period">per month &middot; up to 6 family members</div>
       </div>
       <div style="margin-bottom: 16px;">
         <div class="model-badge">
           <span class="model-name">Claude Haiku</span>
           <span class="score-before">F</span>
-          <span class="arrow">→</span>
+          <span class="arrow">&rarr;</span>
           <span class="score-after">A</span>
         </div>
         <div class="model-badge">
           <span class="model-name">Claude Sonnet</span>
           <span class="score-before">C</span>
-          <span class="arrow">→</span>
+          <span class="arrow">&rarr;</span>
           <span class="score-after">A</span>
           <span style="color:var(--text-dim);font-size:0.55rem;margin-left:4px;">30/day</span>
         </div>
       </div>
       <ul class="plan-features">
-        <li><strong>6 family seats</strong> — owner + 5 members</li>
+        <li><strong>6 family seats</strong> &mdash; owner + 5 members</li>
         <li><strong>200 Haiku + 30 Sonnet</strong> questions/day, shared pool</li>
         <li>Full doctrinal charter on both models</li>
         <li>Deeper reasoning for homework, essays, complex questions</li>
-        <li>Sonnet falls back to Haiku when pool is used</li>
-        <li>Everything in Patron, plus Sonnet access for the family</li>
+        <li>Sonnet falls back to Haiku when the pool is used</li>
+        <li>Everything a Donor gets, plus Sonnet for the household</li>
       </ul>
-      <button class="plan-cta cta-primary" onclick="window.location.href='https://truecatholicai.org/app.html?upgrade=family'">Start Family Plan</button>
-    </div>
-
-    <!-- PATRON -->
-    <div class="plan" data-plan="patron">
-      <div class="plan-name">Patron</div>
-      <div class="plan-desc">Premium models for individuals who want the best and want to fund the mission.</div>
-      <div class="plan-price">
-        <div class="price-amount"><span class="dollar">$</span>5</div>
-        <div class="price-period">per month · individual</div>
-      </div>
-      <div style="margin-bottom: 16px;">
-        <div class="model-badge">
-          <span class="model-name">Claude Haiku</span>
-          <span class="score-before">F</span>
-          <span class="arrow">→</span>
-          <span class="score-after">A</span>
-        </div>
-      </div>
-      <ul class="plan-features">
-        <li><strong>100 questions per day</strong> — 6× more than free</li>
-        <li>Full doctrinal charter on every response</li>
-        <li>Priority during high traffic</li>
-        <li>Access to new features as they launch</li>
-        <li>Your subscription keeps the free tier free for everyone</li>
-      </ul>
-      <button class="plan-cta cta-patron" onclick="window.location.href='https://truecatholicai.org/app.html?upgrade=patron'">Become a Patron</button>
+      <button class="plan-cta cta-donor" onclick="window.location.href='https://truecatholicai.org/app.html?upgrade=family'">Support as a Family</button>
     </div>
 
   </div>
@@ -609,20 +627,20 @@
 
 <!-- PHILOSOPHY -->
 <section class="philosophy">
-  <h2>Why the free tier is <em>actually free.</em></h2>
+  <h2>Why it&rsquo;s <em>actually free.</em></h2>
   <p>
-    People are already asking AI about their faith — and every major AI on the market treats 
+    People are already asking AI about their faith &mdash; and every major AI on the market treats 
     the Real Presence like an opinion.
   </p>
   <p>
     If a teenager is questioning his faith at midnight, the last thing we want is a paywall 
-    between him and a faithful answer. The free tier isn't a teaser. It runs the same 2,700-line 
-    doctrinal charter as every paid plan. Same teaching. Same truth.
+    between him and a faithful answer. The free experience isn&rsquo;t a teaser. It runs the same 
+    2,700-line doctrinal charter as everything else here. Same teaching. Same truth.
   </p>
   <p>
-    Paid plans exist so Catholic families can access the smartest AI models on the market 
-    inside a Catholic-safe environment. Your kids should have an AI that's just as smart as 
-    their secular friends' — it just doesn't lie to them about God.
+    Running it isn&rsquo;t free, though &mdash; there are model costs and hosting bills every month. 
+    Donations cover them. If TrueCatholic AI is worth something to you, a couple of dollars a 
+    month keeps it available to everyone who can&rsquo;t give anything at all.
   </p>
   <div class="verse">
     "Freely you have received; freely give."
@@ -668,12 +686,12 @@
         <td><span class="comp-partial">single provider</span></td>
       </tr>
       <tr>
-        <td>Free tier (no account)</td>
+        <td>Free to use, no account</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-partial">limited</span></td>
       </tr>
       <tr>
-        <td>Family plan (6 seats, shared pool)</td>
+        <td>Family seats (6, shared pool)</td>
         <td><span class="comp-check">✓</span></td>
         <td><span class="comp-x">✗</span></td>
       </tr>
@@ -686,23 +704,22 @@
   <h2>Questions</h2>
 
   <details>
-    <summary>What's the difference between Free and paid plans?</summary>
+    <summary>Do I have to donate to use it?</summary>
     <div class="faq-body">
-      The doctrine is the same. Every plan runs the full 2,700-line charter. The difference is volume 
-      and the AI model underneath. Free gives you 5 questions a day on Claude Haiku — fast and faithful. 
-      Creating a free account bumps that to 15. Patron gives you 100 questions a day and directly 
-      funds the mission. We're actively adding smarter models (Sonnet, GPT-4o) to Patron — when they 
-      go live, your subscription already includes them. Same teaching, better tools.
+      No. TrueCatholic AI is free for everyone, and the free experience is not going to shrink to 
+      make donating more attractive. 5 questions a day with no account, 15 with a free account, the 
+      full 2,700-line charter on every one of them. Donors get a thank-you &mdash; a higher daily 
+      limit &mdash; but the faith itself is never the thing being sold.
     </div>
   </details>
 
   <details>
     <summary>Can I really use it without an account?</summary>
     <div class="faq-body">
-      Yes. The free tier requires nothing — no email, no signup, no tracking. You go to the site and 
-      start asking. We don't store your conversations. We don't build a profile on you. We don't sell 
-      data. If you want the paid features, then you'll create an account — but the faith is never 
-      behind a wall.
+      Yes. Asking requires nothing &mdash; no email, no signup, no tracking. You go to the site and 
+      start asking. We don&rsquo;t store your conversations. We don&rsquo;t build a profile on you. We 
+      don&rsquo;t sell data. Donating needs an account so we know whose limit to raise &mdash; but the 
+      faith is never behind a wall.
     </div>
   </details>
 
@@ -712,8 +729,8 @@
       That's why we built it. The charter includes explicit guidance on age-appropriate responses, 
       pastoral sensitivity, and content boundaries. Unlike secular AI, it won't undermine your teaching, 
       affirm things that contradict Church doctrine, or fold under pressure when your teenager pushes 
-      back on a hard moral question. The Family plan gives each family member their own seat with 
-      the full doctrinal charter on every response.
+      back on a hard moral question. Supporting as a family gives each family member their own seat 
+      with the full doctrinal charter on every response.
     </div>
   </details>
 
@@ -728,9 +745,9 @@
   </details>
 
   <details>
-    <summary>How does the Family plan work?</summary>
+    <summary>How does family support work?</summary>
     <div class="faq-body">
-      One account, up to 6 seats. The owner subscribes and gets a join code to share with family 
+      One account, up to 6 seats. The owner donates monthly and gets a join code to share with family 
       members. Each member creates their own account and enters the code to join. The family shares 
       a daily pool of 200 Haiku and 30 Sonnet questions. When the Sonnet pool runs out, it falls 
       back to Haiku automatically. Every response runs the full doctrinal charter regardless of model.
@@ -738,22 +755,30 @@
   </details>
 
   <details>
-    <summary>Where does my money go?</summary>
+    <summary>Where does my donation go?</summary>
     <div class="faq-body">
-      API costs (paying the AI providers for compute), infrastructure (servers, hosting), and 
-      keeping the free tier free. We're a small operation — a Catholic father building this as a 
-      vocation. There's no venture capital, no investor pressure to monetize your data, and no 
-      incentive to compromise doctrine for growth. Patron subscriptions directly subsidize free 
-      access for anyone who needs it.
+      API costs (paying the AI providers for compute) and infrastructure (servers, hosting). 
+      That&rsquo;s it. There&rsquo;s no venture capital, no investor pressure to monetize your data, 
+      and no incentive to compromise doctrine for growth. Donations directly subsidize free access 
+      for anyone who needs it.
     </div>
   </details>
 
   <details>
-    <summary>Can I cancel anytime?</summary>
+    <summary>Can I stop anytime?</summary>
     <div class="faq-body">
-      Yes, instantly. No retention tricks, no "are you sure?" gauntlet, no hidden fees. 
-      You can also downgrade to the free tier and keep asking questions about the faith — 
-      the charter is always running.
+      Yes, instantly. No retention tricks, no &ldquo;are you sure?&rdquo; gauntlet, no hidden fees. 
+      Stop whenever you need to and keep asking questions about the faith &mdash; the charter is 
+      always running.
+    </div>
+  </details>
+
+  <details>
+    <summary>Is my donation tax-deductible?</summary>
+    <div class="faq-body">
+      No. TrueCatholic AI isn&rsquo;t a registered nonprofit, so monthly support isn&rsquo;t a 
+      tax-deductible charitable contribution. It&rsquo;s a straightforward monthly gift that pays 
+      the bills and keeps the service open to everyone.
     </div>
   </details>
 </section>
@@ -803,7 +828,7 @@
   // Tab switcher
   const tabs = document.querySelectorAll('.plan-tab');
   const plans = document.querySelectorAll('.plan[data-plan]');
-  const planOrder = ['free', 'patron', 'family'];
+  const planOrder = ['free', 'donor', 'family'];
 
   function showPlan(name, direction = 1) {
     const grid = document.querySelector('.pricing-grid');
@@ -826,6 +851,20 @@
       showPlan(tab.dataset.plan, to > from ? 1 : -1);
     });
   });
+
+  // Donation amount picker
+  let donorAmount = 5;
+  document.querySelectorAll('.amount-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      donorAmount = parseInt(chip.dataset.amount, 10);
+      document.querySelectorAll('.amount-chip').forEach(c => c.classList.toggle('selected', c === chip));
+      document.getElementById('donorAmount').textContent = donorAmount;
+    });
+  });
+  function goDonate() {
+    window.location.href = 'https://truecatholicai.org/app.html?upgrade=donor&amount=' + donorAmount;
+  }
+  window.goDonate = goDonate;
 
   // Swipe support
   const grid = document.querySelector('.pricing-grid');
