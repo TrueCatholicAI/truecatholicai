@@ -685,6 +685,21 @@
     font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
     color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
   }
+  .prompt-amounts {
+    display: flex; gap: 6px; justify-content: center;
+    max-width: 300px; margin: 0 auto 16px;
+  }
+  .prompt-amount {
+    flex: 1; padding: 9px 4px; cursor: pointer;
+    background: transparent; border: 1px solid var(--border-strong);
+    border-radius: 8px; color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
+    font-weight: 500; letter-spacing: 0.04em; transition: all 0.2s;
+  }
+  .prompt-amount.selected {
+    border-color: var(--gold); color: var(--gold);
+    background: rgba(196,162,78,0.08);
+  }
   .signup-prompt-secondary {
     display: block; margin-top: 18px;
     font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
@@ -1028,7 +1043,7 @@
         <button class="user-dropdown-item" id="manageSubBtn" onclick="handleManageSubscription()" style="display:none;">Manage Subscription</button>
         <button class="user-dropdown-item" id="manageFamilyBtn" onclick="openFamilyModal()" style="display:none; color:var(--gold);">Manage Family</button>
         <button class="user-dropdown-item" id="joinFamilyBtn" onclick="openJoinFamilyModal()" style="display:none;">Join a Family</button>
-        <button class="user-dropdown-item" id="upgradeBtn" onclick="handleUpgrade()" style="display:none; color:var(--gold);">Upgrade to Patron</button>
+        <button class="user-dropdown-item" id="upgradeBtn" onclick="handleUpgrade()" style="display:none; color:var(--gold);">Support TrueCatholic AI</button>
         <button class="user-dropdown-item danger" onclick="handleSignOut()">Sign Out</button>
       </div>
     </div>
@@ -1186,7 +1201,7 @@
     <div class="family-modal-title">Join a Family Plan</div>
     <p style="font-size:0.85rem; color:var(--text-mid); line-height:1.5; margin-bottom:20px;">Enter the join code shared by your family plan owner.</p>
     <div class="join-family-warning" id="joinFamilyWarning">
-      Joining this family will cancel your $5/mo Patron plan and issue a prorated refund. Continue?
+      Joining this family will cancel your current monthly donation and issue a prorated refund. Continue?
     </div>
     <div class="form-error" id="joinFamilyError"></div>
     <input class="join-family-input" id="joinFamilyCode" placeholder="Enter code" maxlength="10">
@@ -1462,7 +1477,8 @@ async function setLoggedIn(user) {
   document.getElementById('userAvatarBtn').textContent = initial;
   document.getElementById('dropdownName').textContent = displayName;
   document.getElementById('dropdownEmail').textContent = user.email;
-  document.getElementById('dropdownPlan').textContent = (isFamily ? 'family' : userPlan) + ' plan';
+  const planLabel = isFamily ? 'family' : (userPlan === 'patron' ? 'donor' : userPlan);
+  document.getElementById('dropdownPlan').textContent = planLabel + ' plan';
   document.getElementById('manageSubBtn').style.display = (userPlan === 'patron' || userPlan === 'family_owner') ? 'block' : 'none';
   document.getElementById('manageFamilyBtn').style.display = (userPlan === 'family_owner') ? 'block' : 'none';
   document.getElementById('joinFamilyBtn').style.display = (userPlan === 'free' || userPlan === 'patron') ? 'block' : 'none';
@@ -1657,9 +1673,13 @@ async function handleManageSubscription() {
     showToast('Network error opening subscription portal', 'error');
   }
 }
-async function handleUpgrade(plan) {
+async function handleUpgrade(plan, amount) {
   closeUserDropdown();
-  plan = plan || 'patron';
+  plan = plan || 'donor';
+  // Donations are a fixed set of monthly amounts; anything else falls back to
+  // the $5 suggestion so a stray value can never produce a bad checkout.
+  const DONOR_AMOUNTS = [2, 5, 10];
+  const donorAmount = DONOR_AMOUNTS.indexOf(Number(amount)) !== -1 ? Number(amount) : 5;
   try {
     const token = await getAccessToken();
     if (!token) { openAuthModal('login'); return; }
@@ -1667,7 +1687,7 @@ async function handleUpgrade(plan) {
     const res = await fetch(API_URL.replace('/chat', '/create-checkout-session'), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ plan: plan })
+      body: JSON.stringify(plan === 'donor' ? { plan: plan, amount: donorAmount } : { plan: plan })
     });
     const data = await res.json();
     if (data.url) window.location.href = data.url;
@@ -1745,7 +1765,7 @@ function openJoinFamilyModal() {
   requestAnimationFrame(function() { requestAnimationFrame(function() { modal.classList.add('visible'); }); });
   document.getElementById('joinFamilyCode').value = '';
   document.getElementById('joinFamilyError').classList.remove('show');
-  // Show warning if user is a Patron (auto-cancel + refund)
+  // Show warning if the user already donates monthly (auto-cancel + refund)
   var warning = document.getElementById('joinFamilyWarning');
   if (userPlan === 'patron') warning.classList.add('show');
   else warning.classList.remove('show');
@@ -1811,6 +1831,7 @@ async function getAccessToken() {
 // =============== INIT ===============
 const urlParams = new URLSearchParams(window.location.search);
 const pendingUpgrade = urlParams.get('upgrade');
+const pendingAmount = urlParams.get('amount');
 const checkoutSuccess = urlParams.get('checkout') === 'success';
 if (checkoutSuccess) history.replaceState(null, '', window.location.pathname);
 document.addEventListener('DOMContentLoaded', async () => {
@@ -1822,7 +1843,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       if (checkoutSuccess) showToast('Welcome! You\u2019re all set.', 'success');
       else if (pendingUpgrade && (userPlan === 'free' || (pendingUpgrade === 'family' && userPlan === 'patron'))) {
         history.replaceState(null, '', window.location.pathname);
-        handleUpgrade(pendingUpgrade);
+        handleUpgrade(pendingUpgrade, pendingAmount);
       }
     } else {
       setLoggedOut();
@@ -1838,7 +1859,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       await setLoggedIn(session.user); closeAuthModal();
       if (pendingUpgrade && (userPlan === 'free' || (pendingUpgrade === 'family' && userPlan === 'patron'))) {
         history.replaceState(null, '', window.location.pathname);
-        handleUpgrade(pendingUpgrade);
+        handleUpgrade(pendingUpgrade, pendingAmount);
       }
     }
     else if (event === 'SIGNED_OUT') { cachedAccessToken = null; setLoggedOut(); }
@@ -1951,7 +1972,7 @@ async function sendMessage() {
         if (isFamily) {
           showFamilyLimitPrompt();
         } else if (userPlan === 'patron') {
-          showPatronLimitPrompt();
+          showDonorLimitPrompt();
         } else {
           showUpgradePrompt();
         }
@@ -2063,12 +2084,13 @@ function showSignupPrompt() {
   div.innerHTML = '<h3>Create a free account so I can remember you.</h3>'
     + '<p>Anonymous chats forget you the moment you close the tab. With a free account, I remember who you are across conversations, your name, your family, what you\u2019re working through. You stay in control of what I remember, and you can clear it anytime.</p>'
     + '<button class="signup-prompt-btn" onclick="openAuthModal(\'signup\')">Create free account</button>'
-    + '<button class="signup-prompt-secondary" onclick="handleUpgrade()">Or become a Patron \u2014 100/day, $5/month</button>';
+    + '<button class="signup-prompt-secondary" onclick="handleUpgrade()">Or help keep TrueCatholic AI free \u2014 from $2/month</button>';
   container.appendChild(div); scrollToBottom();
 }
 
-// =============== UPGRADE PROMPT (logged-in free 15/day wall) ===============
+// =============== DONATION PROMPT (logged-in free 15/day wall) ===============
 let upgradePromptShown = false;
+let selectedDonorAmount = 5;
 function showUpgradePrompt() {
   if (upgradePromptShown) return;
   upgradePromptShown = true;
@@ -2076,19 +2098,33 @@ function showUpgradePrompt() {
   const div = document.createElement('div');
   div.className = 'signup-prompt';
   div.innerHTML = '<h3>You\u2019ve used your 15 free questions for today</h3>'
-    + '<p>Patron members get <strong>100 questions per day</strong> and keep TrueCatholic AI free for everyone.</p>'
-    + '<button class="signup-prompt-btn" onclick="handleUpgrade()">Become a Patron \u2014 $5/mo</button>'
+    + '<p>TrueCatholic AI is free for everyone. It costs a little to run \u2014 if it\u2019s valuable to you, '
+    + 'help keep it running. As a thank-you, donors get <strong>100 questions a day</strong>.</p>'
+    + '<div class="prompt-amounts" id="promptAmounts">'
+    +   '<button type="button" class="prompt-amount" data-amount="2">$2</button>'
+    +   '<button type="button" class="prompt-amount selected" data-amount="5">$5</button>'
+    +   '<button type="button" class="prompt-amount" data-amount="10">$10</button>'
+    + '</div>'
+    + '<button class="signup-prompt-btn" onclick="handleUpgrade(\'donor\', selectedDonorAmount)">Become a Donor</button>'
     + '<button class="signup-prompt-secondary" onclick="this.closest(\'.signup-prompt\').remove()">Come back tomorrow</button>';
   container.appendChild(div); scrollToBottom();
+  div.querySelectorAll('.prompt-amount').forEach(function(chip) {
+    chip.addEventListener('click', function() {
+      selectedDonorAmount = parseInt(chip.dataset.amount, 10);
+      div.querySelectorAll('.prompt-amount').forEach(function(c) {
+        c.classList.toggle('selected', c === chip);
+      });
+    });
+  });
 }
 
-// =============== PATRON LIMIT (100/day wall) ===============
-function showPatronLimitPrompt() {
+// =============== DONOR LIMIT (100/day wall) ===============
+function showDonorLimitPrompt() {
   const container = document.getElementById('messages');
   const div = document.createElement('div');
   div.className = 'signup-prompt';
   div.innerHTML = '<h3>You\u2019ve used your 100 questions for today</h3>'
-    + '<p>Your Patron limit resets at midnight. Thank you for supporting TrueCatholic AI.</p>'
+    + '<p>Your limit resets at midnight. Thank you for supporting TrueCatholic AI.</p>'
     + '<button class="signup-prompt-secondary" onclick="this.closest(\'.signup-prompt\').remove()">Got it</button>';
   container.appendChild(div); scrollToBottom();
 }
