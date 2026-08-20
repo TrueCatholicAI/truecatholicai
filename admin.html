@@ -1,0 +1,637 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow, noarchive">
+<meta name="referrer" content="no-referrer">
+<title>TCAI Admin</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Mono:wght@300;400;500&family=Source+Serif+4:ital,wght@0,300;0,400;0,500;1,300;1,400&display=swap');
+
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  :root {
+    --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
+    --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
+    --green: #5AAF5A; --red: #C45050; --orange: #D4903A; --blue: #6A93C4;
+  }
+  body.light {
+    --gold: #8B2F2F; --gold-light: #A03535; --gold-dim: #6B2020; --gold-faint: #e8d5d5;
+    --bg: #F4F1EB; --bg-el: #EDE9E1; --bg-card: #E8E3DA; --bg-input: #E0DAD0;
+    --text: #1A1410; --text-mid: #5C524A; --text-dim: #9A8F85;
+    --border: rgba(139,47,47,0.1); --border-strong: rgba(139,47,47,0.2);
+    --green: #2E7D32; --red: #C62828; --orange: #E65100; --blue: #2A5C93;
+  }
+  body {
+    background: var(--bg); color: var(--text);
+    font-family: 'Source Serif 4', Georgia, serif;
+    -webkit-font-smoothing: antialiased;
+    height: 100vh; overflow: hidden;
+  }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+
+  /* ---------- GATE (loading / sign-in / denied) ---------- */
+  .gate {
+    height: 100vh; display: flex; flex-direction: column;
+    align-items: center; justify-content: center; gap: 18px; padding: 28px;
+    text-align: center;
+  }
+  .gate-mark {
+    width: 34px; height: 34px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .gate-mark::before { content: ''; position: absolute; width: 12px; height: 1.8px; background: var(--bg); }
+  .gate-mark::after  { content: ''; position: absolute; width: 1.8px; height: 12px; background: var(--bg); }
+  .gate h1 { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 400; }
+  .gate p { color: var(--text-mid); font-size: 0.92rem; max-width: 380px; line-height: 1.6; }
+  .gate form { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 300px; margin-top: 6px; }
+  .gate input {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem;
+    padding: 12px 14px; background: var(--bg-input); border: 1px solid var(--border-strong);
+    color: var(--text); outline: none; border-radius: 7px; width: 100%;
+  }
+  .gate input:focus { border-color: var(--gold); }
+  .gate button {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; font-weight: 500;
+    letter-spacing: 0.14em; text-transform: uppercase;
+    padding: 12px; background: var(--gold); color: var(--bg);
+    border: none; border-radius: 7px; cursor: pointer; transition: background 0.2s;
+  }
+  .gate button:hover { background: var(--gold-light); }
+  .gate button:disabled { opacity: 0.5; cursor: default; }
+  .gate-err { color: var(--red); font-size: 0.8rem; min-height: 1.2em; }
+  .gate-link {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.1em;
+    color: var(--text-dim); text-decoration: none; text-transform: uppercase;
+  }
+  .gate-link:hover { color: var(--gold); }
+
+  /* ---------- CONSOLE ---------- */
+  .console { display: none; height: 100vh; flex-direction: column; }
+  .console.on { display: flex; }
+
+  header {
+    display: flex; align-items: center; gap: 16px;
+    padding: 12px 20px; border-bottom: 1px solid var(--border);
+    background: var(--bg-el); flex-shrink: 0;
+  }
+  .brand { display: flex; align-items: center; gap: 9px; flex-shrink: 0; }
+  .brand-mark {
+    width: 22px; height: 22px; background: var(--gold); border-radius: 50%;
+    position: relative; display: flex; align-items: center; justify-content: center;
+  }
+  .brand-mark::before { content: ''; position: absolute; width: 8px; height: 1.4px; background: var(--bg); }
+  .brand-mark::after  { content: ''; position: absolute; width: 1.4px; height: 8px; background: var(--bg); }
+  .brand-name {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; font-weight: 500;
+    letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-light);
+  }
+  .stats { display: flex; gap: 18px; margin-left: 6px; flex-wrap: wrap; }
+  .stat { font-family: 'IBM Plex Mono', monospace; font-size: 0.62rem; color: var(--text-dim); letter-spacing: 0.05em; }
+  .stat b { color: var(--text); font-weight: 500; font-size: 0.74rem; }
+  .head-right { margin-left: auto; display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+  .ibtn {
+    background: none; border: 1px solid var(--border-strong); border-radius: 6px;
+    color: var(--text-dim); cursor: pointer; font-size: 0.9rem;
+    width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+    transition: all 0.2s; font-family: 'IBM Plex Mono', monospace;
+  }
+  .ibtn:hover { border-color: var(--gold); color: var(--gold); }
+  .ibtn.wide { width: auto; padding: 0 12px; font-size: 0.58rem; letter-spacing: 0.12em; text-transform: uppercase; }
+
+  .body { display: flex; flex: 1; min-height: 0; }
+
+  /* list pane */
+  .list-pane {
+    width: 380px; flex-shrink: 0; border-right: 1px solid var(--border);
+    display: flex; flex-direction: column; min-height: 0; background: var(--bg-el);
+  }
+  .list-tools { padding: 12px; display: flex; flex-direction: column; gap: 8px; border-bottom: 1px solid var(--border); }
+  .search {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
+    padding: 9px 12px; background: var(--bg-input); border: 1px solid var(--border-strong);
+    color: var(--text); outline: none; border-radius: 7px; width: 100%;
+  }
+  .search:focus { border-color: var(--gold); }
+  .search::placeholder { color: var(--text-dim); }
+  .sorts { display: flex; gap: 4px; flex-wrap: wrap; }
+  .sort {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; letter-spacing: 0.08em;
+    text-transform: uppercase; padding: 5px 9px; border-radius: 5px; cursor: pointer;
+    background: transparent; border: 1px solid var(--border); color: var(--text-dim);
+    transition: all 0.15s;
+  }
+  .sort:hover { color: var(--gold); border-color: var(--gold-dim); }
+  .sort.on { background: var(--bg-input); border-color: var(--gold-dim); color: var(--gold); }
+
+  .list { flex: 1; overflow-y: auto; min-height: 0; }
+  .row {
+    padding: 11px 14px; border-bottom: 1px solid var(--border);
+    cursor: pointer; transition: background 0.15s; display: flex; flex-direction: column; gap: 3px;
+  }
+  .row:hover { background: var(--bg-card); }
+  .row.on { background: var(--bg-input); box-shadow: inset 2px 0 0 var(--gold); }
+  .row-top { display: flex; align-items: baseline; gap: 8px; }
+  .row-name { font-size: 0.92rem; color: var(--text); flex: 1; min-width: 0;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .row-name.anon { color: var(--text-dim); font-style: italic; }
+  .row-email {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  }
+  .row-meta { display: flex; gap: 10px; align-items: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.56rem; color: var(--text-dim); }
+  .pill {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; letter-spacing: 0.1em;
+    text-transform: uppercase; padding: 2px 6px; border-radius: 3px;
+    border: 1px solid var(--border-strong); color: var(--text-dim); flex-shrink: 0;
+  }
+  .pill.donor  { color: var(--gold);  border-color: var(--gold-dim); }
+  .pill.family { color: var(--blue);  border-color: var(--blue); }
+  .pill.mem    { color: var(--green); border-color: var(--green); }
+  .pill.warn   { color: var(--orange); border-color: var(--orange); }
+
+  /* detail pane */
+  .detail { flex: 1; overflow-y: auto; min-height: 0; padding: 26px 30px 60px; }
+  .empty {
+    height: 100%; display: flex; align-items: center; justify-content: center;
+    color: var(--text-dim); font-size: 0.9rem;
+  }
+  .d-name { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 400; }
+  .d-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-mid); margin-top: 3px; }
+  .d-pills { display: flex; gap: 6px; margin-top: 12px; flex-wrap: wrap; }
+
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 1px; background: var(--border); border: 1px solid var(--border);
+    border-radius: 9px; overflow: hidden; margin: 22px 0;
+  }
+  .fact { background: var(--bg-card); padding: 11px 13px; }
+  .fact-k {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 4px;
+  }
+  .fact-v { font-family: 'IBM Plex Mono', monospace; font-size: 0.82rem; color: var(--text); }
+  .fact-v.dim { color: var(--text-dim); }
+
+  .sec { margin-top: 26px; }
+  .sec-h {
+    display: flex; align-items: baseline; gap: 10px; margin-bottom: 12px;
+    padding-bottom: 8px; border-bottom: 1px solid var(--border);
+  }
+  .sec-h h2 { font-family: 'Playfair Display', serif; font-size: 1.15rem; font-weight: 400; }
+  .sec-h .note { font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-dim); letter-spacing: 0.06em; }
+  .sec-h .spacer { margin-left: auto; }
+
+  .memory {
+    background: var(--bg-card); border: 1px solid var(--border);
+    border-left: 3px solid var(--gold-faint); border-radius: 0 9px 9px 0;
+    padding: 20px 22px; font-size: 1rem; line-height: 1.75; color: var(--text-mid);
+    white-space: pre-wrap; word-break: break-word;
+  }
+  .memory p { margin-bottom: 13px; }
+  .memory p:last-child { margin-bottom: 0; }
+  .none { color: var(--text-dim); font-size: 0.88rem; font-style: italic; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 0.85rem; }
+  th {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.13em;
+    text-transform: uppercase; color: var(--text-dim); font-weight: 500;
+    text-align: left; padding: 7px 12px 7px 0; border-bottom: 1px solid var(--border-strong);
+    white-space: nowrap;
+  }
+  td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border); color: var(--text-mid); vertical-align: top; }
+  td.n { font-family: 'IBM Plex Mono', monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  td.t { color: var(--text); }
+  .scroll-y { max-height: 340px; overflow-y: auto; }
+  .tablewrap { overflow-x: auto; }
+
+  .toast {
+    position: fixed; bottom: 22px; left: 50%; transform: translateX(-50%);
+    background: var(--bg-card); border: 1px solid var(--border-strong);
+    color: var(--text); padding: 10px 18px; border-radius: 8px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; letter-spacing: 0.06em;
+    opacity: 0; pointer-events: none; transition: opacity 0.25s; z-index: 50;
+  }
+  .toast.on { opacity: 1; }
+
+  @media (max-width: 900px) {
+    .body { flex-direction: column; }
+    .list-pane { width: 100%; max-height: 45vh; border-right: none; border-bottom: 1px solid var(--border); }
+    .detail { padding: 20px 16px 50px; }
+    .stats { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ---------- GATE ---------- -->
+<div class="gate" id="gate">
+  <div class="gate-mark"></div>
+  <h1 id="gateTitle">Checking session…</h1>
+  <p id="gateMsg"></p>
+  <form id="gateForm" style="display:none;" onsubmit="return signIn(event)">
+    <input type="email" id="gateEmail" placeholder="email" autocomplete="username" required>
+    <input type="password" id="gatePass" placeholder="password" autocomplete="current-password" required>
+    <div class="gate-err" id="gateErr"></div>
+    <button type="submit" id="gateBtn">Sign in</button>
+  </form>
+  <a class="gate-link" id="gateOut" href="#" style="display:none;" onclick="signOut();return false;">Sign out</a>
+</div>
+
+<!-- ---------- CONSOLE ---------- -->
+<div class="console" id="console">
+  <header>
+    <div class="brand"><span class="brand-mark"></span><span class="brand-name">TCAI Admin</span></div>
+    <div class="stats" id="stats"></div>
+    <div class="head-right">
+      <button class="ibtn" id="themeBtn" title="Toggle theme" onclick="toggleTheme()">☽</button>
+      <button class="ibtn" title="Reload" onclick="loadUsers(true)">↻</button>
+      <button class="ibtn wide" onclick="signOut()">Sign out</button>
+    </div>
+  </header>
+
+  <div class="body">
+    <div class="list-pane">
+      <div class="list-tools">
+        <input class="search" id="search" placeholder="search name, email, memory…" oninput="render()">
+        <div class="sorts" id="sorts"></div>
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+    <div class="detail" id="detail">
+      <div class="empty">Select someone on the left.</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const SUPABASE_URL = 'https://gowufpcyhaafczfkikwg.supabase.co';
+const SUPABASE_ANON_KEY = 'sb_publishable_LeVyVkPTL4Afi4hshxcLdA_6jjwz-B4';
+// Preview builds talk to the dev worker so the console can be exercised
+// without touching production data paths; the live site talks to prod.
+const API = /\.pages\.dev$/.test(location.hostname)
+  ? 'https://truecatholic-api-dev.truecatholicai.workers.dev'
+  : 'https://api.truecatholicai.org';
+
+const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+let users = [];
+let selectedId = null;
+let sortKey = 'last_used';
+const detailCache = {};
+
+const SORTS = [
+  ['last_used', 'Recent'],
+  ['messages', 'Messages'],
+  ['created_at', 'Joined'],
+  ['memory', 'Memory'],
+  ['name', 'Name']
+];
+
+/* ---------- theme ---------- */
+function toggleTheme() { setTheme(!document.body.classList.contains('light')); }
+function setTheme(light) {
+  document.body.classList.toggle('light', light);
+  const b = document.getElementById('themeBtn');
+  if (b) b.textContent = light ? '☼' : '☽';
+  try { localStorage.setItem('tc-theme', light ? 'light' : 'dark'); } catch (e) {}
+}
+try { if (localStorage.getItem('tc-theme') === 'light') setTheme(true); } catch (e) {}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.classList.add('on');
+  clearTimeout(t._x); t._x = setTimeout(() => t.classList.remove('on'), 2600);
+}
+
+/* ---------- gate ---------- */
+function showGate(title, msg, opts) {
+  opts = opts || {};
+  document.getElementById('console').classList.remove('on');
+  document.getElementById('gate').style.display = 'flex';
+  document.getElementById('gateTitle').textContent = title;
+  document.getElementById('gateMsg').textContent = msg || '';
+  document.getElementById('gateForm').style.display = opts.form ? 'flex' : 'none';
+  document.getElementById('gateOut').style.display = opts.signout ? 'block' : 'none';
+}
+function showConsole() {
+  document.getElementById('gate').style.display = 'none';
+  document.getElementById('console').classList.add('on');
+}
+
+async function signIn(e) {
+  e.preventDefault();
+  const btn = document.getElementById('gateBtn');
+  const err = document.getElementById('gateErr');
+  err.textContent = ''; btn.disabled = true; btn.textContent = 'Signing in…';
+  const { error } = await sb.auth.signInWithPassword({
+    email: document.getElementById('gateEmail').value.trim(),
+    password: document.getElementById('gatePass').value
+  });
+  btn.disabled = false; btn.textContent = 'Sign in';
+  if (error) { err.textContent = error.message; return false; }
+  boot();
+  return false;
+}
+async function signOut() {
+  await sb.auth.signOut();
+  users = []; selectedId = null;
+  showGate('Signed out', 'Sign in to continue.', { form: true });
+}
+
+async function token() {
+  const { data } = await sb.auth.getSession();
+  return data.session ? data.session.access_token : null;
+}
+
+/* ---------- boot ---------- */
+async function boot() {
+  const t = await token();
+  if (!t) {
+    showGate('TCAI Admin', 'Sign in with the operator account.', { form: true });
+    return;
+  }
+  // Authorization is decided by the API, not here. A non-admin session simply
+  // gets 404 from every /admin route, so there is nothing to spoof client-side.
+  const ok = await loadUsers();
+  if (ok) showConsole();
+}
+
+async function loadUsers(isReload) {
+  const t = await token();
+  if (!t) { showGate('TCAI Admin', 'Sign in with the operator account.', { form: true }); return false; }
+  try {
+    const res = await fetch(API + '/admin/users', {
+      headers: { 'Authorization': 'Bearer ' + t },
+      cache: 'no-store'
+    });
+    if (res.status === 404 || res.status === 401 || res.status === 403) {
+      showGate('Not available', 'This account is not the operator account. Sign out and sign in with the right one.', { signout: true });
+      return false;
+    }
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const data = await res.json();
+    users = data.users || [];
+    Object.keys(detailCache).forEach(k => delete detailCache[k]);
+    renderStats();
+    renderSorts();
+    render();
+    if (isReload) toast('Reloaded — ' + users.length + ' users');
+    return true;
+  } catch (err) {
+    showGate('Could not load', String(err.message || err), { signout: true });
+    return false;
+  }
+}
+
+/* ---------- helpers ---------- */
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c =>
+  ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+function shortDate(s) {
+  if (!s) return '—';
+  const d = new Date(s);
+  if (isNaN(d)) return '—';
+  return d.toLocaleDateString(undefined, { year: '2-digit', month: 'short', day: 'numeric' });
+}
+function ago(s) {
+  if (!s) return 'never';
+  const days = Math.floor((Date.now() - new Date(s).getTime()) / 86400000);
+  if (isNaN(days)) return 'never';
+  if (days <= 0) return 'today';
+  if (days === 1) return 'yesterday';
+  if (days < 30) return days + 'd ago';
+  if (days < 365) return Math.floor(days / 30) + 'mo ago';
+  return Math.floor(days / 365) + 'y ago';
+}
+function planPill(plan) {
+  if (!plan) return '<span class="pill warn">no profile</span>';
+  if (plan === 'patron') return '<span class="pill donor">donor</span>';
+  if (plan.indexOf('family') === 0) return '<span class="pill family">' + esc(plan.replace('family_', 'fam ')) + '</span>';
+  return '<span class="pill">' + esc(plan) + '</span>';
+}
+
+/* ---------- list ---------- */
+function renderStats() {
+  const withMem = users.filter(u => u.memory).length;
+  const paying = users.filter(u => u.plan === 'patron' || u.plan === 'family_owner').length;
+  const active7 = users.filter(u => u.last_used &&
+    (Date.now() - new Date(u.last_used).getTime()) < 7 * 86400000).length;
+  const msgs = users.reduce((a, u) => a + (u.messages || 0), 0);
+  document.getElementById('stats').innerHTML =
+      '<span class="stat"><b>' + users.length + '</b> users</span>'
+    + '<span class="stat"><b>' + withMem + '</b> with memory</span>'
+    + '<span class="stat"><b>' + active7 + '</b> active 7d</span>'
+    + '<span class="stat"><b>' + paying + '</b> supporting</span>'
+    + '<span class="stat"><b>' + msgs.toLocaleString() + '</b> messages</span>';
+}
+
+function renderSorts() {
+  document.getElementById('sorts').innerHTML = SORTS.map(([k, label]) =>
+    '<button class="sort' + (k === sortKey ? ' on' : '') + '" onclick="setSort(\'' + k + '\')">' + label + '</button>'
+  ).join('');
+}
+function setSort(k) { sortKey = k; renderSorts(); render(); }
+
+function sorted(list) {
+  const c = list.slice();
+  if (sortKey === 'name') {
+    c.sort((a, b) => (a.display_name || a.email || '~').localeCompare(b.display_name || b.email || '~'));
+  } else if (sortKey === 'memory') {
+    c.sort((a, b) => ((b.memory && b.memory.chars) || 0) - ((a.memory && a.memory.chars) || 0));
+  } else if (sortKey === 'messages') {
+    c.sort((a, b) => (b.messages || 0) - (a.messages || 0));
+  } else if (sortKey === 'created_at') {
+    c.sort((a, b) => String(b.created_at || '').localeCompare(String(a.created_at || '')));
+  } else {
+    c.sort((a, b) => String(b.last_used || '').localeCompare(String(a.last_used || '')));
+  }
+  return c;
+}
+
+function render() {
+  const q = document.getElementById('search').value.trim().toLowerCase();
+  let list = users;
+  if (q) {
+    list = users.filter(u =>
+      (u.display_name || '').toLowerCase().includes(q) ||
+      (u.email || '').toLowerCase().includes(q) ||
+      (u.plan || '').toLowerCase().includes(q) ||
+      (u.memory && (u.memory.preview || '').toLowerCase().includes(q))
+    );
+  }
+  const el = document.getElementById('list');
+  if (!list.length) { el.innerHTML = '<div style="padding:24px;text-align:center;color:var(--text-dim);font-size:0.85rem;">No match.</div>'; return; }
+  el.innerHTML = sorted(list).map(u => {
+    const name = u.display_name
+      ? '<span class="row-name">' + esc(u.display_name) + '</span>'
+      : '<span class="row-name anon">no name</span>';
+    const mem = u.memory
+      ? '<span class="pill mem">' + Math.round(u.memory.chars / 100) / 10 + 'k</span>'
+      : '';
+    return '<div class="row' + (u.id === selectedId ? ' on' : '') + '" onclick="select(\'' + u.id + '\')">'
+      + '<div class="row-top">' + name + planPill(u.plan) + mem + '</div>'
+      + '<div class="row-email">' + esc(u.email || '(no auth record)') + '</div>'
+      + '<div class="row-meta"><span>' + (u.messages || 0) + ' msgs</span>'
+      + '<span>' + (u.conversations || 0) + ' chats</span>'
+      + '<span>' + ago(u.last_used) + '</span></div>'
+      + '</div>';
+  }).join('');
+}
+
+/* ---------- detail ---------- */
+async function select(id) {
+  selectedId = id;
+  render();
+  const box = document.getElementById('detail');
+  if (detailCache[id]) { paint(detailCache[id]); return; }
+  box.innerHTML = '<div class="empty">Loading…</div>';
+  const t = await token();
+  try {
+    const res = await fetch(API + '/admin/users/' + id, {
+      headers: { 'Authorization': 'Bearer ' + t }, cache: 'no-store'
+    });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    const d = await res.json();
+    detailCache[id] = d;
+    paint(d);
+  } catch (err) {
+    box.innerHTML = '<div class="empty">Could not load: ' + esc(err.message) + '</div>';
+  }
+}
+
+function paint(d) {
+  const p = d.profile || {};
+  const a = d.auth || {};
+  const m = d.memory || null;
+  const memText = m && m.memory_text ? m.memory_text : '';
+
+  const facts = [
+    ['Plan', p.plan || '—'],
+    ['Joined', shortDate(p.created_at || a.created_at)],
+    ['Last sign-in', shortDate(a.last_sign_in_at) + ' · ' + ago(a.last_sign_in_at)],
+    ['Messages', (d.usage_totals.haiku + d.usage_totals.sonnet).toLocaleString()],
+    ['Haiku / Sonnet', d.usage_totals.haiku + ' / ' + d.usage_totals.sonnet],
+    ['Conversations', (d.conversations || []).length],
+    ['Memory', m ? (Math.round(m.memory_text.length / 100) / 10) + 'k chars · v' + m.version : 'none'],
+    ['Memory on', m ? (m.memory_enabled ? 'yes' : 'OFF') : '—']
+  ];
+  if (p.join_code) facts.push(['Family code', p.join_code]);
+  if (p.faith_journey) facts.push(['Faith journey', p.faith_journey]);
+  if (p.stripe_customer_id) facts.push(['Stripe', 'linked']);
+
+  let html = ''
+    + '<div class="d-name">' + esc(p.display_name || 'No name set') + '</div>'
+    + '<div class="d-email">' + esc(d.email || '(no auth record)') + '</div>'
+    + '<div class="d-pills">' + planPill(p.plan)
+    +   (m && !m.memory_enabled ? '<span class="pill warn">memory off</span>' : '')
+    +   '<span class="pill">' + esc(d.id.slice(0, 8)) + '</span>'
+    + '</div>'
+    + '<div class="facts">' + facts.map(f =>
+        '<div class="fact"><div class="fact-k">' + esc(f[0]) + '</div>'
+        + '<div class="fact-v' + (f[1] === '—' || f[1] === 'none' ? ' dim' : '') + '">' + esc(f[1]) + '</div></div>'
+      ).join('') + '</div>';
+
+  /* memory — the reason this page exists */
+  html += '<div class="sec"><div class="sec-h"><h2>Memory</h2>'
+    + (m ? '<span class="note">v' + esc(m.version) + ' · updated ' + esc(shortDate(m.last_updated)) + ' · ' + memText.length.toLocaleString() + ' chars</span>' : '')
+    + '<span class="spacer"></span>'
+    + (memText ? '<button class="ibtn wide" onclick="copyMemory()">Copy</button>' : '')
+    + '</div>';
+  if (memText) {
+    const paras = memText.split(/\n\s*\n/).filter(Boolean);
+    html += '<div class="memory">' + paras.map(x => '<p>' + esc(x.trim()) + '</p>').join('') + '</div>';
+  } else {
+    html += '<div class="none">No memory stored for this user yet.</div>';
+  }
+  html += '</div>';
+
+  /* conversations */
+  const convos = d.conversations || [];
+  html += '<div class="sec"><div class="sec-h"><h2>Conversations</h2>'
+    + '<span class="note">' + convos.length + ' total</span></div>';
+  if (convos.length) {
+    html += '<div class="scroll-y tablewrap"><table><thead><tr>'
+      + '<th style="width:55%">Title</th><th>Msgs</th><th>Theirs</th><th>Ghosted</th><th>Last</th>'
+      + '</tr></thead><tbody>'
+      + convos.map(c =>
+        '<tr><td class="t">' + esc(c.title || '(untitled)') + '</td>'
+        + '<td class="n">' + c.messages + '</td>'
+        + '<td class="n">' + c.user_messages + '</td>'
+        + '<td class="n">' + (c.ghosted || '—') + '</td>'
+        + '<td class="n">' + esc(shortDate(c.updated_at)) + '</td></tr>'
+      ).join('') + '</tbody></table></div>';
+  } else {
+    html += '<div class="none">No conversations.</div>';
+  }
+  html += '</div>';
+
+  /* usage */
+  const usage = d.usage || [];
+  html += '<div class="sec"><div class="sec-h"><h2>Daily usage</h2>'
+    + '<span class="note">most recent ' + usage.length + ' active days</span></div>';
+  if (usage.length) {
+    html += '<div class="scroll-y tablewrap"><table><thead><tr>'
+      + '<th>Date</th><th>Haiku</th><th>Sonnet</th></tr></thead><tbody>'
+      + usage.map(u =>
+        '<tr><td class="n t">' + esc(u.message_date) + '</td>'
+        + '<td class="n">' + (u.haiku_count || 0) + '</td>'
+        + '<td class="n">' + (u.sonnet_count || 0) + '</td></tr>'
+      ).join('') + '</tbody></table></div>';
+  } else {
+    html += '<div class="none">No recorded usage.</div>';
+  }
+  html += '</div>';
+
+  /* family */
+  if ((d.family || []).length) {
+    html += '<div class="sec"><div class="sec-h"><h2>Family</h2></div><div class="tablewrap"><table><thead><tr>'
+      + '<th>Member email</th><th>Joined</th><th>Role here</th></tr></thead><tbody>'
+      + d.family.map(f =>
+        '<tr><td class="t">' + esc(f.member_email || '—') + '</td>'
+        + '<td class="n">' + esc(shortDate(f.joined_at)) + '</td>'
+        + '<td class="n">' + (f.owner_id === d.id ? 'owner' : 'member') + '</td></tr>'
+      ).join('') + '</tbody></table></div></div>';
+  }
+
+  document.getElementById('detail').innerHTML = html;
+  document.getElementById('detail').scrollTop = 0;
+}
+
+function copyMemory() {
+  const d = detailCache[selectedId];
+  if (!d || !d.memory) return;
+  navigator.clipboard.writeText(d.memory.memory_text || '')
+    .then(() => toast('Memory copied'))
+    .catch(() => toast('Copy failed'));
+}
+
+/* keyboard: / focuses search, j/k move through the list */
+document.addEventListener('keydown', e => {
+  if (!document.getElementById('console').classList.contains('on')) return;
+  const inField = /^(INPUT|TEXTAREA)$/.test(document.activeElement.tagName);
+  if (e.key === '/' && !inField) { e.preventDefault(); document.getElementById('search').focus(); return; }
+  if (e.key === 'Escape' && inField) { document.activeElement.blur(); return; }
+  if (inField || !users.length) return;
+  if (e.key !== 'j' && e.key !== 'k') return;
+  const rows = Array.prototype.map.call(document.querySelectorAll('.row'), r =>
+    r.getAttribute('onclick').match(/'([^']+)'/)[1]);
+  const i = rows.indexOf(selectedId);
+  const next = e.key === 'j' ? Math.min(rows.length - 1, i + 1) : Math.max(0, i - 1);
+  if (rows[next] && rows[next] !== selectedId) {
+    select(rows[next]);
+    const el = document.querySelectorAll('.row')[next];
+    if (el) el.scrollIntoView({ block: 'nearest' });
+  }
+});
+
+sb.auth.onAuthStateChange((ev) => { if (ev === 'SIGNED_OUT') users = []; });
+boot();
+</script>
+</body>
+</html>
