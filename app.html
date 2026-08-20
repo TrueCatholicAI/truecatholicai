@@ -725,6 +725,7 @@
     border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;
     font-size: 0.52rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
     transition: all 0.2s; white-space: nowrap;
+    text-decoration: none; display: inline-block; text-align: center;
   }
   .nudge-banner-close {
     background: none; border: none; color: var(--text-dim); cursor: pointer;
@@ -1310,6 +1311,7 @@ let unauthCount = 0;
 let signupPromptShown = false;
 let sessionMsgCount = 0;
 let nudgeDismissed = localStorage.getItem('tc-nudge-dismissed') === '1';
+let donorNudgeDone = localStorage.getItem('tc-donor-nudge-v1') === '1';
 const inputField = document.getElementById('inputField');
 const sendBtn = document.getElementById('sendBtn');
 const remainingNum = document.getElementById('remainingNum');
@@ -1470,6 +1472,8 @@ async function setLoggedIn(user) {
   }
   var staleNudge = document.getElementById('nudgeBanner');
   if (staleNudge) staleNudge.remove();
+  var staleDonor = document.getElementById('donorNudge');
+  if (staleDonor) staleDonor.remove();
   signupPromptShown = false;
   document.body.classList.add('logged-in');
   document.getElementById('ghostBtn').classList.add('visible');
@@ -2037,6 +2041,9 @@ async function sendMessage() {
       // Don't fire the signup wall off a successful response — the user just
       // got a reply. If they're truly out, the next call will 429 and the
       // handler above will show the prompt.
+    } else {
+      sessionMsgCount++;
+      maybeShowDonorNudge();
     }
   } catch (err) {
     hideTyping();
@@ -2068,6 +2075,47 @@ function dismissNudge() {
   nudgeDismissed = true;
   try { localStorage.setItem('tc-nudge-dismissed', '1'); } catch (e) {}
   var el = document.getElementById('nudgeBanner');
+  if (el) el.remove();
+}
+
+// =============== DONOR NUDGE (signed-in, once per device) ===============
+// Asked once and never again: a signed-in free user who has had a few answers
+// in one sitting. Never shown to someone already supporting, never on their
+// first question, and it waits below the reply rather than interrupting.
+function maybeShowDonorNudge() {
+  if (donorNudgeDone) return;
+  if (!currentUser) return;
+  if (userPlan !== 'free') return;                     // already supporting — don't ask
+  if (sessionMsgCount < 3) return;                     // let them get some value first
+  if (signupPromptShown || upgradePromptShown) return; // never stack on a wall
+  if (document.getElementById('donorNudge')) return;
+  showDonorNudge();
+}
+
+function showDonorNudge() {
+  var container = document.getElementById('messages');
+  if (!container) return;
+  // Marked seen on display, not on dismissal — otherwise ignoring it and
+  // reloading would show it again, which is not "once".
+  markDonorNudgeSeen();
+  var div = document.createElement('div');
+  div.className = 'nudge-banner show';
+  div.id = 'donorNudge';
+  div.innerHTML = '<span class="nudge-banner-text">TrueCatholic AI is <strong>free for everyone</strong>, and it stays that way. It does cost a little to run \u2014 if it\u2019s been worth something to you, a few dollars a month keeps it running for everyone else.</span>'
+    + '<a class="nudge-banner-btn" href="https://truecatholicai.org/pricing.html" onclick="dismissDonorNudge()">Become a donor</a>'
+    + '<button class="nudge-banner-close" onclick="dismissDonorNudge()" title="Dismiss">&times;</button>';
+  container.appendChild(div);
+  // No scrollToBottom — let them finish reading the answer first.
+}
+
+function markDonorNudgeSeen() {
+  donorNudgeDone = true;
+  try { localStorage.setItem('tc-donor-nudge-v1', '1'); } catch (e) {}
+}
+
+function dismissDonorNudge() {
+  markDonorNudgeSeen();
+  var el = document.getElementById('donorNudge');
   if (el) el.remove();
 }
 
