@@ -641,6 +641,22 @@
     letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s; margin-top: 4px;
   }
   .form-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .form-btn.danger { background: var(--danger); color: #fff; }
+  .form-btn.secondary {
+    background: transparent; border: 1px solid var(--border-strong);
+    color: var(--text-mid); margin-top: 10px;
+  }
+  /* Monospace so DELETE is unambiguous to type. */
+  .confirm-input { font-family: 'IBM Plex Mono', monospace; letter-spacing: 0.14em; text-transform: uppercase; }
+  .delete-consequences {
+    background: var(--bg-input); border: 1px solid var(--border);
+    border-radius: 8px; padding: 12px 14px; margin-bottom: 18px;
+  }
+  .delete-consequences li {
+    font-size: 0.78rem; color: var(--text-mid); line-height: 1.5;
+    margin-left: 16px; margin-bottom: 3px;
+  }
+  .delete-consequences li:last-child { margin-bottom: 0; }
   .form-toggle {
     text-align: center; margin-top: 20px;
     font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
@@ -781,6 +797,8 @@
     .user-avatar-btn:hover { background: var(--border-strong); color: var(--text); }
     .user-dropdown-item:hover { background: var(--bg-input); color: var(--text); }
     .user-dropdown-item.danger:hover { color: var(--danger); }
+    .form-btn.danger:hover:not(:disabled) { background: #D66060; }
+    .form-btn.secondary:hover:not(:disabled) { background: var(--bg-input); color: var(--text); }
   }
 
 
@@ -1045,7 +1063,9 @@
         <button class="user-dropdown-item" id="manageFamilyBtn" onclick="openFamilyModal()" style="display:none; color:var(--gold);">Manage Family</button>
         <button class="user-dropdown-item" id="joinFamilyBtn" onclick="openJoinFamilyModal()" style="display:none;">Join a Family</button>
         <button class="user-dropdown-item" id="upgradeBtn" onclick="handleUpgrade()" style="display:none; color:var(--gold);">Support TrueCatholic AI</button>
+        <button class="user-dropdown-item" onclick="openPrivacyPolicy()">Privacy Policy</button>
         <button class="user-dropdown-item danger" onclick="handleSignOut()">Sign Out</button>
+        <button class="user-dropdown-item danger" onclick="openDeleteAccountModal()">Delete Account</button>
       </div>
     </div>
   </div>
@@ -1150,6 +1170,34 @@
       </form>
       <div class="form-toggle"><a onclick="switchAuthView('login')">Back to sign in</a></div>
     </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="deleteAccountModal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeDeleteAccountModal()">&times;</button>
+    <div class="modal-cross"></div>
+    <div class="modal-title">Delete your account</div>
+    <div class="modal-subtitle">This is permanent. There is no undo, and we cannot restore it for you afterward.</div>
+    <div class="form-error" id="deleteAccountError"></div>
+    <div class="delete-consequences">
+      <ul>
+        <li>Your account and sign-in</li>
+        <li>Every conversation and message you&rsquo;ve saved</li>
+        <li>Everything TrueCatholic AI remembers about you</li>
+        <li>Your family plan, if you have one</li>
+        <li>Your monthly donation is cancelled &mdash; you won&rsquo;t be charged again</li>
+      </ul>
+    </div>
+    <div class="form-group">
+      <label class="form-label" for="deleteConfirmInput">Type DELETE to confirm</label>
+      <input class="form-input confirm-input" id="deleteConfirmInput" type="text"
+             autocomplete="off" autocapitalize="characters" autocorrect="off"
+             spellcheck="false" placeholder="DELETE"
+             oninput="onDeleteConfirmInput()">
+    </div>
+    <button class="form-btn danger" id="deleteAccountBtn" disabled onclick="confirmDeleteAccount()">Delete my account</button>
+    <button class="form-btn secondary" onclick="closeDeleteAccountModal()">Cancel</button>
   </div>
 </div>
 
@@ -1441,6 +1489,78 @@ async function handleForgot(e) {
   if (error) showAuthError('forgotError', error.message);
   else { document.getElementById('forgotForm').style.display = 'none'; showAuthSuccess('forgotSuccess', 'If that email exists, a reset link has been sent. Check your inbox.'); }
 }
+// =============== ACCOUNT DELETION ===============
+// Same endpoint the native app uses. It cancels any live Stripe donation
+// before it deletes anything, so a deleted account can never keep billing.
+function openPrivacyPolicy() {
+  closeUserDropdown();
+  window.open('https://truecatholicai.org/privacy', '_blank', 'noopener');
+}
+
+function openDeleteAccountModal() {
+  closeUserDropdown();
+  document.getElementById('deleteConfirmInput').value = '';
+  onDeleteConfirmInput();
+  var err = document.getElementById('deleteAccountError');
+  err.classList.remove('show'); err.textContent = '';
+  document.getElementById('deleteAccountBtn').textContent = 'Delete my account';
+  var modal = document.getElementById('deleteAccountModal');
+  modal.classList.add('open');
+  requestAnimationFrame(function () { requestAnimationFrame(function () { modal.classList.add('visible'); }); });
+}
+
+function closeDeleteAccountModal() {
+  var modal = document.getElementById('deleteAccountModal');
+  modal.classList.remove('visible');
+  setTimeout(function () { modal.classList.remove('open'); }, 350);
+}
+
+function onDeleteConfirmInput() {
+  var v = (document.getElementById('deleteConfirmInput').value || '').trim().toUpperCase();
+  document.getElementById('deleteAccountBtn').disabled = v !== 'DELETE';
+}
+
+async function confirmDeleteAccount() {
+  var btn = document.getElementById('deleteAccountBtn');
+  var err = document.getElementById('deleteAccountError');
+  err.classList.remove('show'); err.textContent = '';
+  btn.disabled = true;
+  btn.textContent = 'Deleting\u2026';
+  try {
+    var token = await getAccessToken();
+    if (!token) throw new Error('You appear to be signed out. Please sign in again.');
+    var res = await fetch(API_URL.replace('/chat', '/account'), {
+      method: 'DELETE',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
+      body: JSON.stringify({ confirm: 'DELETE' })
+    });
+    var data = await res.json().catch(function () { return {}; });
+    if (!res.ok || !data.ok) throw new Error(data.error || ('Delete failed (HTTP ' + res.status + ')'));
+  } catch (e) {
+    console.error('[delete-account]', e);
+    err.textContent = e.message || 'Something went wrong. Please try again.';
+    err.classList.add('show');
+    btn.textContent = 'Delete my account';
+    onDeleteConfirmInput();
+    return;
+  }
+  // Tear the UI down explicitly rather than waiting for a SIGNED_OUT event:
+  // signOut is talking about a user that no longer exists, and once the stored
+  // session is cleared there may be nothing left to raise that event.
+  closeDeleteAccountModal();
+  cachedAccessToken = null;
+  try { await sb.auth.signOut(); } catch (e) { /* already gone server-side */ }
+  try { localStorage.clear(); } catch (e) { /* private mode */ }
+  setLoggedOut();
+  messages = []; chatStarted = false; signupPromptShown = false; upgradePromptShown = false;
+  sessionImages = []; updateGalleryBtn();
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('messages').style.display = 'none';
+  document.getElementById('welcome').style.display = 'flex';
+  var hint = document.getElementById('freeAccountHint'); if (hint) hint.style.display = '';
+  showToast('Your account and all of its data have been deleted.');
+}
+
 async function handleSignOut() {
   cachedAccessToken = null;
   await sb.auth.signOut(); closeUserDropdown();
