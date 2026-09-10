@@ -3040,12 +3040,14 @@ async function saveMemoryEdit() {
     });
     if (!res.ok) throw new Error('save failed');
     var data = await res.json();
-    memoryCurrent.memory_text = newText;
+    // The server leaves out never-remember details (and caps length) before
+    // saving, so show what was actually stored rather than what was typed.
+    memoryCurrent.memory_text = typeof data.memory_text === 'string' ? data.memory_text : newText;
     memoryCurrent.version = data.version;
     memoryCurrent.last_updated = new Date().toISOString();
     memoryEditing = false;
     renderMemoryContent();
-    showToast('Memory updated.', 'success');
+    showToast(data.redacted ? 'Memory updated. Some sensitive personal details were left out to protect your privacy.' : 'Memory updated.', 'success');
   } catch (e) {
     showToast('Could not save memory. Try again.', 'error');
   }
