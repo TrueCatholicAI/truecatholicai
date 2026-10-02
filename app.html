@@ -17,7 +17,7 @@
   :root {
     --gold: #C4A24E; --gold-light: #DABE6A; --gold-dim: #907636; --gold-faint: #6B5828;
     --bg: #0B0B10; --bg-el: #111117; --bg-card: #16161E; --bg-input: #1A1A24;
-    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #6B6760;
+    --text: #E4E0D8; --text-mid: #A8A39B; --text-dim: #8A857E;
     --border: rgba(196,162,78,0.1); --border-strong: rgba(196,162,78,0.2);
     --ai-bg: rgba(17,17,23,0.6); --danger: #C45050; --green: #5AAF5A; --radius: 12px;
   }
@@ -25,7 +25,7 @@
   body.light {
     --gold: #8B2F2F; --gold-light: #A83838; --gold-dim: #6B2424; --gold-faint: #5A1E1E;
     --bg: #F4F1EB; --bg-el: #EDEAE4; --bg-card: #E8E5DF; --bg-input: #ECEAE5;
-    --text: #2A2520; --text-mid: #6B6560; --text-dim: #9B9590;
+    --text: #2A2520; --text-mid: #55504B; --text-dim: #6B6560;
     --border: rgba(139,47,47,0.12); --border-strong: rgba(139,47,47,0.2);
     --ai-bg: rgba(237,234,228,0.6);
   }
@@ -92,19 +92,19 @@
     letter-spacing: 0.16em; text-transform: uppercase; color: var(--gold-light);
   }
   .header-sub {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     letter-spacing: 0.08em; margin-top: 1px;
   }
   .header-actions { display: flex; align-items: center; gap: 8px; }
   .header-btn {
     background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; letter-spacing: 0.08em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em;
     text-transform: uppercase; padding: 0 12px; height: 32px; display: inline-flex; align-items: center;
     transition: all 0.25s; border-radius: 4px;
   }
   .header-btn.gold { border-color: var(--gold-dim); color: var(--gold); }
   .remaining-badge {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     letter-spacing: 0.06em; padding: 0 10px; height: 32px; line-height: 32px;
     border: 1px solid var(--border); border-radius: 4px; white-space: nowrap;
   }
@@ -142,7 +142,7 @@
   }
   .starter-q { font-size: 0.88rem; color: var(--text); line-height: 1.4; display: block; }
   .starter-cat {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     letter-spacing: 0.1em; text-transform: uppercase; margin-top: 6px; display: block;
   }
   /* Scrolling prompt ticker */
@@ -172,7 +172,7 @@
   }
   .prompt-pill-q { font-size: 0.84rem; color: var(--text); line-height: 1; }
   .prompt-pill-cat {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.7;
   }
   .prompt-pill-icon { flex-shrink: 0; color: var(--gold); }
@@ -184,14 +184,14 @@
   .msg-header { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
   .msg-avatar {
     width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500; flex-shrink: 0;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 500; flex-shrink: 0;
   }
   .msg-avatar.ai { background: var(--gold); color: var(--bg); position: relative; }
   .msg-avatar.ai::before { content: ''; position: absolute; width: 8px; height: 1.5px; background: var(--bg); }
   .msg-avatar.ai::after { content: ''; position: absolute; width: 1.5px; height: 8px; background: var(--bg); }
   .msg-avatar.user { background: var(--border-strong); color: var(--text-mid); }
   .msg-name {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500;
     letter-spacing: 0.08em; text-transform: uppercase;
   }
   .ai-name { color: var(--gold); }
@@ -221,7 +221,7 @@
   }
   .msg-image-wrap:hover img { opacity: 0.9; }
   .msg-image-caption {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-mid);
     letter-spacing: 0.04em; margin-top: 6px; text-align: center; line-height: 1.5;
   }
   .msg-image-heart {
@@ -244,7 +244,7 @@
   @media (hover: none) { .msg-actions { opacity: 0.7; } }
   .msg-action-btn {
     display: inline-flex; align-items: center; gap: 5px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     letter-spacing: 0.08em; text-transform: uppercase;
     background: transparent; color: var(--text-dim);
     border: 1px solid var(--border); border-radius: 6px;
@@ -290,7 +290,7 @@
     display: flex; align-items: center; justify-content: space-between;
   }
   .gallery-tray-title {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500;
     letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold);
   }
   .gallery-tray-close {
@@ -303,7 +303,7 @@
   }
   .gallery-tab {
     background: none; border: none; padding: 10px 0; margin-right: 20px; cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.08em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.08em;
     text-transform: uppercase; color: var(--text-dim); border-bottom: 2px solid transparent;
     transition: all 0.2s;
   }
@@ -326,7 +326,7 @@
   }
   .gallery-empty {
     grid-column: 1 / -1; text-align: center; padding: 40px 20px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
   }
 
   /* Family management modal */
@@ -357,7 +357,7 @@
     padding: 16px; margin-bottom: 20px; text-align: center;
   }
   .family-code-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
   }
   .family-code {
@@ -366,12 +366,12 @@
   }
   .family-code-copy {
     background: none; border: 1px solid var(--border); color: var(--text-dim); cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.06em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.06em;
     padding: 5px 14px; border-radius: 4px; transition: all 0.2s;
   }
   .family-code-copy:hover { color: var(--gold); border-color: var(--gold-dim); }
   .family-members-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; letter-spacing: 0.1em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.1em;
     text-transform: uppercase; color: var(--text-dim); margin-bottom: 10px;
   }
   .family-member-row {
@@ -380,27 +380,27 @@
   }
   .family-member-row:last-child { border-bottom: none; }
   .family-member-info {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text);
   }
   .family-member-email {
-    font-size: 0.5rem; color: var(--text-dim); margin-top: 2px;
+    font-size: 0.66rem; color: var(--text-dim); margin-top: 2px;
   }
   .family-member-role {
-    font-size: 0.48rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase;
+    font-size: 0.66rem; color: var(--gold); letter-spacing: 0.06em; text-transform: uppercase;
     margin-top: 2px;
   }
   .family-remove-btn {
     background: none; border: 1px solid var(--border); color: var(--danger); cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; letter-spacing: 0.04em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.04em;
     padding: 4px 10px; border-radius: 4px; transition: all 0.2s;
   }
   .family-remove-btn:hover { background: rgba(196,80,80,0.1); border-color: var(--danger); }
   .family-empty {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     text-align: center; padding: 16px 0;
   }
   .family-seats-count {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim);
     text-align: right; margin-top: 12px;
   }
   /* Join family */
@@ -429,7 +429,7 @@
   .lightbox img { max-width: 90%; max-height: 90vh; border-radius: 8px; cursor: default; }
   .lightbox-caption {
     position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: rgba(255,255,255,0.7);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: rgba(255,255,255,0.7);
     letter-spacing: 0.06em; text-align: center;
   }
 
@@ -444,7 +444,7 @@
   .window-pill-icon { flex-shrink: 0; color: var(--gold); }
   .window-pill-title { font-size: 0.84rem; color: var(--gold-light); line-height: 1; }
   .window-pill-cat {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--gold-dim);
     letter-spacing: 0.1em; text-transform: uppercase; opacity: 0.8;
   }
   .window-player {
@@ -496,7 +496,7 @@
     background: linear-gradient(rgba(0,0,0,0.5), transparent);
   }
   .window-title-text {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem; font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; font-weight: 500;
     letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.7);
   }
   .window-close {
@@ -531,7 +531,7 @@
   .typing-dot:nth-child(3) { animation-delay: 0.4s; }
   @keyframes pulse { 0%, 80%, 100% { opacity: 0.3; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
   .typing-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
     letter-spacing: 0.06em;
   }
   .input-area {
@@ -556,7 +556,7 @@
   .send-btn svg { width: 18px; height: 18px; }
   .input-footer {
     max-width: 800px; margin: 8px auto 0; text-align: center;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.5rem; color: var(--text-mid);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-mid);
     letter-spacing: 0.05em;
   }
   .input-footer a { color: var(--gold-dim); text-decoration: none; }
@@ -623,7 +623,7 @@
   }
   .form-group { margin-bottom: 16px; }
   .form-label {
-    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    display: block; font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-dim); margin-bottom: 6px;
   }
   .form-input {
@@ -659,7 +659,7 @@
   .delete-consequences li:last-child { margin-bottom: 0; }
   .form-toggle {
     text-align: center; margin-top: 20px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; color: var(--text-dim);
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-dim);
     letter-spacing: 0.04em;
   }
   .form-toggle a { color: var(--gold); text-decoration: none; cursor: pointer; }
@@ -677,7 +677,7 @@
   .form-success.show { display: block; }
   .forgot-link {
     display: block; text-align: right; margin-top: -10px; margin-bottom: 16px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-dim); text-decoration: none; cursor: pointer; letter-spacing: 0.04em;
   }
   /* Signup prompt (inline in chat) */
@@ -693,12 +693,12 @@
   .signup-prompt-btn {
     display: inline-block; padding: 10px 28px; background: var(--gold); color: var(--bg);
     border: none; border-radius: 8px; cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
     letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.2s;
   }
   .signup-prompt-link {
     display: block; margin-top: 10px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
   }
   .prompt-amounts {
@@ -709,7 +709,7 @@
     flex: 1; padding: 9px 4px; cursor: pointer;
     background: transparent; border: 1px solid var(--border-strong);
     border-radius: 8px; color: var(--text-mid);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem;
     font-weight: 500; letter-spacing: 0.04em; transition: all 0.2s;
   }
   .prompt-amount.selected {
@@ -718,7 +718,7 @@
   }
   .signup-prompt-secondary {
     display: block; margin-top: 18px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-dim); text-decoration: none; letter-spacing: 0.06em;
     cursor: pointer; background: none; border: none; transition: color 0.2s;
     width: 100%; text-align: center;
@@ -732,14 +732,14 @@
   }
   .nudge-banner.show { display: flex; }
   .nudge-banner-text {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.58rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-mid); letter-spacing: 0.03em; line-height: 1.5; flex: 1;
   }
   .nudge-banner-text strong { color: var(--gold-light); font-weight: 500; }
   .nudge-banner-btn {
     flex-shrink: 0; padding: 7px 16px; background: var(--gold); color: var(--bg); border: none;
     border-radius: 6px; cursor: pointer; font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.52rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
+    font-size: 0.66rem; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase;
     transition: all 0.2s; white-space: nowrap;
     text-decoration: none; display: inline-block; text-align: center;
   }
@@ -752,7 +752,7 @@
   .user-avatar-btn {
     width: 32px; height: 32px; border-radius: 50%; background: var(--bg-input);
     border: 1px solid var(--border-strong); color: var(--text-mid); cursor: pointer;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
     display: flex; align-items: center; justify-content: center; transition: all 0.2s;
   }
   .user-dropdown {
@@ -765,13 +765,13 @@
   .reveal-block { opacity: 0; animation: blockReveal 0.7s ease forwards; }
   @keyframes blockReveal { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
   .user-dropdown-info { padding: 10px 12px; border-bottom: 1px solid var(--border); margin-bottom: 6px; }
-  .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
-  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.52rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
-  .user-dropdown-plan { font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
+  .user-dropdown-name { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: var(--text); letter-spacing: 0.04em; }
+  .user-dropdown-email { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-dim); margin-top: 2px; letter-spacing: 0.02em; pointer-events: none; -webkit-user-select: text; user-select: text; }
+  .user-dropdown-plan { font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--gold); letter-spacing: 0.08em; text-transform: uppercase; margin-top: 4px; }
   .user-dropdown-item {
     display: block; width: 100%; padding: 9px 12px; background: none; border: none;
     color: var(--text-mid); cursor: pointer; text-align: left; border-radius: 6px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.04em; transition: all 0.15s;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.04em; transition: all 0.15s;
   }
 
   /* All hover states — pointer devices only */
@@ -806,10 +806,10 @@
     .header { padding: 10px 14px; }
     .header-title { display: none; }
     .header-sub { display: none; }
-    .remaining-badge { font-size: 0.48rem; padding: 0 8px; }
+    .remaining-badge { font-size: 0.66rem; padding: 0 8px; }
     /* Hide max values on mobile family badge — just show remaining */
     .remaining-max { display: none; }
-    #remainingFamily { font-size: 0.48rem; }
+    #remainingFamily { font-size: 0.66rem; }
     /* Collapse new chat label */
     .new-chat-label { display: none; }
     #shareChatBtn { display: none !important; }
@@ -832,8 +832,8 @@
        means the textarea's center is ~28px left of the row's center. */
     .free-account-hint { padding-right: 56px; }
     .nudge-banner { flex-direction: column; text-align: center; gap: 10px; margin: 12px 14px; padding: 14px 16px 14px 16px; position: relative; }
-    .nudge-banner-text { font-size: 0.55rem; padding-right: 18px; }
-    .nudge-banner-btn { width: 100%; padding: 11px 16px; font-size: 0.58rem; }
+    .nudge-banner-text { font-size: 0.66rem; padding-right: 18px; }
+    .nudge-banner-btn { width: 100%; padding: 11px 16px; font-size: 0.66rem; }
     .nudge-banner-close { position: absolute; top: 6px; right: 8px; padding: 4px 6px; font-size: 1.1rem; }
     .gallery-tray { width: 280px; }
     .modal { padding: 28px 22px; margin: 10px; }
@@ -920,14 +920,14 @@
     border-radius: 6px; text-align: center;
   }
   .memory-meta {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.55rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-dim); letter-spacing: 0.08em; text-transform: uppercase;
     margin-top: 10px; display: flex; justify-content: space-between; gap: 10px;
   }
   .memory-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
   .memory-btn {
     background: var(--bg-card); border: 1px solid var(--border); color: var(--text);
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.6rem; letter-spacing: 0.08em;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; letter-spacing: 0.08em;
     text-transform: uppercase; padding: 9px 14px; border-radius: 4px;
     cursor: pointer; transition: all 0.2s;
   }
@@ -992,14 +992,14 @@
     white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.4;
   }
   .conv-item-time {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.48rem;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem;
     color: var(--text-dim); letter-spacing: 0.06em; text-transform: uppercase; margin-top: 4px;
   }
   .conv-item-actions { display: flex; gap: 4px; flex-shrink: 0; }
   .conv-item-action {
     background: none; border: 1px solid var(--border); color: var(--text-dim);
     cursor: pointer; width: 26px; height: 26px; border-radius: 4px;
-    display: flex; align-items: center; justify-content: center; font-size: 0.65rem;
+    display: flex; align-items: center; justify-content: center; font-size: 0.72rem;
     transition: all 0.2s;
   }
   .conv-item-action:hover { border-color: var(--gold-dim); color: var(--gold); }
@@ -1025,7 +1025,101 @@
     color: var(--text); font-family: 'Source Serif 4', Georgia, serif; font-size: 0.88rem;
     padding: 4px 8px; width: 100%; outline: none;
   }
+
+  /* =============== DISPLAY: TEXT SIZE + THEME =============== */
+  /* Every font size is in rem, so text size is one percentage on <html>. */
+  .display-btn { font-family: 'Source Serif 4', Georgia, serif; letter-spacing: 0; }
+  /* Header controls have fixed 32px heights, so their text stops growing at a
+     readable cap instead of wrapping out of the buttons at the largest sizes. */
+  .header .header-btn, .header .remaining-badge, .header #remainingFamily { font-size: min(0.66rem, 13px); white-space: nowrap; }
+  .header .display-btn { font-size: min(0.85rem, 17px); }
+  .input-field:placeholder-shown { white-space: nowrap; overflow: hidden; }
+  .input-field::placeholder { text-overflow: ellipsis; }
+  .display-pop {
+    position: fixed; z-index: 210; width: 17rem; max-width: calc(100vw - 28px);
+    background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 12px;
+    padding: 14px; display: none; animation: dropIn 0.15s ease-out;
+    box-shadow: 0 12px 32px rgba(0,0,0,0.35);
+  }
+  .display-pop.open { display: block; }
+  .display-label {
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.12em;
+    text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  .size-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
+  .size-opt, .theme-opt {
+    border-radius: 8px; border: 2px solid var(--border); background: var(--bg-input);
+    cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;
+  }
+  .size-opt { height: 3.25rem; color: var(--text); font-family: 'Source Serif 4', Georgia, serif; }
+  .size-opt:nth-child(1) { font-size: 0.85rem; }
+  .size-opt:nth-child(2) { font-size: 1.05rem; }
+  .size-opt:nth-child(3) { font-size: 1.3rem; }
+  .size-opt:nth-child(4) { font-size: 1.6rem; }
+  .size-opt[aria-pressed="true"], .theme-opt[aria-pressed="true"] { border-color: var(--gold); color: var(--gold-light); }
+  .size-name { font-size: 0.85rem; color: var(--text-mid); text-align: center; margin: 8px 0 14px; }
+  .theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
+  .theme-opt {
+    height: 2.75rem; gap: 6px; color: var(--text-mid); font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+  }
+  .display-tip { display: none; font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; margin-top: 12px; }
+  @media (hover: none) { .display-tip { display: block; } }
+
+  /* =============== HOLD TO TALK =============== */
+  /* With an empty box the send button becomes a mic; type anything and it turns back. */
+  .mic-btn {
+    display: none; position: relative; z-index: 2; flex-shrink: 0; padding: 0;
+    width: clamp(52px, 3.25rem, 72px); height: clamp(52px, 3.25rem, 72px); border-radius: 50%; border: none;
+    background: var(--gold); color: var(--bg); cursor: pointer; align-items: center; justify-content: center;
+    touch-action: none; -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+    -webkit-tap-highlight-color: transparent; transition: transform 0.18s ease, background-color 0.2s ease, opacity 0.2s ease;
+  }
+  body.light .mic-btn { color: #F4F1EB; }
+  .mic-btn svg { width: 44%; height: 44%; pointer-events: none; }
+  .input-row.voice-ok .mic-btn { display: flex; }
+  .input-row.voice-ok .input-field:placeholder-shown ~ .send-btn { display: none; }
+  .input-row.voice-ok .input-field:not(:placeholder-shown) ~ .mic-btn { display: none; }
+  .mic-btn::after {
+    content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--gold);
+    opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
+  }
+  .mic-btn.held { transform: scale(1.22); }
+  .mic-btn.held::after { opacity: 0.5; animation: micBreathe 1.6s ease-in-out infinite; }
+  .mic-btn.finishing { transform: scale(1.06); }
+  .mic-btn.finishing::after, .input-row.cancel-zone .mic-btn::after { opacity: 0; animation: none; }
+  .input-row.cancel-zone .mic-btn { background: var(--text-dim); }
+  @keyframes micBreathe { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.18); } }
+  .rec-strip {
+    display: none; flex: 1; min-width: 0; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px;
+    background: var(--bg-input); border: 2px solid var(--gold-dim); border-radius: 10px;
+    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-mid); letter-spacing: 0.03em;
+  }
+  .input-row.recording .input-field { display: none; }
+  .input-row.recording .rec-strip { display: flex; }
+  .rec-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--danger); flex-shrink: 0; animation: recBlink 1.2s ease-in-out infinite; }
+  @keyframes recBlink { 50% { opacity: 0.25; } }
+  .rec-time { color: var(--text); font-variant-numeric: tabular-nums; }
+  .rec-msg { margin-left: auto; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .input-row.cancel-zone .rec-strip { border-color: var(--danger); }
+  .input-row.cancel-zone .rec-msg { color: var(--danger); }
+  /* The live transcript is see-through. Never dashed: a dashed bubble means Incognito. */
+  .message.user .msg-body { transition: opacity 0.3s ease; }
+  .message.user.live .msg-body { opacity: 0.55; }
+  .message.user.live .msg-name { color: var(--gold); }
+  .message.user.cancelling .msg-body { opacity: 0.25; text-decoration: line-through; }
+  .message.user.cancelling .msg-name { color: var(--danger); }
+  .message.user.leaving { opacity: 0; transition: opacity 0.2s ease; }
+  .live-wait { color: var(--text-dim); }
+  @media (prefers-reduced-motion: reduce) {
+    .mic-btn, .mic-btn::after, .message.user .msg-body { transition: none; }
+    .mic-btn.held::after, .rec-dot { animation: none; }
+  }
 </style>
+<script>
+  // Apply the saved text size before first paint so the page doesn't jump.
+  try { var tcTextSize = parseInt(localStorage.getItem('tc-text-size'), 10); if (tcTextSize > 100 && tcTextSize <= 200) document.documentElement.style.fontSize = tcTextSize + '%'; } catch (e) {}
+</script>
 </head>
 <body>
 <div class="header">
@@ -1045,7 +1139,7 @@
       <span id="remainingStandard"><span class="num" id="remainingNum">&mdash;</span> / <span id="remainingMax">&mdash;</span> today</span>
       <span id="remainingFamily" style="display:none"><span class="num" id="remainingHaiku">&mdash;</span><span class="remaining-max">/<span id="remainingHaikuMax">200</span></span> F &middot; <span class="num" id="remainingSonnet">&mdash;</span><span class="remaining-max">/<span id="remainingSonnetMax">30</span></span> S</span>
     </div>
-    <button class="theme-btn" id="themeBtn" title="Toggle theme"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg></button>
+    <button class="theme-btn display-btn" id="themeBtn" type="button" title="Text size and theme" aria-label="Text size and theme" aria-haspopup="dialog" aria-expanded="false" aria-controls="displayPop">Aa</button>
     <button class="header-btn conv-history-btn" id="convHistoryBtn" onclick="showHistory()" style="gap:5px" title="Conversation history"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span class="conv-history-label">History</span></button>
     <button class="header-btn" id="shareChatBtn" onclick="shareCurrentChat()" style="display:none;gap:5px" title="Share this chat"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg><span class="new-chat-label">Share</span></button>
     <button class="header-btn" id="newChatBtn" style="gap:5px"><span style="font-size:1rem;line-height:1;position:relative;top:-0.5px">+</span><span class="new-chat-label">New Chat</span></button>
@@ -1069,6 +1163,22 @@
       </div>
     </div>
   </div>
+</div>
+<div class="display-pop" id="displayPop" role="dialog" aria-label="Text size and theme">
+  <div class="display-label">Text size</div>
+  <div class="size-row">
+    <button class="size-opt" type="button" data-size="100" aria-label="Default text size">A</button>
+    <button class="size-opt" type="button" data-size="125" aria-label="Large text">A</button>
+    <button class="size-opt" type="button" data-size="150" aria-label="Larger text">A</button>
+    <button class="size-opt" type="button" data-size="175" aria-label="Largest text">A</button>
+  </div>
+  <div class="size-name" id="sizeName">Default</div>
+  <div class="display-label">Theme</div>
+  <div class="theme-row">
+    <button class="theme-opt" type="button" data-theme="dark"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>Dark</button>
+    <button class="theme-opt" type="button" data-theme="light"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>Light</button>
+  </div>
+  <div class="display-tip">You can also pinch the conversation with two fingers to make the text bigger or smaller.</div>
 </div>
 <div class="chat-area" id="chatArea">
   <div class="welcome" id="welcome">
@@ -1122,8 +1232,12 @@
     <button class="input-model-btn" id="inputModelBtn" onclick="setFamilyModel(familyModel==='haiku'?'sonnet':'haiku')" title="Fast — tap for Smart"><svg viewBox="0 0 24 24" width="19" height="19" fill="currentColor"><path d="M13 2L4.5 13.5h6L9 22l9.5-12.5h-6L13 2z"/></svg></button>
     <button class="ghost-btn" id="ghostBtn" type="button" title="Incognito — keep messages out of memory" aria-label="Incognito"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" pointer-events="none"><path d="M12 2c-4 0-7 3-7 7v10.5l2.5-1.5 2.5 1.5 2-1.5 2 1.5 2.5-1.5 2.5 1.5V9c0-4-3-7-7-7z"/><circle cx="9.5" cy="10" r="0.9" fill="currentColor"/><circle cx="14.5" cy="10" r="0.9" fill="currentColor"/></svg></button>
     <textarea class="input-field" id="inputField" placeholder="Ask about the faith..." rows="1" oninput="autoResize(this)" onkeydown="handleKey(event)"></textarea>
+    <div class="rec-strip" id="recStrip" aria-live="polite"><span class="rec-dot"></span><span class="rec-time" id="recTime">0:00</span><span class="rec-msg" id="recMsg">Slide away to cancel</span></div>
     <button class="send-btn" id="sendBtn" disabled onclick="sendMessage()">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
+    </button>
+    <button class="mic-btn" id="micBtn" type="button" aria-label="Hold to talk" title="Hold to talk">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5.5 10.5a6.5 6.5 0 0 0 13 0"/><line x1="12" y1="17" x2="12" y2="21"/><line x1="8.5" y1="21" x2="15.5" y2="21"/></svg>
     </button>
   </div>
   <div class="input-footer">AI can make mistakes. For definitive teaching, consult the <a href="https://www.vatican.va/archive/ENG0015/_INDEX.HTM" target="_blank">Catechism</a> or a <a href="https://masstimes.org" target="_blank">priest</a>. &middot; <a href="https://truecatholicai.org">truecatholicai.org</a></div>
@@ -1392,20 +1506,98 @@ function handleSonnetExhausted() {
   showToast('Smart limit reached for today \u2014 using Fast.');
 }
 
-// =============== THEME TOGGLE ===============
+// =============== DISPLAY: TEXT SIZE + THEME ===============
+// The "Aa" header button opens one small panel for both. Text size is a
+// percentage on <html>; every font size in this file is in rem, so it all
+// scales together. The <head> script applies the saved size before paint.
 const themeBtn = document.getElementById('themeBtn');
+const displayPop = document.getElementById('displayPop');
 const savedTheme = localStorage.getItem('tc-theme');
-var moonSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>';
-var sunSVG = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>';
-if (savedTheme === 'light') { document.body.classList.add('light'); document.documentElement.classList.add('light'); themeBtn.innerHTML = sunSVG; document.getElementById('themeColorMeta').content = '#F4F1EB'; }
-themeBtn.addEventListener('click', function() {
-  document.body.classList.toggle('light');
-  document.documentElement.classList.toggle('light');
-  const isLight = document.body.classList.contains('light');
-  themeBtn.innerHTML = isLight ? sunSVG : moonSVG;
+var TEXT_SIZES = [100, 125, 150, 175];
+var TEXT_SIZE_NAMES = ['Default', 'Large', 'Larger', 'Largest'];
+function applyTheme(isLight) {
+  document.body.classList.toggle('light', isLight);
+  document.documentElement.classList.toggle('light', isLight);
   localStorage.setItem('tc-theme', isLight ? 'light' : 'dark');
   document.getElementById('themeColorMeta').content = isLight ? '#F4F1EB' : '#0B0B10';
+  syncDisplayPop();
+}
+function currentTextSize() {
+  var s = 100;
+  try { s = parseInt(localStorage.getItem('tc-text-size'), 10); } catch (e) {}
+  return TEXT_SIZES.indexOf(s) === -1 ? 100 : s;
+}
+function setTextSize(pct, announce) {
+  // Keep the message at the top of the screen in place while the text reflows.
+  var chat = document.getElementById('chatArea');
+  var top = chat.getBoundingClientRect().top, anchor = null, offset = 0;
+  var bubbles = chat.querySelectorAll('.message');
+  for (var i = 0; i < bubbles.length; i++) {
+    var r = bubbles[i].getBoundingClientRect();
+    if (r.bottom > top) { anchor = bubbles[i]; offset = r.top - top; break; }
+  }
+  document.documentElement.style.fontSize = pct === 100 ? '' : pct + '%';
+  try { localStorage.setItem('tc-text-size', String(pct)); } catch (e) {}
+  if (anchor) {
+    chat.style.scrollBehavior = 'auto';
+    chat.scrollTop += (anchor.getBoundingClientRect().top - top) - offset;
+    chat.style.scrollBehavior = '';
+  }
+  syncDisplayPop();
+  if (displayPop.classList.contains('open')) positionDisplayPop();
+  if (announce) showToast('Text size: ' + TEXT_SIZE_NAMES[TEXT_SIZES.indexOf(pct)], 'neutral');
+}
+function syncDisplayPop() {
+  var size = currentTextSize(), isLight = document.body.classList.contains('light');
+  displayPop.querySelectorAll('.size-opt').forEach(function(b) { b.setAttribute('aria-pressed', String(Number(b.dataset.size) === size)); });
+  displayPop.querySelectorAll('.theme-opt').forEach(function(b) { b.setAttribute('aria-pressed', String((b.dataset.theme === 'light') === isLight)); });
+  document.getElementById('sizeName').textContent = TEXT_SIZE_NAMES[TEXT_SIZES.indexOf(size)];
+}
+function positionDisplayPop() {
+  // Line the panel's right edge up with the button, but never let it run off the left side.
+  var r = themeBtn.getBoundingClientRect();
+  var right = Math.max(14, window.innerWidth - r.right);
+  right = Math.min(right, Math.max(14, window.innerWidth - displayPop.offsetWidth - 14));
+  displayPop.style.top = (r.bottom + 8) + 'px';
+  displayPop.style.right = right + 'px';
+}
+function toggleDisplayPop(open) {
+  if (open === undefined) open = !displayPop.classList.contains('open');
+  displayPop.classList.toggle('open', open);
+  themeBtn.setAttribute('aria-expanded', String(open));
+  if (open) { syncDisplayPop(); positionDisplayPop(); }
+}
+if (savedTheme === 'light') { document.body.classList.add('light'); document.documentElement.classList.add('light'); document.getElementById('themeColorMeta').content = '#F4F1EB'; }
+themeBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleDisplayPop(); });
+displayPop.addEventListener('click', function(e) {
+  e.stopPropagation();
+  var size = e.target.closest('.size-opt'), theme = e.target.closest('.theme-opt');
+  if (size) setTextSize(Number(size.dataset.size), false);
+  if (theme) applyTheme(theme.dataset.theme === 'light');
 });
+document.addEventListener('click', function() { if (displayPop.classList.contains('open')) toggleDisplayPop(false); });
+document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && displayPop.classList.contains('open')) { toggleDisplayPop(false); themeBtn.focus(); } });
+window.addEventListener('resize', function() { if (displayPop.classList.contains('open')) positionDisplayPop(); });
+
+// Pinch the conversation to change text size: each 25% change in finger
+// spread is one step. The viewport blocks page zoom, so this is the only
+// thing a pinch does here.
+(function() {
+  var chat = document.getElementById('chatArea');
+  var startDist = 0, startIdx = 0;
+  function spread(t) { return Math.hypot(t[0].clientX - t[1].clientX, t[0].clientY - t[1].clientY); }
+  chat.addEventListener('touchstart', function(e) {
+    if (e.touches.length === 2) { startDist = spread(e.touches); startIdx = TEXT_SIZES.indexOf(currentTextSize()); }
+  }, { passive: true });
+  chat.addEventListener('touchmove', function(e) {
+    if (e.touches.length !== 2 || !startDist) return;
+    e.preventDefault();
+    var steps = Math.round(Math.log(spread(e.touches) / startDist) / Math.log(1.25));
+    var idx = Math.max(0, Math.min(TEXT_SIZES.length - 1, startIdx + steps));
+    if (TEXT_SIZES[idx] !== currentTextSize()) setTextSize(TEXT_SIZES[idx], true);
+  }, { passive: false });
+  chat.addEventListener('touchend', function(e) { if (e.touches.length < 2) startDist = 0; }, { passive: true });
+})();
 
 // =============== AUTH MODAL ===============
 function openAuthModal(view) {
@@ -2030,6 +2222,168 @@ function sendStarter(el) {
   const q = el.querySelector('.starter-q').textContent.replace(/^[\u201c\u201d"]/g, '').replace(/[\u201c\u201d"]$/g, '');
   inputField.value = q; sendMessage();
 }
+
+// =============== HOLD TO TALK ===============
+// Hold the mic, speak, let go to send. The browser's own speech-to-text does
+// the listening. Adapted from Voice Town's phone/voice.js: the session opens on
+// touch-down because the mic takes a few hundred ms to start, and on release it
+// keeps listening for a short tail so the last word isn't clipped.
+var SpeechRec = window.SpeechRecognition || window.webkitSpeechRecognition;
+var speechInput = {
+  supported: !!SpeechRec && window.isSecureContext,
+  // Returns { finish(tailMs) -> Promise<text>, cancel() }, or null if the mic can't start.
+  listen: function(on) {
+    var recognition = new SpeechRec();
+    recognition.lang = navigator.language || 'en-US';
+    // Continuous, so a pause mid-sentence doesn't end the session while the
+    // finger is still down; letting go is what ends it.
+    recognition.continuous = true;
+    recognition.interimResults = true;
+    recognition.maxAlternatives = 1;
+    var text = '', settle;
+    var ended = new Promise(function(resolve) { settle = resolve; });
+    recognition.onresult = function(e) { text = joinSpeechResults(e.results); if (on.partial) on.partial(text); };
+    recognition.onerror = function(e) {
+      // "aborted" is a cancel or a quick press; "no-speech" is silence. Neither is worth saying.
+      if (e.error !== 'aborted' && e.error !== 'no-speech' && on.trouble) on.trouble(e.error);
+    };
+    recognition.onend = function() { settle(text); };
+    try { recognition.start(); } catch (e) { return null; }
+    return {
+      finish: function(tailMs) {
+        return new Promise(function(resolve) { setTimeout(resolve, tailMs); }).then(function() {
+          try { recognition.stop(); } catch (e) {}
+          // If the browser never reports the end after stop(), give up waiting.
+          return Promise.race([ended, new Promise(function(resolve) { setTimeout(function() { resolve(text); }, 3000); })]);
+        }).then(function(said) { return String(said || '').trim(); });
+      },
+      cancel: function() { on = {}; try { recognition.abort(); } catch (e) {} }
+    };
+  }
+};
+// Continuous mode on Android Chrome can hand back each result with all the
+// earlier ones already inside it; appending those would repeat words.
+function joinSpeechResults(results) {
+  var text = '';
+  for (var i = 0; i < results.length; i++) {
+    var piece = results[i][0].transcript.trim();
+    if (!piece) continue;
+    if (piece.toLowerCase().indexOf(text.toLowerCase()) === 0) text = piece;
+    else text = text + ' ' + piece;
+  }
+  return text.trim();
+}
+function speechErrorMessage(err) {
+  if (err === 'not-allowed' || err === 'service-not-allowed') return 'Microphone access is turned off. Allow it in your browser settings to talk to TrueCatholic AI.';
+  if (err === 'audio-capture') return 'No microphone was found on this device.';
+  if (err === 'network') return 'Talking needs an internet connection. Check your connection and try again.';
+  return 'The microphone stopped unexpectedly. Hold the button and try again.';
+}
+
+var micBtn = document.getElementById('micBtn');
+var inputRow = document.querySelector('.input-row');
+var holdState = null;
+if (speechInput.supported) inputRow.classList.add('voice-ok');
+
+function updateHoldUI() {
+  inputRow.classList.toggle('recording', !!holdState);
+  inputRow.classList.toggle('cancel-zone', !!(holdState && holdState.cancel));
+  if (!holdState) return;
+  var secs = Math.floor((Date.now() - holdState.t0) / 1000);
+  document.getElementById('recTime').textContent = Math.floor(secs / 60) + ':' + String(secs % 60).padStart(2, '0');
+  document.getElementById('recMsg').textContent = holdState.cancel ? 'Let go to cancel' : holdState.finishing ? 'Sending…' : '‹ Slide away to cancel';
+  holdState.bubble.querySelector('.msg-name').textContent = holdState.cancel ? 'Let go to cancel' : 'Listening';
+}
+function startHold(x, y) {
+  if (holdState) return false;
+  if (isStreaming) { showToast('One moment. The answer is on its way.', 'neutral'); return false; }
+  try { if (navigator.vibrate) navigator.vibrate(12); } catch (e) {}
+  var views = { welcome: document.getElementById('welcome'), history: document.getElementById('convHistory'), messages: document.getElementById('messages') };
+  var hs = holdState = {
+    t0: Date.now(), x: x, y: y, cancel: false, finishing: false, text: '',
+    restore: { welcome: views.welcome.style.display, history: views.history.style.display, messages: views.messages.style.display }
+  };
+  views.welcome.style.display = 'none'; views.history.style.display = 'none'; views.messages.style.display = 'block';
+  hs.bubble = renderMessage('user', '');
+  hs.bubble.classList.add('live');
+  hs.bubble.querySelector('.msg-body').innerHTML = '<span class="live-wait">…</span>';
+  micBtn.classList.add('held');
+  updateHoldUI();
+  hs.clock = setInterval(updateHoldUI, 250);
+  hs.session = speechInput.listen({
+    partial: function(t) {
+      if (holdState !== hs) return;
+      hs.text = t;
+      hs.bubble.querySelector('.msg-body').textContent = t || '…';
+      scrollToBottom();
+    },
+    trouble: function(err) { if (holdState === hs) abortHold(speechErrorMessage(err)); }
+  });
+  if (!hs.session) { abortHold('The microphone couldn’t start. Hold the button and try again.'); return false; }
+  return true;
+}
+function moveHold(x, y) {
+  if (!holdState || holdState.finishing || holdState.keyboard) return;
+  var cancel = Math.hypot(x - holdState.x, y - holdState.y) > 80;
+  if (cancel === holdState.cancel) return;
+  holdState.cancel = cancel;
+  holdState.bubble.classList.toggle('cancelling', cancel);
+  try { if (cancel && navigator.vibrate) navigator.vibrate(8); } catch (e) {}
+  updateHoldUI();
+}
+function teardownHold() {
+  clearInterval(holdState.clock);
+  micBtn.classList.remove('held', 'finishing');
+  holdState = null;
+  updateHoldUI();
+}
+function abortHold(msg) {
+  if (!holdState) return;
+  var hs = holdState;
+  if (hs.session) hs.session.cancel();
+  teardownHold();
+  hs.bubble.classList.add('leaving');
+  setTimeout(function() {
+    hs.bubble.remove();
+    if (!messages.length) {
+      document.getElementById('welcome').style.display = hs.restore.welcome;
+      document.getElementById('convHistory').style.display = hs.restore.history;
+      document.getElementById('messages').style.display = hs.restore.messages;
+    }
+  }, 220);
+  if (msg) showToast(msg, 'neutral');
+}
+function endHold() {
+  if (!holdState || holdState.finishing) return;
+  if (holdState.cancel) { abortHold('Cancelled. Nothing was sent.'); return; }
+  if (Date.now() - holdState.t0 < 350) { abortHold('Hold the button down while you speak, then let go to send.'); return; }
+  var hs = holdState;
+  hs.finishing = true; micBtn.classList.add('finishing'); updateHoldUI();
+  hs.session.finish(400).then(function(said) {
+    if (holdState !== hs) return;
+    var text = (said || hs.text).trim();
+    if (!text) { abortHold('I didn’t catch that. Hold the button while you speak.'); return; }
+    teardownHold();
+    hs.bubble.remove();   // sendMessage draws the real bubble in the same spot
+    inputField.value = text.charAt(0).toUpperCase() + text.slice(1);
+    sendMessage();
+  });
+}
+micBtn.addEventListener('pointerdown', function(e) {
+  if (e.pointerType === 'mouse' && e.button !== 0) return;
+  e.preventDefault();
+  if (startHold(e.clientX, e.clientY)) { try { micBtn.setPointerCapture(e.pointerId); } catch (err) {} }
+});
+micBtn.addEventListener('pointermove', function(e) { moveHold(e.clientX, e.clientY); });
+micBtn.addEventListener('pointerup', endHold);
+micBtn.addEventListener('pointercancel', function() { abortHold(null); });
+micBtn.addEventListener('contextmenu', function(e) { e.preventDefault(); });
+micBtn.addEventListener('keydown', function(e) {
+  if ((e.key === ' ' || e.key === 'Enter') && !e.repeat) { e.preventDefault(); if (!holdState && startHold(0, 0)) holdState.keyboard = true; }
+  else if (e.key === 'Escape' && holdState) { holdState.cancel = true; endHold(); }
+});
+micBtn.addEventListener('keyup', function(e) { if ((e.key === ' ' || e.key === 'Enter') && holdState) { e.preventDefault(); endHold(); } });
+document.addEventListener('visibilitychange', function() { if (document.visibilityState !== 'visible') abortHold(null); });
 
 // =============== SEND MESSAGE ===============
 async function sendMessage() {
