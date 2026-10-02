@@ -1033,6 +1033,10 @@
      readable cap instead of wrapping out of the buttons at the largest sizes. */
   .header .header-btn, .header .remaining-badge, .header #remainingFamily { font-size: min(0.66rem, 13px); white-space: nowrap; }
   .header .display-btn { font-size: min(0.85rem, 17px); }
+  /* The notes above and below the message box keep their normal size; only the
+     conversation and the controls grow. (0.78rem and 0.66rem at 16px.) */
+  .free-account-hint { font-size: min(0.78rem, 12.48px); }
+  .input-footer { font-size: min(0.66rem, 10.56px); }
   .input-field:placeholder-shown { white-space: nowrap; overflow: hidden; }
   .input-field::placeholder { text-overflow: ellipsis; }
   .display-pop {
