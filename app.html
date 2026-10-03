@@ -1040,34 +1040,41 @@
   .input-field:placeholder-shown { white-space: nowrap; overflow: hidden; }
   .input-field::placeholder { text-overflow: ellipsis; }
   .display-pop {
-    position: fixed; z-index: 210; width: 17rem; max-width: calc(100vw - 28px);
+    position: fixed; z-index: 210; width: min(17rem, 300px); max-width: calc(100vw - 28px);
     background: var(--bg-card); border: 1px solid var(--border-strong); border-radius: 12px;
     padding: 14px; display: none; animation: dropIn 0.15s ease-out;
     box-shadow: 0 12px 32px rgba(0,0,0,0.35);
   }
   .display-pop.open { display: block; }
   .display-label {
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; letter-spacing: 0.12em;
+    font-family: 'IBM Plex Mono', monospace; font-size: min(0.66rem, 13px); letter-spacing: 0.12em;
     text-transform: uppercase; color: var(--text-dim); margin-bottom: 8px;
+  }
+  /* The panel's own text is capped so it never grows to fill a phone screen. */
+  .display-head { display: flex; align-items: center; justify-content: space-between; margin: -8px -8px 2px 0; }
+  .display-head .display-label { margin-bottom: 0; }
+  .display-close {
+    width: 44px; height: 44px; border: none; background: none; border-radius: 8px; cursor: pointer;
+    color: var(--text-mid); font-size: 28px; line-height: 1; display: flex; align-items: center; justify-content: center;
   }
   .size-row { display: grid; grid-template-columns: repeat(4, 1fr); gap: 6px; }
   .size-opt, .theme-opt {
     border-radius: 8px; border: 2px solid var(--border); background: var(--bg-input);
     cursor: pointer; display: flex; align-items: center; justify-content: center; line-height: 1;
   }
-  .size-opt { height: 3.25rem; color: var(--text); font-family: 'Source Serif 4', Georgia, serif; }
-  .size-opt:nth-child(1) { font-size: 0.85rem; }
-  .size-opt:nth-child(2) { font-size: 1.05rem; }
-  .size-opt:nth-child(3) { font-size: 1.3rem; }
-  .size-opt:nth-child(4) { font-size: 1.6rem; }
+  .size-opt { height: min(3.25rem, 60px); color: var(--text); font-family: 'Source Serif 4', Georgia, serif; }
+  .size-opt:nth-child(1) { font-size: 14px; }
+  .size-opt:nth-child(2) { font-size: 17px; }
+  .size-opt:nth-child(3) { font-size: 21px; }
+  .size-opt:nth-child(4) { font-size: 26px; }
   .size-opt[aria-pressed="true"], .theme-opt[aria-pressed="true"] { border-color: var(--gold); color: var(--gold-light); }
-  .size-name { font-size: 0.85rem; color: var(--text-mid); text-align: center; margin: 8px 0 14px; }
+  .size-name { font-size: min(0.85rem, 17px); color: var(--text-mid); text-align: center; margin: 8px 0 14px; }
   .theme-row { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
   .theme-opt {
-    height: 2.75rem; gap: 6px; color: var(--text-mid); font-family: 'IBM Plex Mono', monospace;
-    font-size: 0.7rem; letter-spacing: 0.08em; text-transform: uppercase;
+    height: min(2.75rem, 48px); gap: 6px; color: var(--text-mid); font-family: 'IBM Plex Mono', monospace;
+    font-size: min(0.7rem, 13px); letter-spacing: 0.08em; text-transform: uppercase;
   }
-  .display-tip { display: none; font-size: 0.82rem; color: var(--text-mid); line-height: 1.5; margin-top: 12px; }
+  .display-tip { display: none; font-size: min(0.82rem, 16px); color: var(--text-mid); line-height: 1.5; margin-top: 12px; }
   @media (hover: none) { .display-tip { display: block; } }
 
   /* =============== HOLD TO TALK =============== */
@@ -1169,7 +1176,10 @@
   </div>
 </div>
 <div class="display-pop" id="displayPop" role="dialog" aria-label="Text size and theme">
-  <div class="display-label">Text size</div>
+  <div class="display-head">
+    <div class="display-label">Text size</div>
+    <button class="display-close" id="displayClose" type="button" aria-label="Close">&times;</button>
+  </div>
   <div class="size-row">
     <button class="size-opt" type="button" data-size="100" aria-label="Default text size">A</button>
     <button class="size-opt" type="button" data-size="125" aria-label="Large text">A</button>
@@ -1575,11 +1585,18 @@ if (savedTheme === 'light') { document.body.classList.add('light'); document.doc
 themeBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleDisplayPop(); });
 displayPop.addEventListener('click', function(e) {
   e.stopPropagation();
+  if (e.target.closest('.display-close')) { toggleDisplayPop(false); return; }
   var size = e.target.closest('.size-opt'), theme = e.target.closest('.theme-opt');
   if (size) setTextSize(Number(size.dataset.size), false);
   if (theme) applyTheme(theme.dataset.theme === 'light');
 });
-document.addEventListener('click', function() { if (displayPop.classList.contains('open')) toggleDisplayPop(false); });
+// Close on the first touch outside the panel. A finished click isn't reliable
+// here: a tap that starts a scroll on the chat never produces one.
+document.addEventListener('pointerdown', function(e) {
+  if (!displayPop.classList.contains('open')) return;
+  if (displayPop.contains(e.target) || themeBtn.contains(e.target)) return;
+  toggleDisplayPop(false);
+});
 document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && displayPop.classList.contains('open')) { toggleDisplayPop(false); themeBtn.focus(); } });
 window.addEventListener('resize', function() { if (displayPop.classList.contains('open')) positionDisplayPop(); });
 
