@@ -112,11 +112,16 @@ function buildKnowledgeRow(entry) {
   };
 }
 
+// An entry's approved images go in in the order they were approved; the first
+// is its lead image. `caption` and `kind` come from the review state when an
+// image has them (see migration 002); scripts/05-add-image.js sets them for
+// images added by hand.
 function buildImageRow(entry, knowledgeId, img, i) {
   return {
     entity_type: entry.frontmatter.entity_type,
     entity_name: entry.frontmatter.entity_name,
-    keywords: [entry.frontmatter.entity_name, entry.frontmatter.location_city].filter(Boolean).join(", "),
+    // The column is text[]; a joined string is rejected.
+    keywords: [entry.frontmatter.entity_name, entry.frontmatter.location_city].filter(Boolean),
     image_url: img.r2Url || img.imageUrl,
     thumbnail_url: img.thumbnailUrl,
     attribution: img.artist || img.credit || `Wikimedia Commons: ${img.title}`,
@@ -124,6 +129,9 @@ function buildImageRow(entry, knowledgeId, img, i) {
     alt_text: img.description || img.title,
     knowledge_id: knowledgeId,
     approved: true,
+    caption: img.caption || null,
+    image_kind: img.kind || "main",
+    sort_order: i,
   };
 }
 

@@ -98,6 +98,9 @@
   @media (max-width: 480px) {
     .msg-image-wrap { max-width: 140px; margin: 0 0 10px 12px; }
   }
+  /* A second image of the same subject, shown after the text with room for its caption. */
+  .msg-image-wrap.feature { float: none; clear: both; max-width: 320px; margin: 16px 0 4px; }
+  .msg-image-wrap.feature .msg-image-caption { text-align: left; }
 
   .footer {
     max-width: 800px; margin: 0 auto; padding: 24px 20px;
@@ -212,12 +215,14 @@ function renderMarkdown(text) {
   return html;
 }
 
-function buildImageWrapHTML(img) {
+// `feature` is the second image of a reply, laid out after the text. The
+// caption is the image's own when it has one, otherwise who or what it shows.
+function buildImageWrapHTML(img, feature) {
   if (!img || !img.url) return '';
-  var altSafe = escapeHTML(img.alt || '');
+  var altSafe = escapeHTML(img.caption || img.alt || '');
   var attrSafe = escapeHTML(img.attribution || '');
   var captionText = altSafe + (attrSafe ? ' &middot; ' + attrSafe : '');
-  return '<div class="msg-image-wrap">'
+  return '<div class="msg-image-wrap' + (feature ? ' feature' : '') + '">'
     + '<img src="' + encodeURI(img.url) + '" alt="' + altSafe + '" loading="lazy">'
     + (captionText ? '<div class="msg-image-caption">' + captionText + '</div>' : '')
     + '</div>';
@@ -227,12 +232,13 @@ function renderMessage(role, content, images) {
   var container = document.getElementById('messages');
   var div = document.createElement('div');
   div.className = 'message ' + role;
-  var imageHTML = '';
+  var imageHTML = '', featureHTML = '';
   if (role === 'ai' && images && images.length) {
     imageHTML = buildImageWrapHTML(images[0]);
+    featureHTML = buildImageWrapHTML(images[1], true);
   }
   if (role === 'ai') {
-    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + imageHTML + renderMarkdown(content) + '</div>';
+    div.innerHTML = '<div class="msg-header"><div class="msg-avatar ai"></div><span class="msg-name ai-name">TrueCatholic AI</span></div><div class="msg-body">' + imageHTML + renderMarkdown(content) + featureHTML + '</div>';
   } else {
     div.innerHTML = '<div class="msg-header"><div class="msg-avatar user">U</div><span class="msg-name user-name">User</span></div><div class="msg-body">' + renderMarkdown(content) + '</div>';
   }

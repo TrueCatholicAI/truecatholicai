@@ -220,6 +220,9 @@
     display: block; transition: opacity 0.2s;
   }
   .msg-image-wrap:hover img { opacity: 0.9; }
+  /* A second image of the same subject, shown after the text with room for its caption. */
+  .msg-image-wrap.feature { float: none; clear: both; max-width: 320px; margin: 16px 0 4px; }
+  .msg-image-wrap.feature .msg-image-caption { text-align: left; }
   .msg-image-caption {
     font-family: 'IBM Plex Mono', monospace; font-size: 0.66rem; color: var(--text-mid);
     letter-spacing: 0.04em; margin-top: 6px; text-align: center; line-height: 1.5;
@@ -2707,6 +2710,40 @@ function renderMessage(role, text, opts) {
   if (role === 'ai') attachMsgActions(div, text);
   return div;
 }
+// One inline image: tap to enlarge, heart to save, caption underneath. The
+// caption is the image's own when it has one ("Incorrupt body of St.
+// Bernadette, 1925"), otherwise the name of who or what it shows. `feature`
+// is the second image of a reply, laid out after the text instead of beside it.
+function buildMessageImage(img, feature) {
+  const label = img.caption || img.alt || '';
+  const imgIdx = sessionImages.length;
+  const wrap = document.createElement('div');
+  wrap.className = feature ? 'msg-image-wrap feature' : 'msg-image-wrap';
+  const imgEl = document.createElement('img');
+  imgEl.src = img.url;
+  imgEl.alt = label;
+  imgEl.loading = 'lazy';
+  imgEl.style.cursor = 'pointer';
+  imgEl.addEventListener('click', function() { openLightbox(img.url, label); });
+  wrap.appendChild(imgEl);
+  const heart = document.createElement('button');
+  heart.className = 'msg-image-heart';
+  heart.innerHTML = favoriteImages.some(function(f) { return f.url === img.url; }) ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="#E05555" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
+  if (favoriteImages.some(function(f) { return f.url === img.url; })) heart.classList.add('saved');
+  heart.title = 'Save to favorites';
+  heart.addEventListener('click', function(e) { e.stopPropagation(); toggleFavorite(heart, imgIdx); });
+  wrap.appendChild(heart);
+  if (label) {
+    const cap = document.createElement('div');
+    cap.className = 'msg-image-caption';
+    cap.textContent = label + (img.attribution ? ' \u00b7 ' + img.attribution : '');
+    wrap.appendChild(cap);
+  }
+  sessionImages.push({ url: img.url, alt: label, attribution: img.attribution || '', entity: img.entity || '' });
+  updateGalleryBtn();
+  return wrap;
+}
+
 async function renderMessageProgressive(role, text, images, opts) {
   const container = document.getElementById('messages');
   const chatArea = document.getElementById('chatArea');
@@ -2723,38 +2760,16 @@ async function renderMessageProgressive(role, text, images, opts) {
   const body = document.createElement('div');
   body.className = 'msg-body';
 
-  // Inject image BEFORE text so it's there when text starts wrapping
+  // The lead image goes in BEFORE the text so it's there when text starts
+  // wrapping. A second image of the same subject (an incorrupt body, say)
+  // waits until the text is in and is shown after it.
+  let secondImage = null;
   if (images && images.length) {
-    const img = images[0];
-    const alreadyShown = sessionImages.some(function(s) { return s.url === img.url || (s.entity && img.entity && s.entity === img.entity); });
-    if (!alreadyShown) {
-    const imgIdx = sessionImages.length;
-    const wrap = document.createElement('div');
-    wrap.className = 'msg-image-wrap';
-    const imgEl = document.createElement('img');
-    imgEl.src = img.url;
-    imgEl.alt = img.alt || '';
-    imgEl.loading = 'lazy';
-    imgEl.style.cursor = 'pointer';
-    (function(url, alt) { imgEl.addEventListener('click', function() { openLightbox(url, alt); }); })(img.url, img.alt || '');
-    wrap.appendChild(imgEl);
-    const heart = document.createElement('button');
-    heart.className = 'msg-image-heart';
-    heart.innerHTML = favoriteImages.some(function(f) { return f.url === img.url; }) ? '<svg viewBox="0 0 24 24" width="14" height="14" fill="#E05555" stroke="none"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>' : '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>';
-    if (favoriteImages.some(function(f) { return f.url === img.url; })) heart.classList.add('saved');
-    heart.title = 'Save to favorites';
-    (function(h, idx) { heart.addEventListener('click', function(e) { e.stopPropagation(); toggleFavorite(h, idx); }); })(heart, imgIdx);
-    wrap.appendChild(heart);
-    if (img.alt) {
-      const cap = document.createElement('div');
-      cap.className = 'msg-image-caption';
-      cap.textContent = img.alt + (img.attribution ? ' \u00b7 ' + img.attribution : '');
-      wrap.appendChild(cap);
-    }
-    body.appendChild(wrap);
-    sessionImages.push({ url: img.url, alt: img.alt || '', attribution: img.attribution || '', entity: img.entity || '' });
-    updateGalleryBtn();
-    }
+    const lead = images[0];
+    const leadShown = sessionImages.some(function(s) { return s.url === lead.url || (s.entity && lead.entity && s.entity === lead.entity); });
+    if (!leadShown) body.appendChild(buildMessageImage(lead));
+    // Same entity as the lead, so only its own URL can rule it out.
+    if (images[1] && !sessionImages.some(function(s) { return s.url === images[1].url; })) secondImage = images[1];
   }
 
   div.appendChild(body);
@@ -2792,6 +2807,11 @@ async function renderMessageProgressive(role, text, images, opts) {
       elements[i].classList ? elements[i].classList.add('reveal-block') : null;
       body.appendChild(elements[i]);
     }
+  }
+  if (secondImage) {
+    const feature = buildMessageImage(secondImage, true);
+    feature.classList.add('reveal-block');
+    body.appendChild(feature);
   }
   if (opts && opts.dbId) attachGhostControls(div, opts.dbId, !!opts.ghosted);
   else if (opts && opts.ghosted) applyGhostStateToBubble(div, true);
