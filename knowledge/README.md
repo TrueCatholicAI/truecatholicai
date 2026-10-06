@@ -50,6 +50,7 @@ See `/home/michael/truecatholic/truecatholicai/knowledge/migrations/001-catholic
 
 ```bash
 # Open Supabase SQL editor, paste migrations/001-catholic-knowledge.sql, run.
+# Then migrations/002-image-captions-kinds.sql (captions, several images per entry).
 ```
 
 ### 2. Scrape the Acutis catalog index (list only — no panel text, no images)
@@ -118,6 +119,29 @@ SUPABASE_URL=...  SUPABASE_SERVICE_ROLE_KEY=... \
 ```
 
 By default, approved images are stored as direct Wikimedia Commons URLs (legal with attribution for PD / CC-BY / CC-BY-SA). `--r2` would copy each file to Cloudflare R2 — stub only; wire up when R2 bucket is provisioned.
+
+## Several images for one entry
+
+An entry can have more than one image: its main picture and, for the incorruptibles, a photograph of the body. Each `catholic_images` row has:
+
+- `caption` — shown under the image in place of the entry's name. Say what it is and when: "Incorrupt body of St. Bernadette, Nevers, photographed 1925".
+- `image_kind` — `main`, `incorrupt`, `relic`, `place` or `other`.
+- `sort_order` — lowest first; the lowest is the lead image.
+
+The app shows the lead beside the opening of the answer and one more image after the text. An `incorrupt` image always takes that second place, and comes first when the question is about incorruptibility. An entry whose only image is the body photograph leads with it.
+
+Images approved in the review dashboard upload in the order they were approved (step 7). For one found by hand, which is how most photographs of incorrupt bodies will arrive:
+
+```bash
+# Preview. Nothing is written without --write.
+SUPABASE_URL=...  SUPABASE_SERVICE_ROLE_KEY=... \
+  node scripts/05-add-image.js --entity "Saint Bernadette Soubirous" \
+    --commons "File:Bernadette soubirous exhumated body 1925.jpg" \
+    --kind incorrupt \
+    --caption "Incorrupt body of St. Bernadette, Nevers, photographed at the 1925 exhumation"
+```
+
+`--commons` takes a file name or a Commons page link and looks up the URL, credit and license; anything not public domain or CC is refused. For an image from elsewhere, pass `--url`, `--attribution` and `--license` yourself. The entity has to be in the library already; the script lists the closest names if it isn't. New images appear in the app within five minutes.
 
 ## Hand-authored entries (`manual/`)
 
