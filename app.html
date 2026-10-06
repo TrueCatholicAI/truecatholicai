@@ -1037,7 +1037,9 @@
      conversation and the controls grow. (0.78rem and 0.66rem at 16px.) */
   .free-account-hint { font-size: min(0.78rem, 12.48px); }
   .input-footer { font-size: min(0.66rem, 10.56px); }
-  .input-field:placeholder-shown { white-space: nowrap; overflow: hidden; }
+  /* While the box is empty it keeps its normal size, so the placeholder doesn't
+     balloon. Typed text still follows the text size. (0.95rem at 16px.) */
+  .input-field:placeholder-shown { font-size: min(0.95rem, 15.2px); white-space: nowrap; overflow: hidden; }
   .input-field::placeholder { text-overflow: ellipsis; }
   .display-pop {
     position: fixed; z-index: 210; width: min(17rem, 300px); max-width: calc(100vw - 28px);
@@ -1091,6 +1093,10 @@
   .input-row.voice-ok .mic-btn { display: flex; }
   .input-row.voice-ok .input-field:placeholder-shown ~ .send-btn { display: none; }
   .input-row.voice-ok .input-field:not(:placeholder-shown) ~ .mic-btn { display: none; }
+  /* The mic is taller than the one-line box and the row bottom-aligns, which left
+     the mic sitting a few pixels high. Center the row while the mic is showing. */
+  .input-row.voice-ok:has(.input-field:placeholder-shown) { align-items: center; }
+  @supports not selector(:has(*)) { .mic-btn { top: 2px; } }
   .mic-btn::after {
     content: ''; position: absolute; inset: -6px; border-radius: 50%; border: 2px solid var(--gold);
     opacity: 0; transition: opacity 0.2s ease; pointer-events: none;
@@ -1104,7 +1110,7 @@
   .rec-strip {
     display: none; flex: 1; min-width: 0; align-items: center; gap: 10px; min-height: 48px; padding: 0 14px;
     background: var(--bg-input); border: 2px solid var(--gold-dim); border-radius: 10px;
-    font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-mid); letter-spacing: 0.03em;
+    font-family: 'IBM Plex Mono', monospace; font-size: min(0.72rem, 14px); color: var(--text-mid); letter-spacing: 0.03em;
   }
   .input-row.recording .input-field { display: none; }
   .input-row.recording .rec-strip { display: flex; }
